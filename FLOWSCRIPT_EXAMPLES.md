@@ -69,7 +69,7 @@ service, and handle failover. That's a lot of overhead for a small team.
   Redis option
   ++ performance
   ++ scales well
-  -- operational complexity
+  risk: operational complexity
   -> requires: learning + maintenance + failover handling
   <- small team = high overhead cost
 }
@@ -96,7 +96,7 @@ something else.
 
 ✅ **With FlowScript:**
 ```
-!! auth bug in production
+! [blocked] Auth bug in production
 -> mobile users can't login
 <- yesterday's deploy (PR #347 session token changes)
 
@@ -109,7 +109,7 @@ After rollback:
 ```
 
 💡 **Why it helps:** 
-- `!!` signals critical severity immediately
+- `! [blocked]` signals critical severity immediately
 - Dependencies and blockers explicit
 - Decision vs investigation clearly separated
 - Timeline visible (ETA in blocker)
@@ -139,16 +139,16 @@ could get expensive. We need to figure out our priorities.
   WebSockets
   ++ true push (low latency)
   ++ feels snappier
-  -- complex (connection mgmt + reconnect + load balancing)
-  -- harder to scale
+  risk: complex (connection mgmt + reconnect + load balancing)
+  risk: harder to scale
 }
 ><
 {
   Polling  
   ++ much simpler (just HTTP)
   ++ easier to cache + scale
-  -- more server load
-  -- higher latency
+  concern: more server load
+  concern: higher latency
 }
 
 constraints:
@@ -229,7 +229,7 @@ Options:
 
 {Advanced Search}
 ++ helps power users  
--- complex (3 weeks)
+concern: complex (3 weeks)
 [exploring] Revenue impact unclear
 
 {PDF Export}
@@ -239,8 +239,8 @@ Options:
 
 {Email Notifications}  
 ++ critical for engagement
--- requires infrastructure setup (2 weeks)
--- ongoing maintenance burden
+concern: requires infrastructure setup (2 weeks)
+concern: ongoing maintenance burden
 
 Constraints:
 - need revenue soon
@@ -339,14 +339,14 @@ Problem: User model bloated (1000+ lines)
 {Refactor now}
 ++ cleaner codebase
 ++ easier future development  
--- big time investment
--- delays feature work
+concern: big time investment
+concern: delays feature work
 [blocked] feature deadlines approaching
 
 {Leave it}  
 ++ hit deadlines
--- keeps growing
--- future refactor gets harder
+concern: keeps growing
+concern: future refactor gets harder
 thought: "technical debt compounds"
 
 ><
@@ -390,19 +390,19 @@ Problem: Dashboard slow (12 separate API calls)
 {Option A: Single dashboard endpoint}
 ++ performance (12 requests -> 1)  
 ++ significantly faster
--- custom endpoint (breaks API consistency)
--- couples dashboard to backend
--- harder to modify widgets later
+concern: custom endpoint (breaks API consistency)
+concern: couples dashboard to backend
+concern: harder to modify widgets later
 
 {Option B: Keep separate calls + add caching}
 ++ maintains API consistency
 ++ widgets stay decoupled
-~~ performance improvement (depends on cache hit rate)
+~ performance improvement (depends on cache hit rate)
 
 {Option C: Client-side request batching}
 ++ performance (12 -> 1 or 2 roundtrips)
 ++ keeps API consistent
-~~ complexity in client
+~ complexity in client
 [exploring] How complex is this to implement?
 
 Metrics:
@@ -418,7 +418,7 @@ thought: user experience matters more than API consistency
 💡 **Why it helps:**
 - Three options instead of two (batching emerged)
 - Each option's tradeoffs explicit
-- Uncertainty marked (`~~` for cache hit rate, `~` for complexity)
+- Uncertainty marked (`~` for cache hit rate and complexity)
 - Metrics provide decision context
 - Decision includes future pivot point
 
@@ -444,21 +444,21 @@ query preferences often, but we might. Hard to predict.
 {JSON column in users table}
 ++ simple to implement
 ++ flexible (no schema changes needed)
--- can't easily query/filter
--- can't index on specific preferences
--- migrations harder if structure changes
+concern: can't easily query/filter
+concern: can't index on specific preferences
+concern: migrations harder if structure changes
 
 {Normalized preferences table}
 ++ queryable + filterable
 ++ indexable
 ++ easier migrations
--- more upfront work
--- more complex queries
+concern: more upfront work
+concern: more complex queries
 
 Current needs:
 - storing preferences ✓
-- querying preferences ~~ (maybe, unclear)
-- filtering by preferences ~~ (probably not soon)
+- querying preferences ~ (maybe, unclear)
+- filtering by preferences ~ (probably not soon)
 
 thought: optimize for current needs + easy migration path
 -> [decided] Start with JSON column
@@ -471,7 +471,7 @@ thought: optimize for current needs + easy migration path
 💡 **Why it helps:**
 - Both approaches' tradeoffs explicit
 - Current vs future needs separated
-- Uncertainty marked (`~~`)
+- Uncertainty marked (`~`)
 - Migration path considered upfront
 - Decision rationale preserved
 
@@ -497,17 +497,17 @@ Though maybe that's over-engineering for something we might not need.
 {GET /users/:id/purchases}
 ++ RESTful (shows ownership relationship)
 ++ intuitive (purchases belong to user)  
--- locked to user-scoped queries only
+concern: locked to user-scoped queries only
 
 {GET /purchases?user_id=:id}
 ++ flexible (can add other filters later)
--- less clear ownership relationship
--- requires query param parsing
+concern: less clear ownership relationship
+concern: requires query param parsing
 
 {Both endpoints}  
 ++ RESTful + flexible
--- more work
--- more to maintain
+concern: more work
+concern: more to maintain
 ? Do we need the flexibility?
 
 Current requirements:
@@ -515,8 +515,8 @@ Current requirements:
 - search all purchases [parking] (not needed now)
 
 Future possibilities:
-- admin view of all purchases ~~ (maybe needed)
-- filter purchases by date/amount ~~ (unclear)
+- admin view of all purchases ~ (maybe needed)
+- filter purchases by date/amount ~ (unclear)
 
 [decided] Start with /users/:id/purchases
 -> covers current need
@@ -530,7 +530,7 @@ thought: YAGNI until we need it
 💡 **Why it helps:**
 - All three approaches visible
 - Current vs future requirements explicit
-- Uncertainty acknowledged (`~~`)
+- Uncertainty acknowledged (`~`)
 - YAGNI principle applied
 - Future addition path clear
 
@@ -558,18 +558,18 @@ Test types tradeoffs:
 {Unit tests}
 ++ fast
 ++ catch logic errors
--- miss integration issues  
--- high maintenance (code changes often)
+concern: miss integration issues  
+concern: high maintenance (code changes often)
 
 {Integration tests}
 ++ catch real bugs  
 ++ reasonable speed
-~~ brittleness depends on design
+~ brittleness depends on design
 
 {E2E tests}
 ++ confidence app actually works
--- very slow
--- fragile (break on UI changes)
+concern: very slow
+concern: fragile (break on UI changes)
 
 Current state:
 - coverage: ~40%
@@ -633,19 +633,19 @@ Root causes:
 
 {More meetings}
 ++ enforced synchronization
--- people hate meetings
--- doesn't solve async communication
+concern: people hate meetings
+concern: doesn't solve async communication
 
 {Better documentation}  
 ++ searchable + persistent
--- nobody reads docs
--- stale immediately
+concern: nobody reads docs
+concern: stale immediately
 
 {Shared project board + API contract-first}
 ++ visibility on who's building what
 ++ API contracts defined before implementation
 ++ async communication (fewer meetings)
--- requires discipline
+concern: requires discipline
 [blocked] Need to choose tool + establish process
 
 [decided] Three changes:
@@ -679,13 +679,13 @@ Root causes:
 
 {Option A}
 ++ benefits
--- drawbacks
+concern: drawbacks
 
 ><
 
 {Option B}  
 ++ benefits
--- drawbacks
+concern: drawbacks
 
 Constraints:
 - important factor 1
@@ -738,7 +738,7 @@ Meanwhile:
 ### Pattern: Exploring Uncertainty
 
 ```
-thought~: hypothesis worth investigating
+~ thought: hypothesis worth investigating
 
 Supporting evidence:
 - observation 1
@@ -801,11 +801,11 @@ Feeling tired today - didn't sleep well. Might grab coffee.
 
 {Tabs}
 ++ configurable width
--- inconsistent rendering
+concern: inconsistent rendering
 
 {Spaces}
 ++ consistent rendering  
--- fixed width
+concern: fixed width
 
 [decided] Spaces after analysis
 ```
@@ -852,7 +852,7 @@ users want speed -> performance matters
 
 **Do this instead:**
 ```
-!! Bug in production (service down)
+! [blocked] Bug in production (service down)
 ! Client email unanswered (response promised today)
 
 Need to ship feature X
@@ -924,7 +924,7 @@ Track decisions and blockers:
 
 Redis:
 ++ fast
--- complex
+concern: complex
 
 [decided] Try Redis in staging first
 [blocked] Need Docker setup on staging server
@@ -940,9 +940,9 @@ Group related reasoning:
 {
   [exploring] Redis vs Postgres
   
-  {Redis: ++ fast -- complex}
+  {Redis: ++ fast  concern: complex}
   ><  
-  {Postgres: ++ simple ~~ speed}
+  {Postgres: ++ simple  ~ speed}
   
   [decided] Start with Postgres (simpler)
   -> migrate to Redis if performance issues
@@ -957,11 +957,11 @@ Show certainty levels and scope:
 
 ```
 @auth_service {
-  thought*: Token expiry causing logout bug
+  * thought: Token expiry causing logout bug
   <- observed pattern in logs [decided]
   
   Fix:
-  [exploring~] Extend expiry? Or refresh token?
+  ~ [exploring] Extend expiry? Or refresh token?
   -> need to test both approaches
   
   [blocked] Staging environment down (ETA: 2hrs)
@@ -975,10 +975,10 @@ Show certainty levels and scope:
 Maximum information density for complex problems:
 
 ```
-!! Production incident: Payment processing failing
+! [blocked] Production incident: Payment processing failing
 
 {
-  What we know*:
+  * What we know:
   - started 2:47 PM
   - 100% failure rate  
   - error: "gateway timeout"
@@ -1000,7 +1000,7 @@ Maximum information density for complex problems:
   Root cause investigation [parking]:
   ? Why is Stripe slow?
   -> their status page shows no issues
-  -> [exploring~] possible: our request rate? their regional outage?
+  -> ~ [exploring] possible: our request rate? their regional outage?
   
   action: Email Stripe support after immediate fire out
 }
@@ -1077,6 +1077,6 @@ Use it when structure helps thinking, not as a requirement.
 
 ---
 
-*FlowScript Examples v1.0*  
+*FlowScript Examples v0.4.1*  
 *Real patterns from real use*  
 *October 2025*

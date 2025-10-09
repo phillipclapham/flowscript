@@ -20,9 +20,9 @@ AI response misses that Bug #1 blocks both release AND Bug #3. Asks for clarific
 
 **With FlowScript:**
 
-> Bug #1 (blocking) → must fix before release
+> Bug #1 [blocked] → must fix before release
 > Bug #1 → Bug #3 (can't start until #1 done)
-> Bug #2 (maybe not real) ← investigate first || defer to next sprint
+> Bug #2 [exploring] ← investigate first, consider deferring to next sprint
 
 AI response immediately prioritizes Bug #1, understands it blocks multiple things, and suggests investigating Bug #2 in parallel. No clarification needed.
 
@@ -35,11 +35,11 @@ Three simple markers made the structure explicit:
 **→** (arrow) - Shows causation and dependencies
 *"A → B" = A leads to B, A must happen before B, A causes B*
 
-**||** (double pipe) - Shows alternatives
-*"A || B" = either A or B, not both*
-
 **><** (angle brackets) - Shows tension or contradiction
 *"A >< B" = A contradicts B, these are in tension*
+
+**{ }** (thought blocks) - Groups related concepts
+*"{ idea → implication }" = complete thought with structure*
 
 The AI doesn't have to parse prose to understand relationships. The structure is visible.
 
@@ -72,7 +72,7 @@ You should! FlowScript isn't required. Use it when:
 - Explaining multi-part dependencies
 - Debugging with interconnected bugs
 - Discussing architecture with complex relationships
-- Planning with alternatives and tradeoffs
+- Planning with tensions and tradeoffs
 
 Skip it when natural language flows fine. It's a tool for specific scenarios, not a requirement for all communication.
 
@@ -90,7 +90,7 @@ You're about to type "This depends on that" or "This contradicts that" or "Eithe
 
 - A → B (instead of "A causes B" or "A depends on B")
 - A >< B (instead of "A contradicts B")
-- A || B (instead of "either A or B")
+- { optionA } >< { optionB } (for alternatives)
 
 **You'll know it worked when:** The AI's response correctly addresses the relationship without you having to clarify.
 
@@ -115,7 +115,7 @@ That's it. One marker, one message, immediate feedback.
 > "The authentication system is complete. I realized the energy tracking feature might be what makes our product different from competitors. We still need to figure out if Redis makes sense - it's a tradeoff between performance and simplicity."
 
 **With FlowScript:**
-> ✓ Auth system complete
+> [decided] Auth system complete
 > thought: Energy tracking → potential differentiator vs competitors
 > ? Redis vs Postgres (performance >< simplicity)
 
@@ -156,13 +156,13 @@ thought: FlowScript reduces parsing overhead for both human and AI
 **?** - Explicit decision points
 
 ```
-? Should we refactor now || ship and iterate later?
+? Should we refactor now >< ship and iterate later?
 ```
 
-**✓** - Mark completions for context
+**[decided]** - Mark completions and decisions
 
 ```
-✓ Auth system implementation complete
+[decided] Auth system implementation complete
 ```
 
 See the [full reference](#) for all markers, but these core ones solve 90% of use cases.
@@ -190,7 +190,7 @@ Planning with uncertainty → Tensions || alternatives need balancing
 
 Casual conversation → Natural language works fine
 Simple questions → Adding markers is overhead
-Emotional || creative topics → Structure isn't the bottleneck
+Emotional or creative topics → Structure isn't the bottleneck
 When prose flows perfectly → Don't force it
 
 ## Start Using It

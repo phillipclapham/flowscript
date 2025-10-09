@@ -1,4 +1,4 @@
-# FlowScript v0.4 - Syntax Reference
+# FlowScript v0.4.1 - Syntax Reference
 
 *Semantic notation for technical collaboration*
 *Evidence-based minimal core - 20 essential markers*
@@ -21,9 +21,9 @@ That's enough to start. Add more as you need them.
 
 ## The 20 Essential Markers
 
-### Core Relations (6 markers)
+### Core Relations (4 markers)
 
-**These are the foundation.** Everything else is optional.
+**These are the foundation.** Start here.
 
 #### `->` leads to / causes / results in
 
@@ -84,6 +84,10 @@ cost >< performance
 **In sentences:** "We're facing speed >< quality tradeoff on this feature"
 
 ---
+
+### Definition Operators (2 markers)
+
+**Use these to clarify meaning.**
 
 #### `=` equivalent to / same as
 
@@ -186,7 +190,7 @@ thought: Hybrid approach emerged naturally through use
 thought: Size limits were premature optimization
 ```
 
-**Can add confidence:** `thought*:` (high confidence) or `thought~:` (uncertain)
+**Can add confidence (as prefix):** `* thought:` (high confidence) or `~ thought:` (uncertain)
 
 ---
 
@@ -201,7 +205,7 @@ thought: Size limits were premature optimization
 ? Redis or Postgres for session storage?
 ```
 
-**Can make urgent:** `!?` for critical questions needing immediate decision
+**Can make urgent (as prefix):** `! ? critical question` for urgent questions needing immediate decision
 
 ---
 
@@ -217,7 +221,7 @@ Invoke processing modes.
 ```
 !go! market viability for premium tier
 !go! technical tradeoffs between approaches
-!go! @meta our collaboration patterns
+!go! our collaboration patterns
 ```
 
 **Different from `action:`** - This says "think deeply" not "do this thing"
@@ -239,9 +243,9 @@ action: commit and push to git
 
 ---
 
-### Modifiers (4 markers)
+### Modifiers (3 markers)
 
-Add urgency, emphasis, or confidence.
+Add urgency, emphasis, or confidence. **These are prefixes** - they come before what they modify.
 
 #### `!` urgent (prefix)
 
@@ -250,9 +254,11 @@ Add urgency, emphasis, or confidence.
 **Examples:**
 ```
 ! Deploy blocker - API keys missing
-!? Launch timing - need decision today
-!thought: Critical insight don't lose this
+! ? Launch timing - need decision today
+! thought: Critical insight don't lose this
 ```
+
+**Note:** Compose with other markers using space: `! ?` not `!?`
 
 ---
 
@@ -269,31 +275,21 @@ hybrid approach ++ natural and effective
 
 ---
 
-#### `*` high confidence (prefix)
+#### `*` and `~` confidence modifiers (prefix)
 
-**When to use:** Very sure about this, proven, definite
+**When to use:** Explicitly mark confidence level when it matters
 
 **Examples:**
 ```
-thought*: Evidence validates this works
-[decided*] Locked in, no changing
+* thought: Evidence validates this works (high confidence)
+~ thought: Not sure but maybe relevant? (low confidence)
+* [decided] Locked in, no changing (very confident decision)
+~ [exploring] Weak hypothesis, needs testing (uncertain exploration)
 ```
 
 **Use sparingly** - Only when confidence actually matters to interpretation
 
----
-
-#### `~` low confidence (prefix)
-
-**When to use:** Uncertain, exploring, might be wrong
-
-**Examples:**
-```
-thought~: Not sure but maybe relevant?
-[exploring~] Weak hypothesis, needs testing
-```
-
-**Use sparingly** - Only when confidence actually matters to interpretation
+**Always prefix:** `* thought:` NOT `thought*:`
 
 ---
 
@@ -362,7 +358,7 @@ on the API keys for staging. This is blocking the deploy.
 auth bug -> login failures
 ? related to session handling
 [blocked] fix needs staging environment <- API keys pending
-!! deploy blocked
+! [blocked] Deploy
 ```
 
 **Value:** Status and dependencies explicit in 4 lines vs buried in prose.
@@ -384,11 +380,11 @@ be slower. Performance matters but so does maintenance burden.
 
 Redis:
   ++ performance
-  -- adds complexity
+  risk: added complexity
 
 Postgres:  
   ++ simpler
-  ~~ performance (maybe fine?)
+  ~ performance (uncertain, probably fine)
 
 performance >< maintenance burden
 -> need to benchmark before deciding
@@ -418,8 +414,8 @@ ship it? The learning doc is done. We need examples and README still.
 ><
 {
   teachability concern
-  <- validation from Claude Code + ChatGPT [decided*]
-  -> enough evidence to ship minimal version
+  <- validation from Claude Code + ChatGPT
+  -> * [decided] enough evidence to ship minimal version
 }
 ->
 [decided] Ship with: learning doc + syntax + examples + README
@@ -533,14 +529,16 @@ See how structure requirement led to better thinking? That's the forcing functio
 
 **v0.4 = 20 markers** (down from 30+ in v0.3)
 
-**14 markers dropped after real usage testing:**
+**Markers dropped after real usage testing:**
 
-- ✗ `!!` critical blocker → redundant with `!`
-- ✗ `!?` urgent question → `!` + `?` works fine  
-- ✗ `!thought:` critical insight → `thought:` + `!` works fine
+- ✗ `!!` critical blocker → use `! [blocked]` (composition beats special tokens)
+- ✗ `!?` urgent question → use `! ?` (composition beats special tokens)
+- ✗ `--` strong negative → use prose like `risk:` or `concern:`
+- ✗ `~~` uncertain negative → use `~` prefix with prose
+- ✗ `!thought:` critical insight → use `! thought:` (composition)
 - ✗ `!reflect!` action marker → never used, NL works
 - ✗ `[testing]` state → never naturally used
-- ✗ `@system` `@meta` scopes → `@project` enough
+- ✗ `@system` `@meta` scopes → `@project` is enough
 - ✗ `let x = y` logic constructs → can express in NL if needed
 - ✗ `if {...}` conditionals → can express in NL if needed  
 - ✗ `|| &&` operators → can express in NL if needed
@@ -549,11 +547,14 @@ See how structure requirement led to better thinking? That's the forcing functio
 **Pruning principle:** If it wasn't used naturally in 2-4 days of real conversation, 
 it's gone. The syntax contracts to what you actually use.
 
+**v0.4.1 refinement:** Fixed spec contradictions - composition over special tokens, 
+prefix modifiers consistently, clearer categorization.
+
 ---
 
 ## Evolution Protocol
 
-**v0.4 is the minimal viable core.** Future evolution happens through friction:
+**v0.4.1 is the minimal viable core.** Future evolution happens through friction:
 
 **Add markers when:**
 - You keep reaching for something that doesn't exist
@@ -578,7 +579,7 @@ demands it.
 
 - Encode natural language → FlowScript in memory/project files
 - Use thought blocks for complex state tracking
-- Apply confidence markers judiciously (`*` and `~`)
+- Apply confidence markers judiciously (`*` and `~` as prefixes)
 - Track emergence of new patterns
 - Report friction points
 
@@ -622,12 +623,18 @@ bandwidth and clarity. Hybrid FlowScript + prose is your natural mode.
 
 ## Quick Reference Card
 
-**Core Relations (learn these first):**
+**Core Relations (start here):**
 ```
 ->     leads to
 <-     comes from
 <->    mutual
 ><     tension
+```
+
+**Definition Operators (use as needed):**
+```
+=      equivalent to
+!=     different from
 ```
 
 **Common States:**
@@ -642,7 +649,7 @@ bandwidth and clarity. Hybrid FlowScript + prose is your natural mode.
 ```
 thought:     insight
 ?            question
-!            urgent
+!            urgent (prefix)
 ++           strong yes
 { }          thought block
 ```
@@ -665,6 +672,6 @@ Let practice guide you, not rules.
 
 ---
 
-*FlowScript v0.4 - Evidence-Based Minimal Core*  
+*FlowScript v0.4.1 - Evidence-Based Minimal Core*  
 *Created through real use, refined through friction*  
 *October 2025*

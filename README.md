@@ -21,11 +21,11 @@ The AI has to parse relationships from prose. What causes what? What's blocked? 
 Same information with FlowScript:
 
 ```
-!! auth bug -> login failures
+! auth bug -> login failures
 <- session changes (possible cause)
 
 [decided] Rollback to restore service
-[blocked] Jenkins down (ETA: 30min)
+! [blocked] Jenkins down (ETA: 30min)
 
 After rollback:
 [exploring] Debug root cause in staging
@@ -33,7 +33,7 @@ After rollback:
 
 **Everything's explicit:**
 
-- `!!` = critical urgency
+- `!` = urgent
 - `->` = causation
 - `<-` = context/origin
 - `[decided]` = committed action
