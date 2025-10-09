@@ -924,7 +924,7 @@ Track decisions and blockers:
 
 Redis:
 ++ fast
-concern: complex
+risk: complex
 
 [decided] Try Redis in staging first
 [blocked] Need Docker setup on staging server
@@ -940,7 +940,7 @@ Group related reasoning:
 {
   [exploring] Redis vs Postgres
   
-  {Redis: ++ fast  concern: complex}
+  {Redis: ++ fast  risk: complex}
   ><  
   {Postgres: ++ simple  ~ speed}
   
@@ -956,8 +956,8 @@ Group related reasoning:
 Show certainty levels and scope:
 
 ```
-@auth_service {
-  * thought: Token expiry causing logout bug
+@project:auth_service {
+  thought: Token expiry causing logout bug
   <- observed pattern in logs [decided]
   
   Fix:
@@ -978,7 +978,7 @@ Maximum information density for complex problems:
 ! [blocked] Production incident: Payment processing failing
 
 {
-  * What we know:
+  What we know:
   - started 2:47 PM
   - 100% failure rate  
   - error: "gateway timeout"

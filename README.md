@@ -78,9 +78,9 @@ users want speed -> performance matters
 performance >< code simplicity
 -> need to balance both
 
-{Redis option: ++ fast -- complex}
+{Redis option: ++ fast risk: complex}
 ><
-{Postgres option: ++ simple ~~ speed}
+{Postgres option: ++ simple ~ speed}
 
 [decided] Start simple, optimize later
 ```
