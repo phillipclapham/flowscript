@@ -262,15 +262,20 @@ Add urgency, emphasis, or confidence. **These are prefixes** - they come before 
 
 ---
 
-#### `++` strong positive / emphatic agreement / this rocks
+#### `++` strong positive / emphatic agreement / this rocks (prefix)
 
 **When to use:** Show enthusiasm, strong agreement, emphasis
 
+**Important:** Always use as PREFIX, never suffix.
+
 **Examples:**
 ```
-++ Love this direction
-++ That analysis nailed it
-hybrid approach ++ natural and effective
+++ Love this direction (✓ correct)
+++ That analysis nailed it (✓ correct)
+++ your analysis = fire (✓ correct)
+
+your analysis++ (✗ wrong - never suffix)
+hybrid approach++ (✗ wrong - never suffix)
 ```
 
 ---
