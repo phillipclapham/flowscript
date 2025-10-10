@@ -1,7 +1,7 @@
 # FlowScript v0.4.1 - Syntax Reference
 
 *Semantic notation for technical collaboration*
-*Evidence-based minimal core - 20 essential markers*
+*Evidence-based minimal core - 19 essential markers*
 
 ---
 
@@ -19,7 +19,7 @@ That's enough to start. Add more as you need them.
 
 ---
 
-## The 20 Essential Markers
+## The 19 Essential Markers
 
 ### Core Relations (4 markers)
 
@@ -110,12 +110,12 @@ forcing function = structure requirement
 
 **Examples:**
 ```
-action: != !go!
 infrastructure != application
 speed != quality
+action: != natural language request
 ```
 
-**In sentences:** "Remember: action: (do this) != !go! (analyze this)"
+**In sentences:** "Remember: requesting an action != requesting analysis"
 
 ---
 
@@ -209,28 +209,13 @@ thought: Size limits were premature optimization
 
 ---
 
-### Commands (2 markers)
+### Commands (1 marker)
 
-Invoke processing modes.
-
-#### `!go!` apply maximum analysis
-
-**When to use:** Need deep thinking, want comprehensive analysis
-
-**Examples:**
-```
-!go! market viability for premium tier
-!go! technical tradeoffs between approaches
-!go! our collaboration patterns
-```
-
-**Different from `action:`** - This says "think deeply" not "do this thing"
-
----
+Execute specific actions.
 
 #### `action:` specify action to execute
 
-**When to use:** Direct specific thing to do (not analysis)
+**When to use:** Direct specific thing to do
 
 **Examples:**
 ```
@@ -239,7 +224,7 @@ action: create examples document
 action: commit and push to git
 ```
 
-**Different from `!go!`** - This says "do this thing" not "analyze this"
+**For deep analysis:** Just ask directly in natural language. Example: "Please analyze the tradeoffs between these approaches in depth" or "Walk me through this decision systematically." No special marker needed.
 
 ---
 
@@ -532,10 +517,11 @@ See how structure requirement led to better thinking? That's the forcing functio
 
 ## What Got Pruned (Evidence-Based)
 
-**v0.4 = 20 markers** (down from 30+ in v0.3)
+**v0.4.1 = 19 markers** (down from 30+ in v0.3)
 
 **Markers dropped after real usage testing:**
 
+- ✗ `!go!` apply maximum analysis → use natural language ("analyze this deeply" works fine)
 - ✗ `!!` critical blocker → use `! [blocked]` (composition beats special tokens)
 - ✗ `!?` urgent question → use `! ?` (composition beats special tokens)
 - ✗ `--` strong negative → use prose like `risk:` or `concern:`
@@ -990,6 +976,8 @@ thought:     insight
 
 **That's all you need to start.** Add more as they become useful.
 
+**For deep analysis:** Just ask in natural language - no special marker needed.
+
 ---
 
 ## The Bottom Line
@@ -1000,7 +988,7 @@ Use it when relationships matter more than prose.
 Skip it when natural language flows fine.  
 Mix them naturally - that's the sweet spot.
 
-**20 markers. Start with 3. Add more as needed.**
+**19 markers. Start with 3. Add more as needed.**
 
 Let practice guide you, not rules.
 
