@@ -1,7 +1,7 @@
 # FlowScript v0.4.1 - Syntax Reference
 
 *Semantic notation for technical collaboration*
-*Evidence-based minimal core - 19 essential markers*
+*Evidence-based minimal core - 18 essential markers*
 
 ---
 
@@ -19,7 +19,7 @@ That's enough to start. Add more as you need them.
 
 ---
 
-## The 19 Essential Markers
+## The 18 Essential Markers
 
 ### Core Relations (4 markers)
 
@@ -320,17 +320,7 @@ Organize complex thoughts.
 
 ---
 
-#### `@project` direct to specific project
 
-**When to use:** Scope thought/decision to particular project
-
-**Examples:**
-```
-@flowscript: [decided] Release minimal version
-@protocol_memory: [blocked] Deploy waiting on keys
-```
-
----
 
 ## Real-World Usage Patterns
 
@@ -517,7 +507,7 @@ See how structure requirement led to better thinking? That's the forcing functio
 
 ## What Got Pruned (Evidence-Based)
 
-**v0.4.1 = 19 markers** (down from 30+ in v0.3)
+**v0.4.1 = 18 markers** (down from 30+ in v0.3)
 
 **Markers dropped after real usage testing:**
 
@@ -529,7 +519,8 @@ See how structure requirement led to better thinking? That's the forcing functio
 - ✗ `!thought:` critical insight → use `! thought:` (composition)
 - ✗ `!reflect!` action marker → never used, NL works
 - ✗ `[testing]` state → never naturally used
-- ✗ `@system` `@meta` scopes → `@project` is enough
+- ✗ `@project` scope marker → moved to flow system spec (system-specific)
+- ✗ `@system` `@meta` scopes → not needed in general communication
 - ✗ `let x = y` logic constructs → can express in NL if needed
 - ✗ `if {...}` conditionals → can express in NL if needed  
 - ✗ `|| &&` operators → can express in NL if needed
@@ -988,7 +979,7 @@ Use it when relationships matter more than prose.
 Skip it when natural language flows fine.  
 Mix them naturally - that's the sweet spot.
 
-**19 markers. Start with 3. Add more as needed.**
+**18 markers. Start with 3. Add more as needed.**
 
 Let practice guide you, not rules.
 
