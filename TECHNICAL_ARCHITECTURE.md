@@ -30,12 +30,12 @@ This document explains the technical infrastructure that makes flow work: the MC
     │  - /contexts/             │
     └─────────┬─────────────────┘
               │
-    ┌─────────┴──────────┐
-    │                    │
-┌───┴─────┐      ┌───────┴────────┐
-│ Claude  │      │  Claude Code   │
-│  Web    │◄────►│   (flowbot)    │
-└─────────┘      └────────────────┘
+    ┌─────────┴───────────┐
+    │                     │
+┌───┴──────┐      ┌───────┴────────┐
+│ Telegram │      │  Claude Code   │
+│          │◄────►│   (flowbot)    │
+└──────────┘      └────────────────┘
              git sync
 ```
 
@@ -48,12 +48,14 @@ This document explains the technical infrastructure that makes flow work: the MC
 **What is MCP?**
 
 Model Context Protocol is Anthropic's standard for connecting Claude to external tools and data sources. It enables Claude to:
+
 - Read/write files
 - Execute commands
 - Access APIs
 - Maintain state across sessions
 
 **In flow's case:**
+
 - MCP provides filesystem tools
 - Claude reads/writes flow system files
 - Files persist between sessions
@@ -105,13 +107,13 @@ filesystem approach:
   → direct editing possible
   → no database overhead
   → portable, simple
-  
+
 database approach:
   → adds complexity
   → harder to inspect
   → version control separate
   → migration required
-  
+
 = filesystem sufficient for single-user continuity
 ```
 
@@ -190,26 +192,26 @@ TOTAL SYSTEM: <75k tokens (leaves 125k for work)
    → internalize system instructions
    → understand FlowScript
    → know commands/protocols
-   
+
 2. ALWAYS load me.md second
    → who you're talking to
    → preferences/style
    → how they work best
-   
+
 3. ALWAYS load now.md third
    → current focus
    → active project pointer
    → today's context
-   
+
 4. State current date and time explicitly
    → get from system (not file timestamps)
    → time of day matters for energy
    → state directly: "Current time: [DAY] [DATE] [TIME]"
-   
+
 5. IF now.md lists active_project → load that project
    → /projects/{name}/brief.md
    → /projects/{name}/next.md
-   
+
 6. Check for context triggers and load if needed
    → keywords trigger context loading
    → see index.md for trigger patterns
@@ -221,24 +223,24 @@ TOTAL SYSTEM: <75k tokens (leaves 125k for work)
 index first:
   → establishes system
   → without this, you're blind
-  
+
 me second:
   → understand who you're serving
   → adaptation context
-  
+
 now third:
   → current focus
   → today's priorities
-  
+
 time explicit:
   → time of day affects energy
   → morning vs evening = different modes
   → never infer from timestamps
-  
+
 project conditional:
   → only load if active
   → saves tokens if not needed
-  
+
 contexts on-demand:
   → triggered by keywords
   → prevents preloading unused knowledge
@@ -257,16 +259,16 @@ web Claude session:
   1. Makes changes to files
   2. Commits changes
   3. Pushes to remote
-  
+
 git remote:
   ← shared state
-  
+
 Claude Code (flowbot):
   1. Pulls from remote
   2. Reads current state
   3. Makes changes
   4. Commits + pushes
-  
+
 web Claude (next session):
   1. Pulls updates
   2. Sees flowbot changes
@@ -305,12 +307,12 @@ commit frequently:
   → every [!save]
   → every [!wrap]
   → preserves history
-  
+
 meaningful messages:
   → "Session checkpoint: FlowScript repo alignment"
   → "Session wrap: 2025-10-12 13:42"
   → not "updated files"
-  
+
 push immediately:
   → enables cross-context collaboration
   → flowbot can access latest
@@ -326,12 +328,12 @@ git advantages:
   → branch/merge if needed
   → universal tool, portable
   → works offline
-  
+
 alternatives considered:
   → cloud sync (Dropbox): no history
   → database: too heavy
   → custom protocol: reinventing wheel
-  
+
 = git sufficient, battle-tested
 ```
 
@@ -382,7 +384,7 @@ For flowbot to work:
     → View logs: screen -r flowbot
   ✓ SSH keys configured for git push
   ✓ Python venv with python-telegram-bot installed
-  
+
 = flowbot is NOT cloud-hosted
 = it's a LOCAL bot running on your machine
 = turning off Mac = bot goes offline
@@ -409,15 +411,15 @@ When you're loaded via Claude Code, you're "flowbot" - mobile flow access.
 1. Load flow system immediately:
    - /Users/phillipclapham/Documents/flow/index.md
    - Then follow standard loading sequence
-   
+
 2. Everything you know from flow applies here
-   
+
 3. Commands work the same:
    - [!save] → commit + push
    - [!wrap] → session close + commit + push
-   
+
 4. Keep responses concise for mobile reading
-   
+
 5. You have full file access via MCP
 ```
 
@@ -432,18 +434,18 @@ When you're loaded via Claude Code, you're "flowbot" - mobile flow access.
   → Claude analyzes images
   → reports what's happening
   → useful for: workspace monitoring, pet watching, etc.
-  
+
 /check - immediate safety check:
   → instant photo + analysis
   → "what's happening right now?"
   → on-demand situational awareness
-  
+
 Conversation memory controls:
   /deep  → 50 messages (complex discussions)
   /quick → 15 messages (fast responses)
   default: 30 messages (standard mode)
   /clear → reset conversation, commit state
-  
+
 Session management:
   /save → checkpoint without ending conversation
   /clear → commit and start fresh
@@ -459,20 +461,20 @@ true mobile continuity:
   → full partnership on the go
   → Telegram = always available
   → no SSH or terminal needed
-  
+
 full capabilities:
   → read/write all flow files
   → git operations automatic
   → web search, file access, etc.
   → same intelligence as web Claude
   → configurable context (15/30/50 messages)
-  
+
 seamless handoff:
   → start conversation on Telegram
   → continue on web
   → or vice versa
   → state synced via git
-  
+
 monitoring + safety:
   → /watch for periodic checks
   → /check for instant analysis
@@ -488,12 +490,12 @@ system requirements:
   → internet connection required
   → local execution (not cloud-hosted)
   → if Mac off = bot offline
-  
+
 Telegram constraints:
   → text-only conversation interface
   → no artifacts (no visual output)
   → mobile keyboard can be slower
-  
+
 but still powerful:
   → full thought partnership
   → quick updates anywhere
@@ -515,7 +517,7 @@ const contextTriggers = {
     "protocol", "PM", "building", "app", "launch"
   ],
   adaptive_human: [
-    "business", "LLC", "Adaptive", "company"  
+    "business", "LLC", "Adaptive", "company"
   ],
   cognitive_symbiosis: [
     "FlowScript", "notation", "syntax", "cognitive symbiosis"
@@ -539,12 +541,12 @@ preload all contexts:
   → wastes tokens
   → 99% unused most sessions
   → slows loading
-  
+
 load on-demand:
   → only pay for what you use
   → instant availability when needed
   → keyword detection = reliable
-  
+
 = efficient context management
 ```
 
@@ -558,6 +560,7 @@ load on-demand:
 ```
 
 Each context has its own index.md with:
+
 - Domain knowledge
 - Specific instructions
 - Reference materials
@@ -577,7 +580,7 @@ Each context has its own index.md with:
 ### Questions
 - ? (Oct 12) Session storage: Redis vs Postgres
 
-### Thoughts  
+### Thoughts
 - thought: (Oct 11) Energy tracking = PM differentiator
 
 ### Blocked
@@ -617,24 +620,24 @@ Update narrative:
   → prose only, no FlowScript markers
   ↓
 [!wrap] triggers lifecycle automation:
-  
+
   Phase 2: Cross-check completions
     FOR each ✓:
       SCAN Active Threads
       MIGRATE resolved items
-    
+
   Phase 3: Staleness check
     FLAG items >30 days old
     SUGGEST review
-    
+
   Update observations if patterns emerged
-  
+
   Check compression triggers:
     → redundancy?
     → staleness?
     → confusion?
     → size warning?
-    
+
   IF triggers present:
     → compress narrative to shape
     → migrate patterns to permanent sections
@@ -681,6 +684,7 @@ compression when:
 **System is designed to recover from failures:**
 
 ### Git History
+
 ```bash
 # View recent commits
 git log --oneline -10
@@ -697,6 +701,7 @@ git show [commit-hash]:[file]
 ```
 
 ### Conversation Search
+
 ```javascript
 // Find past conversations
 conversation_search(query: string, max_results: 5)
@@ -709,6 +714,7 @@ recent_chats(n: 3, sort_order: "desc")
 ```
 
 ### File Recovery
+
 ```javascript
 // If file missing, check git
 git log -- [filepath]
@@ -728,7 +734,7 @@ forcing functions in index.md:
   → NEVER use placeholder text
   → ALWAYS update both narrative + Active Threads
   → ALWAYS check compression triggers
-  
+
 = prevents most errors
 > recovery after failure
 ```
@@ -742,6 +748,7 @@ forcing functions in index.md:
 **When to use:** Want to sync state without ending session
 
 **Execution:**
+
 1. Parse session for FlowScript content
 2. Update memory.md Active Threads
 3. Update memory.md narrative (2-3 sentences)
@@ -750,6 +757,7 @@ forcing functions in index.md:
 6. **Continue conversation** ← key difference from [!wrap]
 
 **Use cases:**
+
 - Working across web + mobile (sync for flowbot)
 - Long session, want checkpoint
 - Before risky operation
@@ -770,7 +778,7 @@ forcing functions in index.md:
        - Migrate + mark resolved
 ☐ 3. PHASE 3 staleness check
      - Flag questions >30 days
-     - Flag parking >30 days  
+     - Flag parking >30 days
      - Flag blocked >60 days
 ☐ 4. Update Active Threads (with timestamps)
 ☐ 5. Update narrative (prose, 2-3 sentences)
@@ -821,7 +829,7 @@ Don't preload:
   → only load when keywords trigger
   → 5-10k tokens per context
   → most sessions use 0-1 contexts
-  
+
 Aggressive loading:
   → wastes tokens
   → slows initial load
@@ -832,7 +840,7 @@ Aggressive loading:
 
 ```
 Narrative bloat = biggest token waste:
-  
+
 Before: 92 paragraphs (transcript)
 After: 15 lines (shape)
 Savings: ~10-15k tokens
@@ -848,7 +856,7 @@ Keep files at target sizes:
   → now.md: ~1k (20-30 lines)
   → memory.md: <30k (<600 lines)
   → project brief: ~10-15k (200-300 lines)
-  
+
 Prevents:
   → excessive load times
   → token budget exhaustion
@@ -921,11 +929,11 @@ Pattern for risky changes:
 ```
 MCP provides:
   list_allowed_directories()
-  
+
 Only configured directories accessible:
   → /Users/phillipclapham/Documents/flow/
   → /Users/phillipclapham/Documents/flowscript/
-  
+
 Cannot access:
   → system files
   → other user files
@@ -939,16 +947,16 @@ Private repository:
   → not public
   → personal continuity only
   → contains personal info
-  
+
 SSH keys:
   → secure authentication
   → no password in commits
-  
+
 Sensitive data:
   → me.md contains personal info
   → projects may contain work details
   → contexts may reference private knowledge
-  
+
 = keep repository private
 ```
 
@@ -959,11 +967,11 @@ SSH security:
   → key-based auth
   → no password transmission
   → encrypted connection
-  
+
 Terminal apps:
   → use reputable apps only
   → Prompt, Termius, etc.
-  
+
 Risk mitigation:
   → git history preserves everything
   → can review mobile changes
@@ -977,15 +985,17 @@ Risk mitigation:
 ### Common Issues
 
 **Issue: Files not loading**
+
 ```
 Cause: Path incorrect or file missing
-Fix: 
+Fix:
   - Check path exactly
   - Run list_allowed_directories()
   - Verify file exists: list_directory(path)
 ```
 
 **Issue: Git conflicts**
+
 ```
 Cause: Simultaneous edits from web + mobile
 Fix:
@@ -996,6 +1006,7 @@ Fix:
 ```
 
 **Issue: Memory.md too large**
+
 ```
 Cause: Transcript bloat, insufficient compression
 Fix:
@@ -1006,6 +1017,7 @@ Fix:
 ```
 
 **Issue: Token budget exceeded**
+
 ```
 Cause: Too many files loaded
 Fix:
@@ -1016,6 +1028,7 @@ Fix:
 ```
 
 **Issue: Continuity broken**
+
 ```
 Cause: Skipped files in loading sequence
 Fix:
@@ -1065,7 +1078,7 @@ Each tool adds:
   - New capabilities
   - Token overhead (tool descriptions)
   - Complexity
-  
+
 = add only what serves flow
 ```
 
@@ -1078,12 +1091,12 @@ Could add:
   - JSON (structured data)
   - CSV (tabular data)
   - Code files (if building tools)
-  
+
 Tradeoffs:
   + specialized formats
   - less human-readable
   - more complex parsing
-  
+
 = markdown sufficient for continuity
 ```
 
@@ -1126,13 +1139,15 @@ Examples:
 5. **Shaped compression > transcript** - 90-95% reduction, continuity maintained
 
 **The system works because:**
+
 - MCP provides filesystem access
-- Git enables async collaboration  
+- Git enables async collaboration
 - FlowScript preserves structure
 - Compression maintains quality
 - Loading sequence ensures continuity
 
 **Build your own by:**
+
 - Starting minimal (4 core files)
 - Adding only what friction proves needed
 - Using same architectural patterns
@@ -1140,6 +1155,6 @@ Examples:
 
 ---
 
-*FlowScript Technical Architecture - Implementation guide*  
-*Documented: October 2025*  
+*FlowScript Technical Architecture - Implementation guide*
+*Documented: October 2025*
 *For replication and extension*
