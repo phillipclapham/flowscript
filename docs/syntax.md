@@ -976,7 +976,7 @@ Use it when relationships matter more than prose.
 Skip it when natural language flows fine.  
 Mix them naturally - that's the sweet spot.
 
-**19 markers. Start with 3. Add more as needed.**
+**18 markers. Start with 3. Add more as needed.**
 
 Let practice guide you, not rules.
 
