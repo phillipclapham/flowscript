@@ -337,38 +337,67 @@ alternatives considered:
 
 ---
 
-## flowbot: Mobile Access via Claude Code
+## flowbot: Mobile Access via Telegram Bot
 
 **What is flowbot?**
 
-flowbot is a nickname for Claude Code accessing the flow system via terminal. It enables mobile continuity when you're away from desktop.
+flowbot is a Telegram bot (@p0_relay_bot) that provides mobile access to Claude through the flow system. It runs as a Python bot on your Mac, calling Claude Code as a subprocess for each message.
 
 **Architecture:**
 
 ```
-Mobile device (phone/tablet)
+User messages @p0_relay_bot on Telegram
   ↓
-Terminal app (e.g., Prompt, Termius)
+flowbot.py (Python bot running on Mac)
+  - Maintains conversation history (last 30 messages)
+  - Runs in screen session for persistence
   ↓
-SSH connection to Mac
+Calls Claude Code as subprocess:
+  claude --dangerously-skip-permissions -p [prompt with context]
   ↓
-Claude Code CLI tool
+Claude Code loads flow system
+  - CLAUDE.md provides special instructions
+  - Full MCP tool access (filesystem, web search, etc.)
+  - Same capabilities as web Claude
   ↓
-Flow system files
+Response sent back to Telegram
   ↓
-Git sync
+Conversation continues with full context
   ↓
-Available to web Claude
+Changes auto-commit to git (via [!save] or [!clear])
+  ↓
+Available to web Claude next session
+```
+
+**CRITICAL SYSTEM REQUIREMENTS:**
+
+```
+For flowbot to work:
+  ✓ Mac must be ON
+  ✓ Mac must be CONNECTED to internet
+  ✓ flowbot.py must be RUNNING
+    → Started with: ./flow_start.sh
+    → Runs in screen session named 'flowbot'
+    → Check status: screen -ls
+    → View logs: screen -r flowbot
+  ✓ SSH keys configured for git push
+  ✓ Python venv with python-telegram-bot installed
+  
+= flowbot is NOT cloud-hosted
+= it's a LOCAL bot running on your machine
+= turning off Mac = bot goes offline
 ```
 
 **How it works:**
 
-1. **SSH to your Mac** from mobile
-2. **Run Claude Code** in terminal
-3. **flowbot loads flow system** automatically (via CLAUDE.md override)
-4. **Work with flow** via conversational interface
-5. **Changes commit to git** automatically
-6. **Web Claude sees updates** next session
+1. **User messages Telegram bot** from anywhere (phone, tablet, desktop)
+2. **flowbot.py receives message** on your Mac
+3. **Adds to conversation history** (configurable: 15/30/50 messages)
+4. **Calls Claude Code** with full context as subprocess
+5. **Claude Code loads flow system** automatically (via CLAUDE.md override)
+6. **Response generated** with full flow capabilities
+7. **Sent back to Telegram** instantly
+8. **Changes auto-commit** on [!save] or [!clear] commands
 
 **CLAUDE.md override:**
 
@@ -392,40 +421,85 @@ When you're loaded via Claude Code, you're "flowbot" - mobile flow access.
 5. You have full file access via MCP
 ```
 
+**Cool Capabilities:**
+
+```
+/watch system - 30-minute monitoring loops:
+  /watch start  → begins monitoring
+  /watch stop   → ends monitoring
+  /watch status → check if active
+  → takes photos every 30 mins
+  → Claude analyzes images
+  → reports what's happening
+  → useful for: workspace monitoring, pet watching, etc.
+  
+/check - immediate safety check:
+  → instant photo + analysis
+  → "what's happening right now?"
+  → on-demand situational awareness
+  
+Conversation memory controls:
+  /deep  → 50 messages (complex discussions)
+  /quick → 15 messages (fast responses)
+  default: 30 messages (standard mode)
+  /clear → reset conversation, commit state
+  
+Session management:
+  /save → checkpoint without ending conversation
+  /clear → commit and start fresh
+  → both auto-commit to git
+  → web Claude sees all updates
+```
+
 **Benefits:**
 
 ```
-mobile continuity:
-  → access flow anywhere
-  → maintain state on the go
-  → no desktop required
+true mobile continuity:
+  → access flow from ANYWHERE
+  → full partnership on the go
+  → Telegram = always available
+  → no SSH or terminal needed
   
 full capabilities:
-  → read/write files
-  → git operations
-  → execute commands
+  → read/write all flow files
+  → git operations automatic
+  → web search, file access, etc.
   → same intelligence as web Claude
+  → configurable context (15/30/50 messages)
   
 seamless handoff:
-  → work on mobile
-  → continue on desktop
+  → start conversation on Telegram
+  → continue on web
   → or vice versa
   → state synced via git
+  
+monitoring + safety:
+  → /watch for periodic checks
+  → /check for instant analysis
+  → image analysis built-in
+  → Claude can SEE your environment
 ```
 
 **Limitations:**
 
 ```
-terminal constraints:
-  → text-only interface
+system requirements:
+  → Mac must be on and running flowbot
+  → internet connection required
+  → local execution (not cloud-hosted)
+  → if Mac off = bot offline
+  
+Telegram constraints:
+  → text-only conversation interface
   → no artifacts (no visual output)
-  → mobile keyboard friction
+  → mobile keyboard can be slower
   
 but still powerful:
-  → thought partnership
-  → quick updates
-  → check status
-  → make decisions
+  → full thought partnership
+  → quick updates anywhere
+  → monitoring capabilities
+  → image analysis
+  → all flow system features
 ```
 
 ---

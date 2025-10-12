@@ -318,6 +318,18 @@ Organize complex thoughts.
 }
 ```
 
+**Advanced nesting with inline sidebars:**
+```
+thought: {
+  main observation about the pattern
+  <- {context that led to this <- specific trigger}
+  -> {implication 1}
+  -> {implication 2 <- note this one is critical}
+}
+```
+
+*See ADVANCED_PATTERNS.md for deep dive on recursive nesting strategies*
+
 ---
 
 
