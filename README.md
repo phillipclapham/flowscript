@@ -71,7 +71,7 @@ It makes technical thought structure visible through simple markers:
 - ✓ Gemini
 - ✓ Fresh AI instances (no training needed)
 
-**20 markers total. Start with 3. Add more as needed.**
+**18 markers total. Start with 3. Add more as needed.**
 
 **→ [View complete syntax reference](docs/syntax.md)**
 

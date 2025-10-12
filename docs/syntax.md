@@ -1,7 +1,7 @@
 # FlowScript v0.4.1 - Syntax Reference
 
 *Semantic notation for technical collaboration*
-*Evidence-based minimal core - 19 essential markers*
+*Evidence-based minimal core - 18 essential markers*
 
 ---
 
@@ -19,7 +19,7 @@ That's enough to start. Add more as you need them.
 
 ---
 
-## The 19 Essential Markers
+## The 18 Essential Markers
 
 ### Core Relations (4 markers)
 
@@ -320,18 +320,6 @@ Organize complex thoughts.
 
 ---
 
-#### `@project` direct to specific project
-
-**When to use:** Scope thought/decision to particular project
-
-**Examples:**
-```
-@flowscript: [decided] Release minimal version
-@protocol_memory: [blocked] Deploy waiting on keys
-```
-
----
-
 ## Real-World Usage Patterns
 
 ### Pattern 1: Bug Triage
@@ -517,7 +505,7 @@ See how structure requirement led to better thinking? That's the forcing functio
 
 ## What Got Pruned (Evidence-Based)
 
-**v0.4.1 = 19 markers** (down from 30+ in v0.3)
+**v0.4.1 = 18 markers** (down from 30+ in v0.3)
 
 **Markers dropped after real usage testing:**
 
