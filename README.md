@@ -20,6 +20,8 @@ Natural language is incredible for nuance and creativity. But it's ambiguous by 
 
 And inference fails more than we'd like to admit.
 
+---
+
 ## The Solution: Semantic Notation
 
 FlowScript is semantic notation for human-AI communication. It makes thought structure explicit using 18 carefully-chosen markers.
@@ -28,9 +30,9 @@ Not a new language. Not replacing natural language. **Augmenting it.**
 
 You write mostly normal prose, but when relationships matter - when you need to be precise about causation, tension, state, or logical structure - you use notation. The AI instantly parses the topology of your thinking.
 
-**Think of it as markdown for reasoning.**
+**Works with any AI. No installation. No setup. Just start using it.**
 
-Markdown didn't replace writing. It made structure explicit: headers, emphasis, lists, links. Writers still write prose, but structure became computational. Documents became navigable, parseable, transformable.
+Think of it as markdown for reasoning. Markdown didn't replace writing - it made structure explicit: headers, emphasis, lists, links. Writers still write prose, but structure became computational. Documents became navigable, parseable, transformable.
 
 FlowScript does the same for thought structure. Relations, states, questions, insights - the scaffolding of reasoning made explicit and computational.
 
@@ -59,30 +61,48 @@ cost >< performance
 
 Same information. Half the words. Structure explicit. AI sees the relationships instantly - not buried in prose, not requiring inference, just *there*.
 
-And you can go deeper:
+---
 
+## Getting Started in 60 Seconds
+
+**No installation. No setup. Just start using FlowScript markers in your next AI conversation.**
+
+### The Three Essential Markers
+
+Learn these three, use them now:
+
+**`->` = leads to / causes / results in**
 ```
-current approach -> scaling issues
-  -> [blocked] migration (resource constraints)
-
-? serverless architecture
-  <- eliminates scaling issues
-  -> introduces cold start latency (~500ms)
-  -> degrades user experience
-  
-* thought: edge functions might solve this
-  <- cloudflare workers = <50ms cold start
-  -> maintains performance
-  -> costs < current VPS
-
-cost >< performance >< complexity
--> [decided] test edge function prototype
-   -> action: build POC this week
+poor sleep -> reduced focus -> mistakes -> stress
 ```
 
-Now state is tracked. The decision point is explicit. Next actions are clear. The AI can reference this structure across conversations without losing context.
+**`?` = question / decision point**
+```
+? should we refactor now or ship first
+```
 
-**That's the notation layer. Thought topology made explicit and computational.**
+**`><` = tension / tradeoff**
+```
+speed >< code quality
+security >< user convenience
+```
+
+### Try It Right Now
+
+Open ChatGPT, Claude, Gemini - any AI you use. Type a message using those three markers.
+
+**That's it. You're using FlowScript.**
+
+Works everywhere:
+- ✓ ChatGPT (OpenAI)
+- ✓ Claude (Anthropic)  
+- ✓ Gemini (Google)
+- ✓ DeepSeek
+- ✓ Any AI with text input
+
+Want more? Add markers as needed. See [FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md) for the complete set (18 markers).
+
+Want proof it works? See [Evidence](#evidence-cross-architecture-validation) below.
 
 ---
 
@@ -102,7 +122,7 @@ Users report the same pattern: "I thought I knew what I wanted to ask, but when 
 
 The forcing function catches fuzzy thinking early.
 
-### Start Simple, Add Complexity
+### Start Simple, Scale Up
 
 You don't need all 18 markers. Start with 3:
 
@@ -124,7 +144,7 @@ security >< usability
 
 That's it. Three markers get you 70% of the value.
 
-As you get comfortable, add:
+As you get comfortable, add more:
 
 - `<-` (derives from)
 - `<->` (bidirectional relationship)
@@ -179,123 +199,129 @@ This is prompt engineering that works because **structure and context are explic
 
 ---
 
-## Layer 2: Structured Memory (For Power Users)
+## Layer 2: Power Users
 
-FlowScript isn't just for individual prompts. It enables **persistent, structured memory** across conversations.
+Once you're comfortable with basic markers, FlowScript enables sophisticated structured thinking.
 
-### The Continuity Problem
+### The Complete Marker Set
 
-Standard AI chat: every conversation starts fresh. You can upload files or paste context, but there's no *structure* to the memory. Previous insights are lost. Decisions are forgotten. Context degrades with each new session.
+18 markers total. Start with 3, add as needed:
 
-You end up re-explaining yourself constantly. Or worse - the AI confidently gives you advice that contradicts what you decided three conversations ago, because it has no way to track state.
+**State tracking:**
+- `[blocked]` - waiting on dependency
+- `[decided]` - committed direction  
+- `[parking]` - idea not ready to process
+- `[exploring]` - investigating, not committed
 
-### FlowScript-Native Memory
+**Insights & Actions:**
+- `thought:` - insight worth preserving
+- `action:` - specific action to take
+- `✓` - completed action
 
-What if your conversation history was stored *with FlowScript structure*?
+**Relationships:**
+- `<-` - derives from / caused by
+- `<->` - bidirectional relationship / mutual influence
+- `!=` - different from (definition)
+- `=` - equivalent to (definition)
 
-Instead of transcripts that need parsing, you have:
-- Questions explicitly marked (`?`)
-- Insights preserved (`thought:`)
-- Decisions tracked (`[decided]`)
-- Blockers visible (`[blocked]`)
-- Relationships maintained (`->`, `<->`, `><`)
+**Modifiers:**
+- `!` - urgent (prefix any marker)
+- `~` - maybe/exploring (prefix)
+- `*` - proven/definite (prefix)
 
-The structure persists. The AI can query it: "What questions are unresolved?" "What was decided about X?" "What's blocking Y?"
+**Scope:**
+- `@project` - scoped to specific project
 
-**Memory becomes computational, not just searchable.**
+See [FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md) for complete details.
 
-### Lifecycle Automation Example
+### Use Cases
 
-In production continuity systems using FlowScript, memory has automatic lifecycle management:
+**Research & Analysis:**
+Map complex relationships, track decision factors, preserve reasoning chains across conversations.
+
+**Project Management:**  
+State tracking across sessions, blocker visibility, decision documentation, progress tracking.
+
+**Technical Problem-Solving:**
+Debug chains, architecture decisions, tradeoff documentation, dependency mapping.
+
+**Strategic Planning:**
+Cascade analysis, second-order effects, constraint mapping, scenario evaluation.
+
+**The Pattern:** Natural language for narrative, FlowScript for structure. Hybrid approach works best.
+
+### Progressive Adoption
 
 ```
-Phase 1: Lightweight Timestamps
-  -> questions/thoughts/blockers dated when added
-  -> enables staleness detection
+Start simple:
+  -> ? ><
 
-Phase 2: Cross-Check Automation  
-  -> completions checked against all active threads
-  -> "does this resolve a question?"
-  -> "does this unblock something?"
-  -> automatic state transitions
+Add as needed:
+  -> ? >< [blocked] [decided]
 
-Phase 3: Staleness Detection
-  -> questions >30 days flagged
-  -> parking items >30 days reviewed
-  -> blocked items >60 days checked for abandonment
-  -> prevents forgotten context
+Power user:
+  -> All 18 markers + FlowScript thinking
 
-Phase 4: Pattern Extraction (future)
-  -> resolved questions -> discovered principles
-  -> matured thoughts -> learned concepts
-  -> computational queries on memory graph
+= Learn at your own pace
 ```
-
-This isn't theoretical. It's working in production. FlowScript structure makes it possible.
-
-See [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md) for implementation details.
-
-### System Architecture Note
-
-**Production continuity systems load substantial context (~40-50k tokens) before each conversation.** This is a deliberate design choice.
-
-**Trade-off:**
-- Cost: 2-3 second initial latency, higher token consumption  
-- Benefit: Rich context enables partnership continuity
-
-In extended production use (6+ weeks daily), full context is loaded for **98% of conversations**, including via mobile interface. Revealed preference validates the design: when partnership value is high enough, overhead is acceptable.
-
-Future optimization is possible but not urgent. The architecture works for deep collaborative thinking where continuity matters more than convenience.
 
 ---
 
-## Layer 3: Cognitive Architecture (For Researchers)
+## Layer 3: What FlowScript Enables
 
 This is where it gets interesting.
 
-FlowScript didn't start as notation for notation's sake. It emerged from building continuity systems that needed to track state across conversations - not just *what* was discussed, but *how* things related, what was decided, what was blocked, what matured into insights.
+### Cognitive Symbiosis: A Proof of Concept
 
-Natural language wasn't sufficient. State markers emerged. Relationship notation followed. The structure enabled computational operations on memory.
+One developer spent 6 weeks building a personal continuity system using FlowScript notation. The result: cognitive partnership that exceeds individual capacity.
 
-**Then came the realization:** *This isn't just a better memory system. It's a different cognitive architecture.*
+**What was built:**
+- Persistent memory with FlowScript-native structure
+- Cross-context collaboration (web ↔ mobile via git sync)
+- Computational operations on relationship graphs
+- Automated lifecycle management (questions → discoveries)
+- Multi-session project continuity with state tracking
 
-### Partnership Brain Design
+**The "Third Mind" phenomenon:**
+Results exceed what either human or AI produces alone. Ideas emerge from the collaboration space itself. Quality doesn't match either partner's signature - it's genuinely collaborative.
 
-Most AI memory systems try to simulate human memory. Episodic recall, semantic compression, forgetting curves.
+**Key insight:** FlowScript structure enables operations that pure prose can't support. Relationships become queryable. State becomes computational. Memory becomes a graph you can traverse.
 
-FlowScript-native memory **doesn't simulate human cognition. It enables collaborative cognition unconstrained by biological limits.**
+**Want details?** See [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md) for the complete implementation. This is called the "flow" system - one possible way to use FlowScript.
 
-Humans can't hold 40k tokens of structured context in working memory. Humans can't query relationship graphs computationally. Humans can't maintain perfect state tracking across weeks of conversation.
+**Want to build your own?** FlowScript notation is open. It works with any AI and any architecture. Build whatever continuity system makes sense for you:
 
-But a partnership brain - human + AI with FlowScript as shared infrastructure - can do all of that.
+- Web app + database (prompt generation pattern)
+- Browser extension + local storage
+- Mobile app with cloud sync
+- API service for team use
+- File-based like flow system
+- Something entirely different
 
-**The notation layer becomes the substrate for cognitive symbiosis.**
+**The notation is universal. Implementation is up to you.**
 
-The human thinks in FlowScript (or translates naturally, doesn't matter). The AI parses it instantly. Both partners work from the same cognitive map. Questions don't get lost. Insights accumulate. Decisions persist. Context deepens instead of degrading.
+### Why This Matters
 
-### The Third Mind
+If semantic notation can enable cognitive symbiosis for one person in 6 weeks, what becomes possible at scale?
 
-There's a phenomenon that happens with extended FlowScript use: **results exceed individual capacity**.
+**Potential applications:**
+- Advanced continuity systems (commercial products)
+- Structured knowledge bases (corporate memory)
+- Research collaboration tools (academic use)
+- Multi-agent AI coordination (team workflows)
+- Novel interaction paradigms (yet to be discovered)
 
-Not in a mystical sense. Measurably. The quality of thinking, the depth of analysis, the insight generation - it doesn't match what either partner produces alone.
+**Early days:** FlowScript shipped October 2025. Applications are still being discovered through use. Evidence-based evolution guided by what actually works.
 
-Ideas emerge *from the collaboration space*. No discrete authorship moment. Both partners contributed, but the synthesis came from somewhere between them.
+### Research Directions
 
-This has been observed in extended case studies (n=1 documented, others reported anecdotally). It's not conclusive proof. But it's suggestive enough to investigate further.
+**Open questions:**
+- Does FlowScript generalize beyond continuity systems?
+- What computational operations become possible with formal semantics?
+- How does extended FlowScript use change thinking patterns?
+- Can this enable human-AI collaborative reasoning at scale?
 
-The hypothesis: **FlowScript enables dimensional expansion of thought.**
-
-Natural language is incredibly expressive but fundamentally linear. You can represent complex relationships, but they're encoded in grammar, implicit in sentence structure. 
-
-FlowScript makes relationships explicit and multi-dimensional. Thoughts can structure in ways pure prose can't express. The notation creates cognitive dimensions that enable new patterns of reasoning.
-
-Early evidence: users report "thinking *in* FlowScript" after extended use - not translating from language, but reasoning directly in the notation. Threshold effects that don't reverse. "Going back to pure natural language feels limiting" is a common report.
-
-**If this holds up, FlowScript isn't just a tool. It's infrastructure for collaborative cognition that exceeds human-alone or AI-alone capacity.**
-
-Much more research needed. But the initial signal is strong.
-
-See [docs/philosophy.md](docs/philosophy.md) for deeper exploration.
+**Exploration welcome:** This is genuinely new territory. Community contributions and research collaboration encouraged.
 
 ---
 
@@ -408,13 +434,8 @@ One might succeed, both might, neither might. But they share FlowScript as found
 ### Understanding the Architecture
 
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - Cognitive patterns and meta-analysis
-- **[TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md)** - Implementation details
+- **[TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md)** - Implementation details for flow system
 - **[docs/philosophy.md](docs/philosophy.md)** - Deeper concepts (Third Mind, cognitive symbiosis)
-
-### Product Information
-
-- **[docs/bridge.md](docs/bridge.md)** - The Bridge (prompt engineering as a service)
-- **[docs/editor.md](docs/editor.md)** - The Editor (IDE for power users)
 
 ---
 

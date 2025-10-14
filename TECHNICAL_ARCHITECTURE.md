@@ -1,8 +1,29 @@
 # FlowScript Technical Architecture
 
-**Implementation guide for continuity systems using FlowScript**
+**Implementation guide for ONE possible continuity system using FlowScript.**
 
-This document explains the technical infrastructure that makes flow work: the MCP protocol, filesystem tools, git synchronization, file structure, loading sequences, and cross-context collaboration.
+This document describes the "flow" system - a proof-of-concept demonstrating cognitive symbiosis through FlowScript notation. It uses Claude Desktop, MCP (Model Context Protocol), and a file-based architecture.
+
+## Important Context
+
+**This is ONE implementation approach.** FlowScript notation works with any AI and any architecture. You can build entirely different systems using the same notation foundation.
+
+The flow system demonstrates:
+- ✓ What's possible with FlowScript structure
+- ✓ Cognitive symbiosis through persistent memory
+- ✓ Cross-context collaboration patterns
+- ✓ Computational operations on thought graphs
+
+But you don't need to replicate this exact architecture. Other approaches:
+- Web app + database (prompt generation pattern)
+- Browser extension with local storage  
+- API service for teams
+- Mobile-first architecture
+- Entirely different implementations
+
+**For the notation itself:** See [FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md)
+
+**What follows:** Complete technical documentation of the flow system implementation.
 
 ---
 
