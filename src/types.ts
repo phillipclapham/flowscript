@@ -82,7 +82,11 @@ export type NodeType =
   | 'action'
   | 'block'
   | 'decision'
-  | 'blocker';
+  | 'blocker'
+  | 'insight'
+  | 'completion'
+  | 'exploring'
+  | 'parking';
 
 export interface Node {
   id: string;  // content-hash (SHA-256)
@@ -96,19 +100,22 @@ export interface Node {
 export type RelationType =
   | 'causes'
   | 'temporal'
+  | 'derives_from'
   | 'bidirectional'
   | 'tension'
   | 'equivalent'
-  | 'distinct'
-  | 'alternative';
+  | 'different'
+  | 'alternative'
+  | 'alternative_worse'
+  | 'alternative_better';
 
 export interface Relationship {
   id: string;  // content-hash (SHA-256)
   type: RelationType;
   source: string;  // Node.id
   target: string;  // Node.id
-  label?: string;  // e.g., tension axis label
-  feedback?: boolean;  // for causal cycles
+  axis_label?: string | null;  // REQUIRED for tension relationships
+  feedback?: boolean;  // for causal cycles (default: false)
   provenance: Provenance;
   ext?: Record<string, unknown>;
 }
@@ -122,13 +129,27 @@ export type StateType =
 export interface State {
   id: string;  // content-hash (SHA-256)
   type: StateType;
+  node_id: string;  // ID of node this state applies to
   fields: Record<string, string>;  // e.g., { rationale: "...", on: "2025-10-17" }
   provenance: Provenance;
 }
 
+export interface GraphInvariants {
+  causal_acyclic?: boolean;
+  all_nodes_reachable?: boolean;
+  tension_axes_labeled?: boolean;
+  state_fields_present?: boolean;
+}
+
 export interface IR {
-  version: '1.0';
+  version: '1.0.0';
   nodes: Node[];
   relationships: Relationship[];
   states: State[];
+  invariants: GraphInvariants;
+  metadata?: {
+    source_files?: string[];
+    parsed_at?: string;
+    parser?: string;
+  };
 }
