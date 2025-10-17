@@ -1,0 +1,472 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://flowscript.org/schemas/ir/v1.0.0",
+  "title": "FlowScript Intermediate Representation (IR) Schema",
+  "description": "Canonical JSON schema for FlowScript v1.0 compiled representation. This is the compilation contract - all FlowScript parsers MUST produce IR conforming to this schema.",
+  "version": "1.0.0",
+
+  "definitions": {
+    "contentHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 content hash as lowercase hexadecimal string. Uniquely identifies semantic content for automatic deduplication."
+    },
+
+    "isoDateTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 datetime string (e.g., '2025-10-12T14:23:15Z')"
+    },
+
+    "provenance": {
+      "type": "object",
+      "description": "Metadata about origin, authorship, and creation of this element. Enables trust, audit, debugging, and evidence tracking.",
+      "required": ["source_file", "line_number", "timestamp"],
+      "properties": {
+        "source_file": {
+          "type": "string",
+          "description": "File path where this element originated"
+        },
+        "line_number": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Line number in source file where this element begins"
+        },
+        "timestamp": {
+          "$ref": "#/definitions/isoDateTime",
+          "description": "When this element was created/parsed"
+        },
+        "author": {
+          "type": "object",
+          "description": "Optional authorship information",
+          "properties": {
+            "agent": {
+              "type": "string",
+              "description": "Name or ID of author (e.g., 'Claude', 'Phill', 'user@example.com')"
+            },
+            "role": {
+              "type": "string",
+              "enum": ["human", "ai"],
+              "description": "Whether author is human or AI"
+            }
+          }
+        },
+        "parser_version": {
+          "type": "string",
+          "description": "Parser version that generated this IR (e.g., 'flowscriptc 0.1.0')"
+        },
+        "hash": {
+          "$ref": "#/definitions/contentHash",
+          "description": "Content hash for verification"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "sourceSpan": {
+      "type": "object",
+      "description": "Precise location in source text. Enables rich developer experience (error messages, IDE features).",
+      "required": ["start_line", "end_line"],
+      "properties": {
+        "start_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "end_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "start_col": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Optional column number where element starts"
+        },
+        "end_col": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Optional column number where element ends"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "node": {
+      "type": "object",
+      "description": "Core unit of FlowScript graph. Represents thoughts, questions, decisions, actions, insights.",
+      "required": ["id", "type", "content", "provenance"],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/contentHash",
+          "description": "Unique identifier based on content hash. Enables automatic deduplication."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "statement",
+            "question",
+            "thought",
+            "decision",
+            "blocker",
+            "insight",
+            "action",
+            "completion",
+            "exploring",
+            "parking"
+          ],
+          "description": "Semantic type of this node"
+        },
+        "content": {
+          "type": "string",
+          "description": "The actual text content of this node"
+        },
+        "provenance": {
+          "$ref": "#/definitions/provenance"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/contentHash"
+          },
+          "description": "IDs of child nodes (nested content). Enables hierarchical structure."
+        },
+        "source_span": {
+          "$ref": "#/definitions/sourceSpan",
+          "description": "Optional precise location in source"
+        },
+        "alias_of": {
+          "oneOf": [
+            {"$ref": "#/definitions/contentHash"},
+            {"type": "null"}
+          ],
+          "description": "If not null, this node is a reference to another node (transclusion). The referenced node's ID."
+        },
+        "modifiers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["urgent", "strong_positive", "high_confidence", "low_confidence"]
+          },
+          "description": "Modifiers applied to this node (!, ++, *, ~)"
+        },
+        "ext": {
+          "type": "object",
+          "description": "Extensibility bag for future features without breaking schema changes. Implementations can add custom fields here.",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "relationshipType": {
+      "type": "string",
+      "enum": [
+        "causes",
+        "temporal",
+        "derives_from",
+        "bidirectional",
+        "tension",
+        "equivalent",
+        "different",
+        "alternative",
+        "alternative_worse",
+        "alternative_better"
+      ],
+      "description": "Type of relationship between nodes"
+    },
+
+    "relationship": {
+      "type": "object",
+      "description": "Directed edge in FlowScript graph. Represents relationships between nodes.",
+      "required": ["id", "type", "source", "target", "provenance"],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/contentHash",
+          "description": "Unique identifier for this relationship"
+        },
+        "type": {
+          "$ref": "#/definitions/relationshipType"
+        },
+        "source": {
+          "$ref": "#/definitions/contentHash",
+          "description": "ID of source node"
+        },
+        "target": {
+          "$ref": "#/definitions/contentHash",
+          "description": "ID of target node"
+        },
+        "axis_label": {
+          "oneOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "description": "REQUIRED when type=tension. The dimension of tradeoff (e.g., 'performance vs cost'). NULL for other relationship types."
+        },
+        "provenance": {
+          "$ref": "#/definitions/provenance"
+        },
+        "feedback": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, this edge creates an intentional cycle (feedback loop). Allows explicit cycles in causal graph."
+        },
+        "ext": {
+          "type": "object",
+          "description": "Extensibility bag",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "stateType": {
+      "type": "string",
+      "enum": ["blocked", "decided", "exploring", "parking"],
+      "description": "Type of state marker"
+    },
+
+    "stateFields": {
+      "type": "object",
+      "description": "Fields for state markers. Required fields depend on state type.",
+      "properties": {
+        "reason": {
+          "type": "string",
+          "description": "REQUIRED for blocked. What blocks progress."
+        },
+        "since": {
+          "$ref": "#/definitions/isoDateTime",
+          "description": "REQUIRED for blocked. When block began."
+        },
+        "rationale": {
+          "type": "string",
+          "description": "REQUIRED for decided. Why this decision was made."
+        },
+        "on": {
+          "$ref": "#/definitions/isoDateTime",
+          "description": "REQUIRED for decided. When decision was made."
+        },
+        "why": {
+          "type": "string",
+          "description": "RECOMMENDED for parking. Why idea is parked."
+        },
+        "until": {
+          "type": "string",
+          "description": "RECOMMENDED for parking. When to revisit."
+        },
+        "hypothesis": {
+          "type": "string",
+          "description": "OPTIONAL for exploring. What's being explored."
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "state": {
+      "type": "object",
+      "description": "State annotation on a node. Tracks decision/work status.",
+      "required": ["id", "type", "node_id", "provenance"],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/contentHash",
+          "description": "Unique identifier for this state"
+        },
+        "type": {
+          "$ref": "#/definitions/stateType"
+        },
+        "node_id": {
+          "$ref": "#/definitions/contentHash",
+          "description": "ID of node this state applies to"
+        },
+        "fields": {
+          "$ref": "#/definitions/stateFields",
+          "description": "State-specific fields. Required fields validated at parse time based on state type."
+        },
+        "provenance": {
+          "$ref": "#/definitions/provenance"
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "graphInvariants": {
+      "type": "object",
+      "description": "Structural constraints on the graph. Violations indicate semantic errors.",
+      "properties": {
+        "causal_acyclic": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, causal edges (type=causes) must form a DAG (no cycles). Edges with feedback=true are excluded from this check."
+        },
+        "all_nodes_reachable": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, all nodes must be reachable from at least one root node. Orphaned nodes indicate incomplete thinking."
+        },
+        "tension_axes_labeled": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, all tension relationships must have axis_label. Enforces Decision 2."
+        },
+        "state_fields_present": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, state markers must have required fields. Enforces Decision 3."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+
+  "type": "object",
+  "description": "Complete FlowScript IR graph. This is what parsers output.",
+  "required": ["version", "nodes", "relationships", "states", "invariants"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "IR schema version. MUST be '1.0.0' for this schema."
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/node"
+      },
+      "description": "All nodes in the graph"
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/relationship"
+      },
+      "description": "All relationships (edges) in the graph"
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/state"
+      },
+      "description": "All state annotations"
+    },
+    "invariants": {
+      "$ref": "#/definitions/graphInvariants",
+      "description": "Structural constraints on this graph"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional graph-level metadata",
+      "properties": {
+        "source_files": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "List of source files that contributed to this graph"
+        },
+        "parsed_at": {
+          "$ref": "#/definitions/isoDateTime",
+          "description": "When this graph was generated"
+        },
+        "parser": {
+          "type": "string",
+          "description": "Parser that generated this IR"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false,
+
+  "examples": [
+    {
+      "version": "1.0.0",
+      "nodes": [
+        {
+          "id": "a7f2c8d1b4e9f6a3c5d8e2b7f1a4c9d6e3b8a2f7c1d5e9b4a8f2c6d1e5a9b3f7",
+          "type": "thought",
+          "content": "FlowScript enables dimensional expansion of thinking",
+          "provenance": {
+            "source_file": "memory.md",
+            "line_number": 142,
+            "timestamp": "2025-10-12T14:23:15Z",
+            "author": {
+              "agent": "Claude",
+              "role": "ai"
+            }
+          },
+          "children": [],
+          "alias_of": null,
+          "modifiers": ["high_confidence"],
+          "ext": {}
+        },
+        {
+          "id": "b8e3d9f2c5a1d7e4b9f6a2c8d5e1b7f3a9c6d2e8f5b1a7d4e9c3f8b2a6d1e5c9",
+          "type": "decision",
+          "content": "Ship minimal version now",
+          "provenance": {
+            "source_file": "project.md",
+            "line_number": 58,
+            "timestamp": "2025-10-15T10:30:00Z",
+            "author": {
+              "agent": "Phill",
+              "role": "human"
+            }
+          },
+          "children": [],
+          "alias_of": null,
+          "modifiers": [],
+          "ext": {}
+        }
+      ],
+      "relationships": [
+        {
+          "id": "c9f4e1a8d6b3c7f2e5a9d1b8c4f7e2a6d3b9c5f1e8a4d7b2c6e9f3a8d5b1c7e4",
+          "type": "causes",
+          "source": "a7f2c8d1b4e9f6a3c5d8e2b7f1a4c9d6e3b8a2f7c1d5e9b4a8f2c6d1e5a9b3f7",
+          "target": "b8e3d9f2c5a1d7e4b9f6a2c8d5e1b7f3a9c6d2e8f5b1a7d4e9c3f8b2a6d1e5c9",
+          "axis_label": null,
+          "provenance": {
+            "source_file": "project.md",
+            "line_number": 59,
+            "timestamp": "2025-10-15T10:30:05Z"
+          },
+          "feedback": false,
+          "ext": {}
+        }
+      ],
+      "states": [
+        {
+          "id": "d1e5f9a2c8b6d3e7f1a9c5d2b8e4f7a3c9d6b2e8f5a1d7c4e9b3f8a6d2c5e1b9",
+          "type": "decided",
+          "node_id": "b8e3d9f2c5a1d7e4b9f6a2c8d5e1b7f3a9c6d2e8f5b1a7d4e9c3f8b2a6d1e5c9",
+          "fields": {
+            "rationale": "user feedback validates need",
+            "on": "2025-10-15T10:30:00Z"
+          },
+          "provenance": {
+            "source_file": "project.md",
+            "line_number": 58,
+            "timestamp": "2025-10-15T10:30:00Z"
+          }
+        }
+      ],
+      "invariants": {
+        "causal_acyclic": true,
+        "all_nodes_reachable": true,
+        "tension_axes_labeled": true,
+        "state_fields_present": true
+      },
+      "metadata": {
+        "source_files": ["memory.md", "project.md"],
+        "parsed_at": "2025-10-15T10:35:00Z",
+        "parser": "flowscriptc 0.1.0"
+      }
+    }
+  ],
+
+  "_comments": {
+    "purpose": "This schema defines the compilation contract for FlowScript v1.0. All parsers MUST produce IR conforming to this schema.",
+    "versioning": "Schema version matches FlowScript version (v1.0.0). Breaking changes require major version increment.",
+    "extensibility": "The 'ext' fields throughout enable future features without schema changes. Implementations can add custom fields in ext bags.",
+    "validation": "JSON Schema validators can verify IR correctness. Additional semantic validation (cycles, orphans, etc.) requires custom logic.",
+    "provenance": "Every element has provenance. This enables trust, audit, debugging, and evidence tracking - critical for cognitive partnership systems.",
+    "content_hash": "SHA-256 hashes enable automatic deduplication. Same semantic content = same ID, regardless of where it appears.",
+    "philosophy": "This IR preserves semantic structure through compilation. Relationships become queryable. State becomes computational. Memory becomes a graph you can traverse."
+  }
+}
