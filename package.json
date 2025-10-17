@@ -8,8 +8,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "NODE_OPTIONS='--max-old-space-size=2048' jest",
+    "test:watch": "NODE_OPTIONS='--max-old-space-size=2048' jest --watch",
     "clean": "rm -rf dist"
   },
   "keywords": [

@@ -1,13 +1,13 @@
 /**
- * Tokenizer Tests
+ * Tokenizer Tests - Markers
  *
- * Comprehensive test coverage for all 21 FlowScript markers
+ * Tests for basic FlowScript markers (Core Relations, Definitions, States, etc.)
  */
 
 import { Tokenizer } from '../src/tokenizer';
 import { TokenType } from '../src/types';
 
-describe('Tokenizer', () => {
+describe('Tokenizer - Markers', () => {
   // =========================================================================
   // Core Relations
   // =========================================================================
@@ -242,137 +242,6 @@ describe('Tokenizer', () => {
       const tokens = tokenizer.tokenize();
 
       expect(tokens[0].type).toBe(TokenType.ALTERNATIVE);
-    });
-  });
-
-  // =========================================================================
-  // Complex Examples
-  // =========================================================================
-
-  describe('Complex Examples', () => {
-    it('tokenizes decision with alternatives', () => {
-      const input = `
-? authentication strategy
-
-|| JWT tokens
-  -> stateless
-  -> revocation hard
-
-|| session tokens
-  -> instant revocation
-  -> server state
-
-[decided(rationale: "security > complexity", on: "2025-10-17")]
-session tokens
-      `.trim();
-
-      const tokenizer = new Tokenizer(input);
-      const tokens = tokenizer.tokenize();
-
-      // Should have question marker
-      expect(tokens.some(t => t.type === TokenType.QUESTION)).toBe(true);
-
-      // Should have alternatives
-      const alternatives = tokens.filter(t => t.type === TokenType.ALTERNATIVE);
-      expect(alternatives.length).toBe(2);
-
-      // Should have causal relationships
-      const arrows = tokens.filter(t => t.type === TokenType.ARROW_RIGHT);
-      expect(arrows.length).toBeGreaterThan(0);
-
-      // Should have decided state
-      expect(tokens.some(t => t.type === TokenType.DECIDED)).toBe(true);
-    });
-
-    it('tokenizes thought with causal chain', () => {
-      const input = 'thought: performance issue -> slow queries -> missing indexes';
-      const tokenizer = new Tokenizer(input);
-      const tokens = tokenizer.tokenize();
-
-      expect(tokens[0].type).toBe(TokenType.THOUGHT);
-      const arrows = tokens.filter(t => t.type === TokenType.ARROW_RIGHT);
-      expect(arrows.length).toBe(2);
-    });
-
-    it('tokenizes tension with decision', () => {
-      const input = 'performance ><[latency vs throughput] reliability\n[decided(rationale: "reliability wins", on: "2025-10-17")]';
-      const tokenizer = new Tokenizer(input);
-      const tokens = tokenizer.tokenize();
-
-      expect(tokens.some(t => t.type === TokenType.TENSION)).toBe(true);
-      expect(tokens.some(t => t.type === TokenType.DECIDED)).toBe(true);
-    });
-  });
-
-  // =========================================================================
-  // Position Tracking
-  // =========================================================================
-
-  describe('Position Tracking', () => {
-    it('tracks line numbers correctly', () => {
-      const input = 'line 1\nline 2\nline 3';
-      const tokenizer = new Tokenizer(input);
-      const tokens = tokenizer.tokenize();
-
-      const textTokens = tokens.filter(t => t.type === TokenType.TEXT);
-      expect(textTokens[0].line).toBe(1);
-      expect(textTokens[1].line).toBe(2);
-      expect(textTokens[2].line).toBe(3);
-    });
-
-    it('tracks column numbers', () => {
-      const input = 'A -> B';
-      const tokenizer = new Tokenizer(input);
-      const tokens = tokenizer.tokenize();
-
-      expect(tokens[0].column).toBe(1);  // 'A'
-      expect(tokens[1].column).toBe(3);  // '->'
-      expect(tokens[2].column).toBe(6);  // 'B'
-    });
-  });
-
-  // =========================================================================
-  // Edge Cases
-  // =========================================================================
-
-  describe('Edge Cases', () => {
-    it('handles empty input', () => {
-      const tokenizer = new Tokenizer('');
-      const tokens = tokenizer.tokenize();
-
-      expect(tokens.length).toBe(1);
-      expect(tokens[0].type).toBe(TokenType.EOF);
-    });
-
-    it('handles whitespace only', () => {
-      const tokenizer = new Tokenizer('   \n  \t  ');
-      const tokens = tokenizer.tokenize();
-
-      expect(tokens[tokens.length - 1].type).toBe(TokenType.EOF);
-    });
-
-    it('handles text with no markers', () => {
-      const tokenizer = new Tokenizer('Just plain text');
-      const tokens = tokenizer.tokenize();
-
-      expect(tokens[0].type).toBe(TokenType.TEXT);
-      expect(tokens[0].value).toBe('Just plain text');
-    });
-
-    it('trims whitespace from text tokens', () => {
-      const tokenizer = new Tokenizer('   spaced text   ');
-      const tokens = tokenizer.tokenize();
-
-      expect(tokens[0].value).toBe('spaced text');
-    });
-
-    it('handles multiple newlines', () => {
-      const input = 'A\n\n\nB';
-      const tokenizer = new Tokenizer(input);
-      const tokens = tokenizer.tokenize();
-
-      const newlines = tokens.filter(t => t.type === TokenType.NEWLINE);
-      expect(newlines.length).toBe(3);
     });
   });
 });
