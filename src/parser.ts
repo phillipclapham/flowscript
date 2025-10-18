@@ -397,15 +397,33 @@ export class Parser {
         return insight.toIR();
       },
 
-      thought(_marker, content) {
+      Thought(_marker, content, relPairs) {
+        // Create thought node
         const node = self.createNode('thought', content.sourceString.trim(), self.currentModifiers, this);
         self.nodes.push(node);
+
+        // If relationship pairs present, process them using existing RelOpNodePair logic
+        if (relPairs.children.length > 0) {
+          self.currentSourceNode = node;
+          relPairs.toIR(); // Reuses existing relationship chain logic
+          self.currentSourceNode = null;
+        }
+
         return node;
       },
 
-      action(_marker, content) {
+      Action(_marker, content, relPairs) {
+        // Create action node
         const node = self.createNode('action', content.sourceString.trim(), self.currentModifiers, this);
         self.nodes.push(node);
+
+        // If relationship pairs present, process them
+        if (relPairs.children.length > 0) {
+          self.currentSourceNode = node;
+          relPairs.toIR();
+          self.currentSourceNode = null;
+        }
+
         return node;
       },
 

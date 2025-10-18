@@ -13,7 +13,8 @@ FlowScript {
   RelationshipExpression = NodeText RelOpNodePair+
   RelOpNodePair = RelOp NodeText
 
-  NodeText = (~("<->" | "->" | "<-" | "=>" | "><[" | "><" | "\n") any)+
+  NodeText = ~insightPrefix (~("<->" | "->" | "<-" | "=>" | "><[" | "><" | "\n") any)+
+  insightPrefix = "thought:" | "action:"
 
   RelOp = bidirectional | reverseCausal | causal | temporal | tensionWithAxis | tensionWithoutAxis
 
@@ -58,9 +59,15 @@ FlowScript {
   exploring = "[exploring]"
 
   // Insights, Questions, Commands
-  Insight = thought | action
-  thought = "thought:" (~"\n" any)*
-  action = "action:" (~"\n" any)*
+  Insight = Thought | Action
+
+  // Insights can have optional relationship chains
+  Thought = "thought:" thoughtContent RelOpNodePair*
+  Action = "action:" actionContent RelOpNodePair*
+
+  // Content excludes relationship operators (they're in RelOpNodePair)
+  thoughtContent = (~("\n" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
+  actionContent = (~("\n" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
 
   Question = "?" (~"\n" any)*
   Completion = "✓" (~"\n" any)*
