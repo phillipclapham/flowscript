@@ -1,12 +1,10 @@
 /**
- * Parser Tests
+ * Parser Tests (PEG)
  *
  * Comprehensive test coverage for FlowScript → IR compilation
  */
 
-import { Tokenizer } from '../src/tokenizer';
 import { Parser } from '../src/parser';
-import { TokenType } from '../src/types';
 
 describe('Parser', () => {
   // =========================================================================
@@ -16,8 +14,8 @@ describe('Parser', () => {
   describe('Basic Parsing', () => {
     it('parses simple statement', () => {
       const input = 'This is a statement';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.version).toBe('1.0.0');
       expect(ir.nodes).toHaveLength(1);
@@ -28,8 +26,8 @@ describe('Parser', () => {
 
     it('parses question', () => {
       const input = '? What is the best approach';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
       expect(ir.nodes[0].type).toBe('question');
@@ -38,8 +36,8 @@ describe('Parser', () => {
 
     it('parses thought', () => {
       const input = 'thought: This is interesting';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
       expect(ir.nodes[0].type).toBe('thought');
@@ -48,8 +46,8 @@ describe('Parser', () => {
 
     it('parses action', () => {
       const input = 'action: Run tests';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
       expect(ir.nodes[0].type).toBe('action');
@@ -58,8 +56,8 @@ describe('Parser', () => {
 
     it('parses completion (checkmark)', () => {
       const input = '✓ Completed task';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
       expect(ir.nodes[0].type).toBe('completion');
@@ -74,8 +72,8 @@ describe('Parser', () => {
   describe('Relationships', () => {
     it('parses causal relationship (->)', () => {
       const input = 'A -> B';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(2);
       expect(ir.relationships).toHaveLength(1);
@@ -86,8 +84,8 @@ describe('Parser', () => {
 
     it('parses reverse causal (<-)', () => {
       const input = 'A <- B';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.relationships).toHaveLength(1);
       expect(ir.relationships[0].type).toBe('causes');
@@ -98,8 +96,8 @@ describe('Parser', () => {
 
     it('parses bidirectional (<->)', () => {
       const input = 'A <-> B';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.relationships).toHaveLength(1);
       expect(ir.relationships[0].type).toBe('bidirectional');
@@ -107,8 +105,8 @@ describe('Parser', () => {
 
     it('parses temporal sequence (=>)', () => {
       const input = 'A => B';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.relationships).toHaveLength(1);
       expect(ir.relationships[0].type).toBe('temporal');
@@ -116,8 +114,8 @@ describe('Parser', () => {
 
     it('parses tension without axis', () => {
       const input = 'speed >< quality';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.relationships).toHaveLength(1);
       expect(ir.relationships[0].type).toBe('tension');
@@ -126,8 +124,8 @@ describe('Parser', () => {
 
     it('parses tension with axis label', () => {
       const input = 'speed ><[velocity vs quality] quality';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.relationships).toHaveLength(1);
       expect(ir.relationships[0].type).toBe('tension');
@@ -136,8 +134,8 @@ describe('Parser', () => {
 
     it('parses causal chain (A -> B -> C)', () => {
       const input = 'A -> B -> C';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(3);
       expect(ir.relationships).toHaveLength(2);
@@ -153,8 +151,8 @@ describe('Parser', () => {
   describe('State Markers', () => {
     it('parses [decided] without fields', () => {
       const input = '[decided] Ship now';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.states).toHaveLength(1);
       expect(ir.states[0].type).toBe('decided');
@@ -164,8 +162,8 @@ describe('Parser', () => {
 
     it('parses [decided] with fields', () => {
       const input = '[decided(rationale: "test reason", on: "2025-10-17")] Ship now';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.states).toHaveLength(1);
       expect(ir.states[0].type).toBe('decided');
@@ -175,8 +173,8 @@ describe('Parser', () => {
 
     it('parses [blocked] with fields', () => {
       const input = '[blocked(reason: "waiting for API", since: "2025-10-17")] Task X';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.states).toHaveLength(1);
       expect(ir.states[0].type).toBe('blocked');
@@ -186,8 +184,8 @@ describe('Parser', () => {
 
     it('parses [exploring]', () => {
       const input = '[exploring] Multiple approaches';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.states).toHaveLength(1);
       expect(ir.states[0].type).toBe('exploring');
@@ -195,8 +193,8 @@ describe('Parser', () => {
 
     it('parses [parking] with fields', () => {
       const input = '[parking(why: "low priority", until: "Q2")] Feature Y';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.states).toHaveLength(1);
       expect(ir.states[0].type).toBe('parking');
@@ -212,8 +210,8 @@ describe('Parser', () => {
   describe('Modifiers', () => {
     it('parses urgent modifier (!)', () => {
       const input = '! urgent task';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
       expect(ir.nodes[0].ext?.modifiers).toContain('urgent');
@@ -221,8 +219,8 @@ describe('Parser', () => {
 
     it('parses positive modifier (++)', () => {
       const input = '++ great idea';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
       expect(ir.nodes[0].ext?.modifiers).toContain('strong_positive');
@@ -230,8 +228,8 @@ describe('Parser', () => {
 
     it('parses confident modifier (*)', () => {
       const input = '* confident claim';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
       expect(ir.nodes[0].ext?.modifiers).toContain('high_confidence');
@@ -239,8 +237,8 @@ describe('Parser', () => {
 
     it('parses uncertain modifier (~)', () => {
       const input = '~ uncertain claim';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
       expect(ir.nodes[0].ext?.modifiers).toContain('low_confidence');
@@ -248,8 +246,8 @@ describe('Parser', () => {
 
     it('parses multiple modifiers', () => {
       const input = '! * critical and certain';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
       expect(ir.nodes[0].ext?.modifiers).toContain('urgent');

@@ -1,0 +1,56 @@
+FlowScript {
+  // Document Structure
+  Document = Line*
+  Line = BlankLine | Element | Prose
+
+  Element = Modifier* (State | Insight | Question | Completion | Alternative)
+
+  BlankLine = space* "\n"
+  Prose = (~("\n") any)+ "\n"?
+
+  // Modifiers (highest precedence)
+  Modifier = urgent | strongPositive | highConfidence | lowConfidence
+
+  urgent = "!"
+  strongPositive = "++"
+  highConfidence = "*"
+  lowConfidence = "~"
+
+  // State markers
+  State = decided | exploring | blocked | parking
+
+  decided = "[decided(rationale:" string ",on:" dateString ")]"
+
+  exploring = "[exploring]"
+
+  blocked = "[blocked(reason:" string ",since:" dateString ")]"
+
+  parking = "[parking]"
+
+  // Insights, Questions, Commands
+  Insight = thought | action
+  thought = "thought:" (~"\n" any)*
+  action = "action:" (~"\n" any)*
+
+  Question = "?" (~"\n" any)*
+  Completion = "✓" (~"\n" any)*
+
+  // Alternatives
+  Alternative = "||" (~"\n" any)*
+
+  // Lexical elements
+  string = "\"" stringChar* "\""
+  stringChar = ~("\"" | "\\") any
+             | escapeSequence
+
+  escapeSequence = "\\" ("\"" | "\\" | "n" | "t" | "r")
+
+  dateString = "\"" isoDate "\""
+  isoDate = digit digit digit digit "-" digit digit "-" digit digit
+           ("T" digit digit ":" digit digit ":" digit digit "Z")?
+
+  identifier = letter (letter | digit | "_" | "-")*
+
+  // Lexical rules (whitespace handling)
+  space := " " | "\t" | "\r"
+}

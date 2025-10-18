@@ -1,10 +1,9 @@
 /**
- * Parser Tests - Advanced
+ * Parser Tests - Advanced (PEG)
  *
  * Tests for provenance tracking, IR structure, complex examples, content hashing
  */
 
-import { Tokenizer } from '../src/tokenizer';
 import { Parser } from '../src/parser';
 
 describe('Parser - Advanced', () => {
@@ -15,16 +14,16 @@ describe('Parser - Advanced', () => {
   describe('Provenance', () => {
     it('tracks source file in nodes', () => {
       const input = 'Test statement';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'example.fs').parse();
+      const parser = new Parser('example.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes[0].provenance.source_file).toBe('example.fs');
     });
 
     it('tracks line numbers', () => {
       const input = 'Line 1\nLine 2\nLine 3';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes[0].provenance.line_number).toBe(1);
       expect(ir.nodes[1].provenance.line_number).toBe(2);
@@ -33,8 +32,8 @@ describe('Parser - Advanced', () => {
 
     it('includes timestamp in provenance', () => {
       const input = 'Test';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes[0].provenance.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T/);
     });
@@ -47,16 +46,16 @@ describe('Parser - Advanced', () => {
   describe('IR Structure', () => {
     it('includes version', () => {
       const input = 'Test';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.version).toBe('1.0.0');
     });
 
     it('includes invariants', () => {
       const input = 'Test';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.invariants).toBeDefined();
       expect(ir.invariants.causal_acyclic).toBe(true);
@@ -67,8 +66,8 @@ describe('Parser - Advanced', () => {
 
     it('includes metadata', () => {
       const input = 'Test';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.metadata).toBeDefined();
       expect(ir.metadata?.source_files).toContain('test.fs');
@@ -93,8 +92,8 @@ describe('Parser - Advanced', () => {
 session tokens
       `.trim();
 
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       // Should have question + 2 alternatives + decided option
       expect(ir.nodes.length).toBeGreaterThanOrEqual(3);
@@ -106,8 +105,8 @@ session tokens
 
     it('parses thought with causal chain', () => {
       const input = 'thought: performance issue -> slow queries -> missing indexes';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(3);
       expect(ir.relationships).toHaveLength(2);
@@ -125,8 +124,8 @@ slow queries -> missing indexes
 Add indexes to users table
       `.trim();
 
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes.length).toBeGreaterThan(0);
       expect(ir.relationships.length).toBeGreaterThan(0);
@@ -154,8 +153,8 @@ Add indexes to users table
 
     it('generates different IDs for different content', () => {
       const input = 'A\nB';
-      const tokens = new Tokenizer(input).tokenize();
-      const ir = new Parser(tokens, 'test.fs').parse();
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
 
       expect(ir.nodes[0].id).not.toBe(ir.nodes[1].id);
     });
