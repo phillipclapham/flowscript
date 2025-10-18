@@ -142,11 +142,11 @@ Add indexes to users table
       const input1 = 'Test statement';
       const input2 = 'Test statement';
 
-      const tokens1 = new Tokenizer(input1).tokenize();
-      const ir1 = new Parser(tokens1, 'test.fs').parse();
+      const parser1 = new Parser('test.fs');
+      const ir1 = parser1.parse(input1);
 
-      const tokens2 = new Tokenizer(input2).tokenize();
-      const ir2 = new Parser(tokens2, 'test.fs').parse();
+      const parser2 = new Parser('test.fs');
+      const ir2 = parser2.parse(input2);
 
       expect(ir1.nodes[0].id).toBe(ir2.nodes[0].id);
     });
