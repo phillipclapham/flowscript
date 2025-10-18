@@ -1,13 +1,30 @@
 FlowScript {
   // Document Structure
   Document = Line*
-  Line = BlankLine | Element
+  Line = BlankLine | RelationshipExpression | Element
 
   Element = Modifier* Content
   Content = State | Insight | Question | Completion | Alternative | Statement
 
   BlankLine = space* "\n"
   Statement = (~"\n" any)+ "\n"?
+
+  // Relationship Expressions (must come before Statement in Line)
+  RelationshipExpression = NodeText RelOpNodePair+
+  RelOpNodePair = RelOp NodeText
+
+  NodeText = (~("<->" | "->" | "<-" | "=>" | "><[" | "><" | "\n") any)+
+
+  RelOp = bidirectional | reverseCausal | causal | temporal | tensionWithAxis | tensionWithoutAxis
+
+  bidirectional = "<->"
+  reverseCausal = "<-"
+  causal = "->"
+  temporal = "=>"
+  tensionWithAxis = "><[" axisLabel "]"
+  tensionWithoutAxis = "><"
+
+  axisLabel = (~"]" any)+
 
   // Modifiers (highest precedence)
   Modifier = urgent | strongPositive | highConfidence | lowConfidence

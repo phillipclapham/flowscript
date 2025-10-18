@@ -22,6 +22,7 @@ export class Parser {
   private relationships: Relationship[] = [];
   private states: State[] = [];
   private currentModifiers: string[] = [];
+  private currentSourceNode: Node | null = null;
 
   constructor(sourceFile: string) {
     this.sourceFile = sourceFile;
@@ -99,6 +100,29 @@ export class Parser {
     return result;
   }
 
+  private createRelationship(
+    type: string,
+    source: Node,
+    target: Node,
+    axisLabel: string | null,
+    node: any
+  ): Relationship {
+    const rel: Relationship = {
+      id: hashContent({ type, source: source.id, target: target.id, axisLabel }),
+      type: type as any,
+      source: source.id,
+      target: target.id,
+      provenance: this.getProvenance(node)
+    };
+
+    // Always set axis_label (null for non-tension or tension without axis)
+    if (type === 'tension') {
+      rel.axis_label = axisLabel;
+    }
+
+    return rel;
+  }
+
   private createSemantics() {
     const self = this;
 
@@ -115,6 +139,104 @@ export class Parser {
 
       BlankLine(_space, _newline) {
         // Skip blank lines
+      },
+
+      // Relationship Expressions
+      RelationshipExpression(firstNode, pairs) {
+        // Parse first node
+        const firstText = firstNode.sourceString.trim();
+        const firstNodeObj = self.createNode('statement', firstText, self.currentModifiers, this);
+        self.nodes.push(firstNodeObj);
+
+        // Set as current source for RelOpNodePair processing
+        self.currentSourceNode = firstNodeObj;
+
+        // Process each RelOpNodePair
+        const pairsList = pairs.children;
+        for (let i = 0; i < pairsList.length; i++) {
+          pairsList[i].toIR();
+        }
+
+        // Clear state
+        self.currentSourceNode = null;
+
+        return { type: 'relationship_expression' };
+      },
+
+      RelOpNodePair(operator, nodeText) {
+        // Get current source from parser state
+        const currentSource = self.currentSourceNode!;
+
+        // Create target node
+        const targetText = nodeText.sourceString.trim();
+        const targetNode = self.createNode('statement', targetText, [], nodeText);
+        self.nodes.push(targetNode);
+
+        // Create relationship based on operator type
+        const relType = operator.toIR();
+
+        // Handle reverse causal (swap source and target)
+        let relationship;
+        if (relType.reverse) {
+          relationship = self.createRelationship(
+            relType.type,
+            targetNode,  // target becomes source
+            currentSource,  // source becomes target
+            relType.axisLabel,
+            operator
+          );
+        } else {
+          relationship = self.createRelationship(
+            relType.type,
+            currentSource,
+            targetNode,
+            relType.axisLabel,
+            operator
+          );
+        }
+
+        self.relationships.push(relationship);
+
+        // Update current source for next pair (enables chaining)
+        self.currentSourceNode = targetNode;
+
+        return { type: 'relop_node_pair' };
+      },
+
+      NodeText(chars) {
+        return this.sourceString;
+      },
+
+      RelOp(op) {
+        return op.toIR();
+      },
+
+      bidirectional(_arrow) {
+        return { type: 'bidirectional', axisLabel: null, reverse: false };
+      },
+
+      causal(_arrow) {
+        return { type: 'causes', axisLabel: null, reverse: false };
+      },
+
+      reverseCausal(_arrow) {
+        return { type: 'causes', axisLabel: null, reverse: true };
+      },
+
+      temporal(_arrow) {
+        return { type: 'temporal', axisLabel: null, reverse: false };
+      },
+
+      tensionWithAxis(_open, axisLabel, _close) {
+        return { type: 'tension', axisLabel: axisLabel.sourceString, reverse: false };
+      },
+
+      tensionWithoutAxis(_marker) {
+        return { type: 'tension', axisLabel: null, reverse: false };
+      },
+
+      axisLabel(chars) {
+        return this.sourceString;
       },
 
       Element(modifiers, content) {
