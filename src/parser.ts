@@ -45,6 +45,9 @@ export class Parser {
     const semantics = this.createSemantics();
     semantics(match).toIR();
 
+    // Link state markers to following nodes
+    this.linkStatesToNodes();
+
     return {
       version: '1.0.0',
       nodes: this.nodes,
@@ -445,5 +448,27 @@ export class Parser {
     });
 
     return semantics;
+  }
+
+  /**
+   * Link state markers to following nodes.
+   * States annotate the node that appears after them in source order.
+   */
+  private linkStatesToNodes(): void {
+    for (const state of this.states) {
+      const stateLine = state.provenance.line_number;
+
+      // Find first node at or after this line
+      // Handle same-line case: [decided] Ship now (both on line N)
+      const nextNode = this.nodes.find(node =>
+        node.provenance.line_number >= stateLine
+      );
+
+      if (nextNode) {
+        state.node_id = nextNode.id;
+      }
+      // If no following node, leave node_id as empty string
+      // (edge case: state at end of document with no following content)
+    }
   }
 }
