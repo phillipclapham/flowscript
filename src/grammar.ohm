@@ -1,12 +1,13 @@
 FlowScript {
   // Document Structure
   Document = Line*
-  Line = BlankLine | Element | Prose
+  Line = BlankLine | Element
 
-  Element = Modifier* (State | Insight | Question | Completion | Alternative)
+  Element = Modifier* Content
+  Content = State | Insight | Question | Completion | Alternative | Statement
 
   BlankLine = space* "\n"
-  Prose = (~("\n") any)+ "\n"?
+  Statement = (~"\n" any)+ "\n"?
 
   // Modifiers (highest precedence)
   Modifier = urgent | strongPositive | highConfidence | lowConfidence
@@ -17,15 +18,27 @@ FlowScript {
   lowConfidence = "~"
 
   // State markers
-  State = decided | exploring | blocked | parking
+  State = decidedWithFields | decidedWithoutFields
+        | blockedWithFields | blockedWithoutFields
+        | parkingWithFields | parkingWithoutFields
+        | exploring
 
-  decided = "[decided(rationale:" string ",on:" dateString ")]"
+  decidedWithFields = "[decided(" decidedFieldContent ")]"
+  decidedFieldContent = space* "rationale:" space* string space* "," space* "on:" space* dateString space*
+
+  decidedWithoutFields = "[decided]"
+
+  blockedWithFields = "[blocked(" blockedFieldContent ")]"
+  blockedFieldContent = space* "reason:" space* string space* "," space* "since:" space* dateString space*
+
+  blockedWithoutFields = "[blocked]"
+
+  parkingWithFields = "[parking(" parkingFieldContent ")]"
+  parkingFieldContent = space* "why:" space* string space* "," space* "until:" space* string space*
+
+  parkingWithoutFields = "[parking]"
 
   exploring = "[exploring]"
-
-  blocked = "[blocked(reason:" string ",since:" dateString ")]"
-
-  parking = "[parking]"
 
   // Insights, Questions, Commands
   Insight = thought | action

@@ -21,6 +21,7 @@ export class Parser {
   private nodes: Node[] = [];
   private relationships: Relationship[] = [];
   private states: State[] = [];
+  private currentModifiers: string[] = [];
 
   constructor(sourceFile: string) {
     this.sourceFile = sourceFile;
@@ -117,8 +118,20 @@ export class Parser {
       },
 
       Element(modifiers, content) {
-        const mods = modifiers.children.map((m: any) => m.toIR());
-        content.toIR(mods);
+        // Extract modifiers and store in parser state
+        self.currentModifiers = modifiers.children.map((m: any) => m.toIR());
+
+        // Call content semantic action WITHOUT passing modifiers
+        const result = content.toIR();
+
+        // Clear modifiers after use
+        self.currentModifiers = [];
+
+        return result;
+      },
+
+      Content(contentType) {
+        return contentType.toIR();
       },
 
       Modifier(marker) {
@@ -137,42 +150,70 @@ export class Parser {
         return state.toIR();
       },
 
-      decided(_open, rationale, _comma, onDate, _close) {
+      decidedWithFields(_open, fieldContent, _close) {
+        const fields = fieldContent.toIR();
+
         const state: State = {
-          id: hashContent({
-            type: 'decided',
-            fields: {
-              rationale: self.extractString(rationale.sourceString),
-              on: self.extractString(onDate.sourceString)
-            }
-          }),
+          id: hashContent({ type: 'decided', fields }),
           type: 'decided',
-          node_id: '',  // Will be linked by linter
-          fields: {
-            rationale: self.extractString(rationale.sourceString),
-            on: self.extractString(onDate.sourceString)
-          },
+          node_id: '',
+          fields,
           provenance: self.getProvenance(this)
         };
         self.states.push(state);
         return state;
       },
 
-      blocked(_open, reason, _comma, since, _close) {
+      decidedFieldContent(_s1, _rationaleKey, _s2, rationale, _s3, _comma, _s4, _onKey, _s5, onDate, _s6) {
+        return {
+          rationale: self.extractString(rationale.sourceString),
+          on: self.extractString(onDate.sourceString)
+        };
+      },
+
+      decidedWithoutFields(_token) {
+        const fields: Record<string, string> = {} as Record<string, string>;
+
         const state: State = {
-          id: hashContent({
-            type: 'blocked',
-            fields: {
-              reason: self.extractString(reason.sourceString),
-              since: self.extractString(since.sourceString)
-            }
-          }),
+          id: hashContent({ type: 'decided', fields }),
+          type: 'decided',
+          node_id: '',
+          fields,
+          provenance: self.getProvenance(this)
+        };
+        self.states.push(state);
+        return state;
+      },
+
+      blockedWithFields(_open, fieldContent, _close) {
+        const fields = fieldContent.toIR();
+
+        const state: State = {
+          id: hashContent({ type: 'blocked', fields }),
           type: 'blocked',
           node_id: '',
-          fields: {
-            reason: self.extractString(reason.sourceString),
-            since: self.extractString(since.sourceString)
-          },
+          fields,
+          provenance: self.getProvenance(this)
+        };
+        self.states.push(state);
+        return state;
+      },
+
+      blockedFieldContent(_s1, _reasonKey, _s2, reason, _s3, _comma, _s4, _sinceKey, _s5, since, _s6) {
+        return {
+          reason: self.extractString(reason.sourceString),
+          since: self.extractString(since.sourceString)
+        };
+      },
+
+      blockedWithoutFields(_token) {
+        const fields: Record<string, string> = {} as Record<string, string>;
+
+        const state: State = {
+          id: hashContent({ type: 'blocked', fields }),
+          type: 'blocked',
+          node_id: '',
+          fields,
           provenance: self.getProvenance(this)
         };
         self.states.push(state);
@@ -191,12 +232,35 @@ export class Parser {
         return state;
       },
 
-      parking(_token) {
+      parkingWithFields(_open, fieldContent, _close) {
+        const fields = fieldContent.toIR();
+
         const state: State = {
-          id: hashContent({ type: 'parking', fields: {} }),
+          id: hashContent({ type: 'parking', fields }),
           type: 'parking',
           node_id: '',
-          fields: {},
+          fields,
+          provenance: self.getProvenance(this)
+        };
+        self.states.push(state);
+        return state;
+      },
+
+      parkingFieldContent(_s1, _whyKey, _s2, why, _s3, _comma, _s4, _untilKey, _s5, until, _s6) {
+        return {
+          why: self.extractString(why.sourceString),
+          until: self.extractString(until.sourceString)
+        };
+      },
+
+      parkingWithoutFields(_token) {
+        const fields: Record<string, string> = {} as Record<string, string>;
+
+        const state: State = {
+          id: hashContent({ type: 'parking', fields }),
+          type: 'parking',
+          node_id: '',
+          fields,
           provenance: self.getProvenance(this)
         };
         self.states.push(state);
@@ -209,41 +273,41 @@ export class Parser {
       },
 
       thought(_marker, content) {
-        const node = self.createNode('thought', content.sourceString.trim(), [], this);
+        const node = self.createNode('thought', content.sourceString.trim(), self.currentModifiers, this);
         self.nodes.push(node);
         return node;
       },
 
       action(_marker, content) {
-        const node = self.createNode('action', content.sourceString.trim(), [], this);
+        const node = self.createNode('action', content.sourceString.trim(), self.currentModifiers, this);
         self.nodes.push(node);
         return node;
       },
 
       Question(_marker, content) {
-        const node = self.createNode('question', content.sourceString.trim(), [], this);
+        const node = self.createNode('question', content.sourceString.trim(), self.currentModifiers, this);
         self.nodes.push(node);
         return node;
       },
 
       Completion(_marker, content) {
-        const node = self.createNode('completion', `✓ ${content.sourceString.trim()}`, [], this);
+        const node = self.createNode('completion', `✓ ${content.sourceString.trim()}`, self.currentModifiers, this);
         self.nodes.push(node);
         return node;
       },
 
       // Alternative
       Alternative(_marker, content) {
-        const node = self.createNode('statement', content.sourceString.trim(), [], this);
+        const node = self.createNode('statement', content.sourceString.trim(), self.currentModifiers, this);
         self.nodes.push(node);
         return { type: 'alternative', node };
       },
 
-      // Prose
-      Prose(content, _newline) {
+      // Statement (prose)
+      Statement(content, _newline) {
         const text = content.sourceString.trim();
         if (text.length > 0) {
-          const node = self.createNode('statement', text, [], this);
+          const node = self.createNode('statement', text, self.currentModifiers, this);
           self.nodes.push(node);
         }
       },
