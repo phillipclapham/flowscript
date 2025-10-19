@@ -145,11 +145,9 @@ export class Parser {
       },
 
       // Relationship Expressions
-      RelationshipExpression(firstNode, pairs) {
-        // Parse first node
-        const firstText = firstNode.sourceString.trim();
-        const firstNodeObj = self.createNode('statement', firstText, self.currentModifiers, this);
-        self.nodes.push(firstNodeObj);
+      RelationshipExpression(firstRelNode, pairs) {
+        // Parse first node (can be Block or NodeText)
+        const firstNodeObj = firstRelNode.toIR();
 
         // Set as current source for RelOpNodePair processing
         self.currentSourceNode = firstNodeObj;
@@ -166,14 +164,12 @@ export class Parser {
         return { type: 'relationship_expression' };
       },
 
-      RelOpNodePair(operator, nodeText) {
+      RelOpNodePair(operator, relNode) {
         // Get current source from parser state
         const currentSource = self.currentSourceNode!;
 
-        // Create target node
-        const targetText = nodeText.sourceString.trim();
-        const targetNode = self.createNode('statement', targetText, [], nodeText);
-        self.nodes.push(targetNode);
+        // Parse target node (can be Block or NodeText)
+        const targetNode = relNode.toIR();
 
         // Create relationship based on operator type
         const relType = operator.toIR();
@@ -204,6 +200,22 @@ export class Parser {
         self.currentSourceNode = targetNode;
 
         return { type: 'relop_node_pair' };
+      },
+
+      RelNode(_ws1, content, _ws2) {
+        // content is either Block or NodeText
+        const result = content.toIR();
+
+        // If it's a block, result will be { type: 'block', node: blockNode }
+        if (result && typeof result === 'object' && result.type === 'block') {
+          return result.node;  // Return the block node
+        }
+
+        // It's NodeText - create a statement node
+        const text = content.sourceString.trim();
+        const node = self.createNode('statement', text, self.currentModifiers, content);
+        self.nodes.push(node);
+        return node;
       },
 
       NodeText(chars) {
@@ -463,10 +475,22 @@ export class Parser {
         return insight.toIR();
       },
 
-      Thought(_marker, content, relPairs) {
+      Thought(_marker, _space, content, relPairs) {
+        // Parse content (can be Block or text)
+        const contentResult = content.toIR();
+
         // Create thought node
-        const node = self.createNode('thought', content.sourceString.trim(), self.currentModifiers, this);
-        self.nodes.push(node);
+        let node;
+        if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
+          // Content is a block - use the block node directly as thought content
+          node = contentResult.node;
+          node.type = 'thought';  // Change type from 'block' to 'thought'
+        } else {
+          // Content is text
+          const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
+          node = self.createNode('thought', text, self.currentModifiers, this);
+          self.nodes.push(node);
+        }
 
         // If relationship pairs present, process them using existing RelOpNodePair logic
         if (relPairs.children.length > 0) {
@@ -478,10 +502,22 @@ export class Parser {
         return node;
       },
 
-      Action(_marker, content, relPairs) {
+      Action(_marker, _space, content, relPairs) {
+        // Parse content (can be Block or text)
+        const contentResult = content.toIR();
+
         // Create action node
-        const node = self.createNode('action', content.sourceString.trim(), self.currentModifiers, this);
-        self.nodes.push(node);
+        let node;
+        if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
+          // Content is a block - use the block node directly as action content
+          node = contentResult.node;
+          node.type = 'action';  // Change type from 'block' to 'action'
+        } else {
+          // Content is text
+          const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
+          node = self.createNode('action', text, self.currentModifiers, this);
+          self.nodes.push(node);
+        }
 
         // If relationship pairs present, process them
         if (relPairs.children.length > 0) {
@@ -500,13 +536,17 @@ export class Parser {
       },
 
       Completion(_marker, content) {
-        const node = self.createNode('completion', `✓ ${content.sourceString.trim()}`, self.currentModifiers, this);
+        const node = self.createNode('completion', content.sourceString.trim(), self.currentModifiers, this);
         self.nodes.push(node);
         return node;
       },
 
       // Block (thought blocks)
       Block(_lbrace, _ws1, blockLines, _ws2, _rbrace) {
+        // Save modifiers before parsing block contents (they'll be cleared during parsing)
+        const blockModifiers = [...self.currentModifiers];
+        self.currentModifiers = [];  // Clear for child elements
+
         // Track nodes and blocks before parsing block content
         const nodesBefore = self.nodes.length;
 
@@ -530,17 +570,23 @@ export class Parser {
           return !nestedBlockChildIds.has(n.id);
         });
 
-        // Create block node
+        // Create block node (using saved modifiers)
         const blockNode: Node = {
-          id: hashContent({ type: 'block', children: directChildren.map(c => c.id) }),
+          id: hashContent({ type: 'block', children: directChildren.map(c => c.id), modifiers: blockModifiers }),
           type: 'block',
           content: '',  // Blocks have no direct content
           provenance: self.getProvenance(this)
         };
 
-        // Add children to block node
-        if (directChildren.length > 0) {
-          blockNode.ext = { children: directChildren };
+        // Add children and modifiers to block node
+        if (directChildren.length > 0 || blockModifiers.length > 0) {
+          blockNode.ext = {};
+          if (directChildren.length > 0) {
+            blockNode.ext.children = directChildren;
+          }
+          if (blockModifiers.length > 0) {
+            blockNode.ext.modifiers = blockModifiers;
+          }
         }
 
         // Add block node to nodes list

@@ -61,7 +61,7 @@ describe('Parser', () => {
 
       expect(ir.nodes).toHaveLength(1);
       expect(ir.nodes[0].type).toBe('completion');
-      expect(ir.nodes[0].content).toContain('✓');
+      expect(ir.nodes[0].content).toBe('Completed task');
     });
   });
 

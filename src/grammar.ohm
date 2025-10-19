@@ -14,10 +14,11 @@ FlowScript {
   BlockLine = (space | "\n")* (RelationshipExpression | Element) (space | "\n")*
 
   // Relationship Expressions (must come before Statement in Line)
-  RelationshipExpression = NodeText RelOpNodePair+
-  RelOpNodePair = RelOp NodeText
+  RelationshipExpression = RelNode RelOpNodePair+
+  RelOpNodePair = RelOp RelNode
+  RelNode = space* (Block | NodeText) space*
 
-  NodeText = ~insightPrefix (~("<->" | "->" | "<-" | "=>" | "><[" | "><" | "\n") any)+
+  NodeText = ~insightPrefix (~("<->" | "->" | "<-" | "=>" | "><[" | "><" | "\n" | "{" | "}") any)+
   insightPrefix = "thought:" | "action:"
 
   RelOp = bidirectional | reverseCausal | causal | temporal | tensionWithAxis | tensionWithoutAxis
@@ -74,13 +75,13 @@ FlowScript {
   // Insights, Questions, Commands
   Insight = Thought | Action
 
-  // Insights can have optional relationship chains
-  Thought = "thought:" thoughtContent RelOpNodePair*
-  Action = "action:" actionContent RelOpNodePair*
+  // Insights can have optional relationship chains, or blocks
+  Thought = "thought:" space* (Block | thoughtText) RelOpNodePair*
+  Action = "action:" space* (Block | actionText) RelOpNodePair*
 
   // Content excludes relationship operators and block delimiters (they're in RelOpNodePair)
-  thoughtContent = (~("\n" | "}" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
-  actionContent = (~("\n" | "}" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
+  thoughtText = (~("\n" | "}" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
+  actionText = (~("\n" | "}" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
 
   Question = "?" (~("\n" | "}") any)*
   Completion = "✓" (~("\n" | "}") any)*

@@ -241,7 +241,7 @@ describe('Parser - Block Parsing', () => {
       // Should have 1 tension relationship
       const tensions = ir.relationships.filter(r => r.type === 'tension');
       expect(tensions).toHaveLength(1);
-      expect(tensions[0].ext?.axis_label).toBe('speed vs reliability');
+      expect(tensions[0].axis_label).toBe('speed vs reliability');
     });
   });
 
