@@ -43,12 +43,7 @@ describe('FlowScript Linter', () => {
   });
 
   describe('E002: Missing Required Fields', () => {
-    // NOTE: These tests currently fail because parser validates required fields
-    // during parsing (rejects invalid states). This is a parser design issue.
-    // Proper architecture: parser should be permissive, linter validates semantics.
-    // TODO: Update parser to accept states with missing fields, then enable these tests.
-
-    it.skip('detects [decided] without rationale', () => {
+    it('detects [decided] without rationale', () => {
       const input = '[decided(on: "2025-10-17")] Ship now';
       const parser = new Parser('test.fs');
       const ir = parser.parse(input);
@@ -62,7 +57,7 @@ describe('FlowScript Linter', () => {
       expect(e002Errors[0].message).toContain('rationale');
     });
 
-    it.skip('detects [blocked] without reason', () => {
+    it('detects [blocked] without reason', () => {
       const input = '[blocked(since: "2025-10-17")] Deploy';
       const parser = new Parser('test.fs');
       const ir = parser.parse(input);
@@ -250,8 +245,32 @@ C -> A`;
   });
 
   describe('W002: Deep Nesting', () => {
-    // Note: Deep nesting may not be fully supported in current parser
-    // Test will pass if no blocks present
+    it('warns on blocks nested >5 levels', () => {
+      const input = '{ { { { { { too deep } } } } } }';
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
+
+      const linter = new Linter();
+      const results = linter.lint(ir);
+      const warnings = linter.getWarnings(results);
+
+      const w002 = warnings.filter(w => w.rule === 'W002');
+      expect(w002.length).toBeGreaterThan(0);
+      expect(w002[0].message).toContain('nested 6 levels');
+    });
+
+    it('passes blocks at 5 levels', () => {
+      const input = '{ { { { { ok } } } } }';
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
+
+      const linter = new Linter();
+      const results = linter.lint(ir);
+      const warnings = linter.getWarnings(results);
+
+      const w002 = warnings.filter(w => w.rule === 'W002');
+      expect(w002).toHaveLength(0);
+    });
 
     it('passes flat structure', () => {
       const input = 'A -> B -> C';

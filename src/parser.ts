@@ -275,8 +275,8 @@ export class Parser {
         return state.toIR();
       },
 
-      decidedWithFields(_open, fieldContent, _close) {
-        const fields = fieldContent.toIR();
+      decidedWithFields(_open, fieldsNode, _close) {
+        const fields = fieldsNode.children.length > 0 ? fieldsNode.children[0].toIR() : {};
 
         const state: State = {
           id: hashContent({ type: 'decided', fields }),
@@ -289,11 +289,33 @@ export class Parser {
         return state;
       },
 
-      decidedFieldContent(_s1, _rationaleKey, _s2, rationale, _s3, _comma, _s4, _onKey, _s5, onDate, _s6) {
-        return {
-          rationale: self.extractString(rationale.sourceString),
-          on: self.extractString(onDate.sourceString)
-        };
+      decidedFields(firstField, _space1, _comma, _space2, restFields) {
+        const fields: Record<string, string> = {};
+
+        // Process first field
+        const firstFieldData = firstField.toIR();
+        Object.assign(fields, firstFieldData);
+
+        // Process rest of fields (iteration node)
+        const restFieldsList = restFields.children;
+        for (let i = 0; i < restFieldsList.length; i++) {
+          const fieldData = restFieldsList[i].toIR();
+          Object.assign(fields, fieldData);
+        }
+
+        return fields;
+      },
+
+      decidedField(field) {
+        return field.toIR();
+      },
+
+      rationalField(_key, _space, value) {
+        return { rationale: self.extractString(value.sourceString) };
+      },
+
+      onField(_key, _space, value) {
+        return { on: self.extractString(value.sourceString) };
       },
 
       decidedWithoutFields(_token) {
@@ -310,8 +332,8 @@ export class Parser {
         return state;
       },
 
-      blockedWithFields(_open, fieldContent, _close) {
-        const fields = fieldContent.toIR();
+      blockedWithFields(_open, fieldsNode, _close) {
+        const fields = fieldsNode.children.length > 0 ? fieldsNode.children[0].toIR() : {};
 
         const state: State = {
           id: hashContent({ type: 'blocked', fields }),
@@ -324,11 +346,33 @@ export class Parser {
         return state;
       },
 
-      blockedFieldContent(_s1, _reasonKey, _s2, reason, _s3, _comma, _s4, _sinceKey, _s5, since, _s6) {
-        return {
-          reason: self.extractString(reason.sourceString),
-          since: self.extractString(since.sourceString)
-        };
+      blockedFields(firstField, _space1, _comma, _space2, restFields) {
+        const fields: Record<string, string> = {};
+
+        // Process first field
+        const firstFieldData = firstField.toIR();
+        Object.assign(fields, firstFieldData);
+
+        // Process rest of fields (iteration node)
+        const restFieldsList = restFields.children;
+        for (let i = 0; i < restFieldsList.length; i++) {
+          const fieldData = restFieldsList[i].toIR();
+          Object.assign(fields, fieldData);
+        }
+
+        return fields;
+      },
+
+      blockedField(field) {
+        return field.toIR();
+      },
+
+      reasonField(_key, _space, value) {
+        return { reason: self.extractString(value.sourceString) };
+      },
+
+      sinceField(_key, _space, value) {
+        return { since: self.extractString(value.sourceString) };
       },
 
       blockedWithoutFields(_token) {
@@ -357,8 +401,8 @@ export class Parser {
         return state;
       },
 
-      parkingWithFields(_open, fieldContent, _close) {
-        const fields = fieldContent.toIR();
+      parkingWithFields(_open, fieldsNode, _close) {
+        const fields = fieldsNode.children.length > 0 ? fieldsNode.children[0].toIR() : {};
 
         const state: State = {
           id: hashContent({ type: 'parking', fields }),
@@ -371,11 +415,33 @@ export class Parser {
         return state;
       },
 
-      parkingFieldContent(_s1, _whyKey, _s2, why, _s3, _comma, _s4, _untilKey, _s5, until, _s6) {
-        return {
-          why: self.extractString(why.sourceString),
-          until: self.extractString(until.sourceString)
-        };
+      parkingFields(firstField, _space1, _comma, _space2, restFields) {
+        const fields: Record<string, string> = {};
+
+        // Process first field
+        const firstFieldData = firstField.toIR();
+        Object.assign(fields, firstFieldData);
+
+        // Process rest of fields (iteration node)
+        const restFieldsList = restFields.children;
+        for (let i = 0; i < restFieldsList.length; i++) {
+          const fieldData = restFieldsList[i].toIR();
+          Object.assign(fields, fieldData);
+        }
+
+        return fields;
+      },
+
+      parkingField(field) {
+        return field.toIR();
+      },
+
+      whyField(_key, _space, value) {
+        return { why: self.extractString(value.sourceString) };
+      },
+
+      untilField(_key, _space, value) {
+        return { until: self.extractString(value.sourceString) };
       },
 
       parkingWithoutFields(_token) {
@@ -437,6 +503,54 @@ export class Parser {
         const node = self.createNode('completion', `✓ ${content.sourceString.trim()}`, self.currentModifiers, this);
         self.nodes.push(node);
         return node;
+      },
+
+      // Block (thought blocks)
+      Block(_lbrace, _ws1, blockLines, _ws2, _rbrace) {
+        // Track nodes and blocks before parsing block content
+        const nodesBefore = self.nodes.length;
+
+        // Parse block lines (recursively processes all nested elements)
+        blockLines.toIR();
+
+        // Collect ALL nodes created since block started
+        const allNewNodes = self.nodes.slice(nodesBefore);
+
+        // Filter to get only DIRECT children (exclude nodes that are children of nested blocks)
+        const nestedBlocks = allNewNodes.filter(n => n.type === 'block');
+        const nestedBlockChildIds = new Set(
+          nestedBlocks.flatMap(b => {
+            const children = b.ext?.children;
+            return Array.isArray(children) ? children.map((c: Node) => c.id) : [];
+          })
+        );
+
+        const directChildren = allNewNodes.filter(n => {
+          // Keep if it's not a child of a nested block
+          return !nestedBlockChildIds.has(n.id);
+        });
+
+        // Create block node
+        const blockNode: Node = {
+          id: hashContent({ type: 'block', children: directChildren.map(c => c.id) }),
+          type: 'block',
+          content: '',  // Blocks have no direct content
+          provenance: self.getProvenance(this)
+        };
+
+        // Add children to block node
+        if (directChildren.length > 0) {
+          blockNode.ext = { children: directChildren };
+        }
+
+        // Add block node to nodes list
+        self.nodes.push(blockNode);
+
+        return { type: 'block', node: blockNode };
+      },
+
+      BlockLine(_ws1, line, _ws2) {
+        return line.toIR();
       },
 
       // Alternative

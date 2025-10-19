@@ -4,10 +4,14 @@ FlowScript {
   Line = BlankLine | RelationshipExpression | Element
 
   Element = Modifier* Content
-  Content = State | Insight | Question | Completion | Alternative | Statement
+  Content = State | Insight | Question | Completion | Alternative | Block | Statement
 
   BlankLine = space* "\n"
-  Statement = (~"\n" any)+ "\n"?
+  Statement = (~("\n" | "{" | "}") any)+ "\n"?
+
+  // Blocks (thought blocks / atomic processing units)
+  Block = "{" (space | "\n")* BlockLine* (space | "\n")* "}"
+  BlockLine = (space | "\n")* (RelationshipExpression | Element) (space | "\n")*
 
   // Relationship Expressions (must come before Statement in Line)
   RelationshipExpression = NodeText RelOpNodePair+
@@ -41,18 +45,27 @@ FlowScript {
         | parkingWithFields | parkingWithoutFields
         | exploring
 
-  decidedWithFields = "[decided(" decidedFieldContent ")]"
-  decidedFieldContent = space* "rationale:" space* string space* "," space* "on:" space* dateString space*
+  decidedWithFields = "[decided(" decidedFields? ")]"
+  decidedFields = decidedField (space* "," space* decidedField)*
+  decidedField = rationalField | onField
+  rationalField = "rationale:" space* string
+  onField = "on:" space* dateString
 
   decidedWithoutFields = "[decided]"
 
-  blockedWithFields = "[blocked(" blockedFieldContent ")]"
-  blockedFieldContent = space* "reason:" space* string space* "," space* "since:" space* dateString space*
+  blockedWithFields = "[blocked(" blockedFields? ")]"
+  blockedFields = blockedField (space* "," space* blockedField)*
+  blockedField = reasonField | sinceField
+  reasonField = "reason:" space* string
+  sinceField = "since:" space* dateString
 
   blockedWithoutFields = "[blocked]"
 
-  parkingWithFields = "[parking(" parkingFieldContent ")]"
-  parkingFieldContent = space* "why:" space* string space* "," space* "until:" space* string space*
+  parkingWithFields = "[parking(" parkingFields? ")]"
+  parkingFields = parkingField (space* "," space* parkingField)*
+  parkingField = whyField | untilField
+  whyField = "why:" space* string
+  untilField = "until:" space* string
 
   parkingWithoutFields = "[parking]"
 
@@ -65,15 +78,15 @@ FlowScript {
   Thought = "thought:" thoughtContent RelOpNodePair*
   Action = "action:" actionContent RelOpNodePair*
 
-  // Content excludes relationship operators (they're in RelOpNodePair)
-  thoughtContent = (~("\n" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
-  actionContent = (~("\n" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
+  // Content excludes relationship operators and block delimiters (they're in RelOpNodePair)
+  thoughtContent = (~("\n" | "}" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
+  actionContent = (~("\n" | "}" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
 
-  Question = "?" (~"\n" any)*
-  Completion = "✓" (~"\n" any)*
+  Question = "?" (~("\n" | "}") any)*
+  Completion = "✓" (~("\n" | "}") any)*
 
   // Alternatives
-  Alternative = "||" (~"\n" any)*
+  Alternative = "||" (~("\n" | "}") any)*
 
   // Lexical elements
   string = "\"" stringChar* "\""

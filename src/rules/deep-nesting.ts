@@ -38,9 +38,12 @@ export class DeepNestingRule extends BaseLintRule {
       }
 
       // Recursively check children
-      if (node.children) {
-        for (const child of node.children) {
-          checkDepth(child, depth + 1);
+      const children = node.ext?.children;
+      if (Array.isArray(children)) {
+        for (const child of children) {
+          if (child.type === 'block') {
+            checkDepth(child, depth + 1);
+          }
         }
       }
     };
