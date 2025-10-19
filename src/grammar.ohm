@@ -11,12 +11,15 @@ FlowScript {
 
   // Blocks (thought blocks / atomic processing units)
   Block = "{" (space | "\n")* BlockLine* (space | "\n")* "}"
-  BlockLine = (space | "\n")* (RelationshipExpression | Element) (space | "\n")*
+  BlockLine = (space | "\n")* (ContinuationRel | RelationshipExpression | Element) (space | "\n")*
 
   // Relationship Expressions (must come before Statement in Line)
   RelationshipExpression = RelNode RelOpNodePair+
   RelOpNodePair = RelOp RelNode
   RelNode = space* (Block | NodeText) space*
+
+  // Continuation Relationship (only valid inside blocks)
+  ContinuationRel = RelOp space* RelNode
 
   NodeText = ~insightPrefix (~("<->" | "->" | "<-" | "=>" | "><[" | "><" | "\n" | "{" | "}") any)+
   insightPrefix = "thought:" | "action:"

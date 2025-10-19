@@ -23,6 +23,8 @@ export class Parser {
   private states: State[] = [];
   private currentModifiers: string[] = [];
   private currentSourceNode: Node | null = null;
+  private blockStartNodeIndex: number | null = null;  // Track where block nodes start
+  private blockPrimaryNode: Node | null = null;        // Cache first node in block
 
   constructor(sourceFile: string) {
     this.sourceFile = sourceFile;
@@ -220,6 +222,59 @@ export class Parser {
 
       NodeText(chars) {
         return this.sourceString;
+      },
+
+      // Continuation Relationship (block-scoped implicit source)
+      ContinuationRel(operator, _space, relNode) {
+        // Get or find the block's primary node (first node in block)
+        let sourceNode = self.blockPrimaryNode;
+
+        // Lazy evaluation: if primary node not cached, find it
+        if (!sourceNode && self.blockStartNodeIndex !== null) {
+          if (self.nodes.length > self.blockStartNodeIndex) {
+            sourceNode = self.nodes[self.blockStartNodeIndex];
+            self.blockPrimaryNode = sourceNode;  // Cache for subsequent continuations
+          }
+        }
+
+        // If no source node available, skip relationship creation
+        if (!sourceNode) {
+          // Still parse the target node so it gets created
+          relNode.toIR();
+          return { type: 'continuation_no_source' };
+        }
+
+        // Parse target node
+        const targetNode = relNode.toIR();
+
+        // Get relationship type from operator
+        const relType = operator.toIR();
+
+        // Create relationship (handle reverse operators)
+        let relationship;
+        if (relType.reverse) {
+          // Reverse causal: target -> source (swap)
+          relationship = self.createRelationship(
+            relType.type,
+            targetNode,    // target becomes source
+            sourceNode,    // source becomes target
+            relType.axisLabel,
+            operator
+          );
+        } else {
+          // Normal: source -> target
+          relationship = self.createRelationship(
+            relType.type,
+            sourceNode,
+            targetNode,
+            relType.axisLabel,
+            operator
+          );
+        }
+
+        self.relationships.push(relationship);
+
+        return { type: 'continuation_relationship' };
       },
 
       RelOp(op) {
@@ -543,12 +598,20 @@ export class Parser {
 
       // Block (thought blocks)
       Block(_lbrace, _ws1, blockLines, _ws2, _rbrace) {
+        // Save state for nested blocks
+        const savedStartIndex = self.blockStartNodeIndex;
+        const savedPrimaryNode = self.blockPrimaryNode;
+
         // Save modifiers before parsing block contents (they'll be cleared during parsing)
         const blockModifiers = [...self.currentModifiers];
         self.currentModifiers = [];  // Clear for child elements
 
         // Track nodes and blocks before parsing block content
         const nodesBefore = self.nodes.length;
+
+        // Set block start index and reset primary node for this block
+        self.blockStartNodeIndex = nodesBefore;
+        self.blockPrimaryNode = null;
 
         // Parse block lines (recursively processes all nested elements)
         blockLines.toIR();
@@ -591,6 +654,10 @@ export class Parser {
 
         // Add block node to nodes list
         self.nodes.push(blockNode);
+
+        // Restore state for nested blocks
+        self.blockStartNodeIndex = savedStartIndex;
+        self.blockPrimaryNode = savedPrimaryNode;
 
         return { type: 'block', node: blockNode };
       },
