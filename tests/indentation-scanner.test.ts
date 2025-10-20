@@ -190,7 +190,10 @@ describe('IndentationScanner', () => {
       // Should have 3 closing braces at end (levels 2, 4, 6)
       const lines = result.split('\n');
       const lastThreeLines = lines.slice(-3);
-      expect(lastThreeLines.every((line) => line === '}')).toBe(true);
+      // Closing braces should be indented at their respective levels
+      expect(lastThreeLines[0]).toBe('      }'); // Close level 6
+      expect(lastThreeLines[1]).toBe('    }');   // Close level 4
+      expect(lastThreeLines[2]).toBe('  }');     // Close level 2
     });
   });
 

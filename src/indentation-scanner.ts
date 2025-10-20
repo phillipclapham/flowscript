@@ -34,6 +34,8 @@ export class IndentationScanner {
   private indentStack: number[] = [0]; // Stack of active indentation levels
   private readonly indentSize: number;
   private explicitBlockDepth: number = 0; // Track nesting depth of explicit {} blocks
+  private blockBaseIndent: number | null = null; // Base indentation when inside explicit block
+  private savedIndentStack: number[][] = []; // Stack of indent stacks for nested explicit blocks
 
   /**
    * Create a new IndentationScanner
@@ -56,6 +58,8 @@ export class IndentationScanner {
     // Reset state for new processing
     this.indentStack = [0];
     this.explicitBlockDepth = 0;
+    this.blockBaseIndent = null;
+    this.savedIndentStack = [];
 
     // Process each line
     for (let i = 0; i < lines.length; i++) {
@@ -88,27 +92,113 @@ export class IndentationScanner {
     const openBraces = (line.match(/\{/g) || []).length;
     const closeBraces = (line.match(/\}/g) || []).length;
 
-    // Update depth BEFORE processing (matters for lines opening blocks)
+    // Update depth and track transitions
     const depthBeforeLine = this.explicitBlockDepth;
     this.explicitBlockDepth += openBraces - closeBraces;
 
-    // 3. Lines with braces pass through unchanged
+    // 3. Handle lines with braces
     if (openBraces > 0 || closeBraces > 0) {
-      // When exiting all explicit blocks, reset indent stack for future indentation
-      if (depthBeforeLine > 0 && this.explicitBlockDepth === 0) {
-        this.indentStack = [0];
+      const output: string[] = [];
+
+      // FIRST: Check if this line's indentation needs implicit blocks
+      // (before handling the explicit braces)
+      if (depthBeforeLine === 0) {
+        // We're not inside an explicit block, check for indentation change
+        const indent = this.countLeadingSpaces(line);
+        const prevIndent = this.indentStack[this.indentStack.length - 1];
+
+        if (indent > prevIndent) {
+          // INDENT: Indentation increased - add implicit opening brace
+          this.indentStack.push(indent);
+          const spaces = ' '.repeat(indent);
+          const content = line.substring(indent);
+          output.push(spaces + '{' + content);
+
+          // Now handle the explicit brace on this line
+          if (openBraces > closeBraces) {
+            // Save stack and reset for explicit block
+            this.savedIndentStack.push([...this.indentStack]);
+            this.indentStack = [0];
+            this.blockBaseIndent = null;
+          }
+          return output;
+        } else if (indent < prevIndent) {
+          // DEDENT: Close implicit blocks before processing this line
+          const closingBraces: string[] = [];
+          while (
+            this.indentStack.length > 1 &&
+            this.indentStack[this.indentStack.length - 1] > indent
+          ) {
+            const closingIndent = this.indentStack[this.indentStack.length - 1];
+            this.indentStack.pop();
+            closingBraces.push(' '.repeat(closingIndent) + '}');
+          }
+
+          // Verify dedent to valid level
+          if (this.indentStack[this.indentStack.length - 1] !== indent) {
+            const validLevels = this.indentStack.join(', ');
+            throw new IndentationError(
+              `Invalid dedent to level ${indent}. Expected one of: [${validLevels}].`,
+              lineNum
+            );
+          }
+
+          output.push(...closingBraces);
+          output.push(line);
+
+          // Now handle the explicit brace on this line
+          if (openBraces > closeBraces) {
+            // Save stack and reset for explicit block
+            this.savedIndentStack.push([...this.indentStack]);
+            this.indentStack = [0];
+            this.blockBaseIndent = null;
+          }
+          return output;
+        }
       }
-      return [line];
+
+      // SECOND: Handle explicit block exits (close implicit blocks first)
+      if (closeBraces > openBraces && this.blockBaseIndent !== null) {
+        // Close all implicit blocks opened within this explicit block
+        while (
+          this.indentStack.length > 1 &&
+          this.indentStack[this.indentStack.length - 1] > this.blockBaseIndent
+        ) {
+          const closingIndent = this.indentStack[this.indentStack.length - 1];
+          this.indentStack.pop();
+          output.push(' '.repeat(closingIndent) + '}');
+        }
+        // Restore indent stack from before entering the explicit block
+        if (this.savedIndentStack.length > 0) {
+          this.indentStack = this.savedIndentStack.pop()!;
+        } else {
+          this.indentStack = [0];
+        }
+        this.blockBaseIndent = null;
+      }
+
+      // THIRD: Handle explicit block entries
+      if (openBraces > closeBraces) {
+        // Save current indent stack before entering explicit block
+        this.savedIndentStack.push([...this.indentStack]);
+        this.indentStack = [0];
+        this.blockBaseIndent = null; // Will be set by next non-brace line
+      }
+
+      // Finally: The line with braces itself passes through
+      output.push(line);
+      return output;
     }
 
-    // 4. If inside explicit block (depth > 0), don't process indentation
-    // But DO process indentation if we just entered a block (to handle nesting inside blocks)
-    if (depthBeforeLine > 0) {
-      // We're inside an explicit block, process indentation normally
-      // (This handles "Indentation inside explicit blocks" test case)
+    // 4. Inside explicit block: establish base indentation on first content line
+    if (this.explicitBlockDepth > 0 && this.blockBaseIndent === null) {
+      const indent = this.countLeadingSpaces(line);
+      this.blockBaseIndent = indent;
+      this.indentStack = [indent]; // Base level for this block
+      return [line]; // First line in block passes through unchanged
     }
 
-    // 4. Detect tabs (ERROR - not silent conversion)
+    // 5. Detect tabs (ERROR - not silent conversion)
     if (line.includes('\t')) {
       throw new IndentationError(
         `Tabs not allowed. Use ${this.indentSize} spaces for indentation.`,
@@ -116,10 +206,10 @@ export class IndentationScanner {
       );
     }
 
-    // 5. Calculate current indentation level
+    // 6. Calculate current indentation level
     const indent = this.countLeadingSpaces(line);
 
-    // 6. First line must be at column 0
+    // 7. First line must be at column 0
     if (lineNum === 1 && indent > 0) {
       throw new IndentationError('First line cannot be indented.', 1);
     }
@@ -132,7 +222,7 @@ export class IndentationScanner {
     const prevIndent = this.indentStack[this.indentStack.length - 1];
     const output: string[] = [];
 
-    // 7. Compare current indent to previous level
+    // 8. Compare current indent to previous level
     if (indent > prevIndent) {
       // INDENT: New nested level
       // Push new level onto stack and insert '{' at beginning of content
