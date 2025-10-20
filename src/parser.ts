@@ -668,7 +668,7 @@ export class Parser {
 
       // Alternative
       Alternative(_marker, content) {
-        const node = self.createNode('statement', content.sourceString.trim(), self.currentModifiers, this);
+        const node = self.createNode('alternative', content.sourceString.trim(), self.currentModifiers, this);
         self.nodes.push(node);
         return { type: 'alternative', node };
       },

@@ -256,4 +256,60 @@ describe('Parser', () => {
   });
 
   // =========================================================================
+  // Alternative Marker
+  // =========================================================================
+
+  describe('Alternative Marker', () => {
+    it('parses single alternative', () => {
+      const parser = new Parser('test.fs');
+      const ir = parser.parse('|| Option A');
+
+      expect(ir.nodes.length).toBe(1);
+      expect(ir.nodes[0].type).toBe('alternative');
+      expect(ir.nodes[0].content).toBe('Option A');
+    });
+
+    it('parses multiple alternatives', () => {
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(`? Which option?
+  || Option A
+  || Option B
+  || Option C`);
+
+      const alternatives = ir.nodes.filter(n => n.type === 'alternative');
+      expect(alternatives.length).toBe(3);
+      expect(alternatives[0].content).toBe('Option A');
+      expect(alternatives[1].content).toBe('Option B');
+      expect(alternatives[2].content).toBe('Option C');
+    });
+
+    it('parses alternatives with analysis', () => {
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(`? auth strategy
+  || JWT tokens
+     -> stateless
+  || session + Redis
+     -> instant revocation`);
+
+      const alternatives = ir.nodes.filter(n => n.type === 'alternative');
+      expect(alternatives.length).toBe(2);
+      expect(alternatives[0].content).toBe('JWT tokens');
+      expect(alternatives[1].content).toBe('session + Redis');
+
+      // Should have relationship nodes too
+      const stmts = ir.nodes.filter(n => n.type === 'statement');
+      expect(stmts.length).toBeGreaterThan(0);
+    });
+
+    it('alternative marker works with modifiers', () => {
+      const parser = new Parser('test.fs');
+      const ir = parser.parse('! || urgent alternative');
+
+      expect(ir.nodes[0].type).toBe('alternative');
+      // Note: modifiers stored in parser state, check ext field
+      expect(ir.nodes[0].ext?.modifiers).toContain('urgent');
+    });
+  });
+
+  // =========================================================================
 });

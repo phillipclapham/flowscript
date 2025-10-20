@@ -194,8 +194,42 @@ C -> A`;
   });
 
   describe('E006: Alternatives Without Decision', () => {
-    // Note: This rule requires question + alternatives structure
-    // Will test once parser fully supports alternatives
+    it('detects alternatives without decision', () => {
+      const input = `? Choose option
+  || Option A
+  || Option B`;
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
+
+      // Verify alternatives were created
+      const alts = ir.nodes.filter(n => n.type === 'alternative');
+      expect(alts.length).toBe(2);
+
+      // Verify linter catches missing decision
+      const linter = new Linter();
+      const results = linter.lint(ir);
+      const errors = linter.getErrors(results);
+
+      const e006Errors = errors.filter(e => e.rule === 'E006');
+      expect(e006Errors.length).toBeGreaterThan(0);
+    });
+
+    it('passes when alternative has decision', () => {
+      const input = `? Choose option
+  || Option A
+  || Option B
+
+[decided(rationale: "best choice", on: "2025-10-20")] Option A`;
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
+
+      const linter = new Linter();
+      const results = linter.lint(ir);
+      const errors = linter.getErrors(results);
+
+      const e006Errors = errors.filter(e => e.rule === 'E006');
+      expect(e006Errors.length).toBe(0);
+    });
 
     it('passes simple statements without alternatives', () => {
       const input = 'A -> B';

@@ -24,7 +24,7 @@ And inference fails more than we'd like to admit.
 
 ## The Solution: Semantic Notation
 
-FlowScript is semantic notation for human-AI communication. It makes thought structure explicit using 18 carefully-chosen markers.
+FlowScript is semantic notation for human-AI communication. It makes thought structure explicit using 21 carefully-chosen markers.
 
 Not a new language. Not replacing natural language. **Augmenting it.**
 
@@ -100,7 +100,7 @@ Works everywhere:
 - ✓ DeepSeek
 - ✓ Any AI with text input
 
-Want more? Add markers as needed. See [FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md) for the complete set (18 markers).
+Want more? Add markers as needed. See [FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md) for the complete set (21 markers).
 
 Want proof it works? See [Evidence](#evidence-cross-architecture-validation) below.
 
@@ -124,7 +124,7 @@ The forcing function catches fuzzy thinking early.
 
 ### Start Simple, Scale Up
 
-You don't need all 18 markers. Start with 3:
+You don't need all 21 markers. Start with 3:
 
 **`->` = leads to / causes / results in**
 ```
@@ -205,7 +205,7 @@ Once you're comfortable with basic markers, FlowScript enables sophisticated str
 
 ### The Complete Marker Set
 
-18 markers total. Start with 3, add as needed:
+21 markers total. Start with 3, add as needed:
 
 **State tracking:**
 - `[blocked]` - waiting on dependency
@@ -260,7 +260,7 @@ Add as needed:
   -> ? >< [blocked] [decided]
 
 Power user:
-  -> All 18 markers + FlowScript thinking
+  -> All 21 markers + FlowScript thinking
 
 = Learn at your own pace
 ```
@@ -427,7 +427,7 @@ One might succeed, both might, neither might. But they share FlowScript as found
 
 ### Learning FlowScript
 
-- **[FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md)** - Complete specification (18 markers)
+- **[FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md)** - Complete specification (21 markers)
 - **[FLOWSCRIPT_LEARNING.md](FLOWSCRIPT_LEARNING.md)** - Beginner's guide (start here)
 - **[FLOWSCRIPT_EXAMPLES.md](FLOWSCRIPT_EXAMPLES.md)** - Real-world usage examples
 
@@ -476,7 +476,7 @@ Open an issue tagged `research`. Let's explore together.
 
 ### Current: v1.0 Foundation (October 2025)
 
-✅ **Core notation stable** - 18 markers, evidence-based
+✅ **Core notation stable** - 21 markers, evidence-based
 ✅ **Cross-architecture validation** - 6 AI systems, spontaneous parsing confirmed
 ✅ **Lifecycle automation proven** - Working in production systems
 ✅ **Teachability confirmed** - Spec alone sufficient for adoption

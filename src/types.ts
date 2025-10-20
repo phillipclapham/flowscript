@@ -85,6 +85,7 @@ export type NodeType =
   | 'blocker'
   | 'insight'
   | 'completion'
+  | 'alternative'
   | 'exploring'
   | 'parking';
 

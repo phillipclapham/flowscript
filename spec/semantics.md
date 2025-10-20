@@ -34,7 +34,7 @@ Example: `! ? urgent question` is composition of modifiers, not a special `!?` m
 
 ### 3. Evidence-Based Minimalism
 
-FlowScript v1.0 includes **20 markers** - the minimal set proven through real use to enable structured thought. No theoretical markers. Every marker earns its place through evidence.
+FlowScript v1.0 includes **21 markers** - the minimal set proven through real use to enable structured thought. No theoretical markers. Every marker earns its place through evidence.
 
 ### 4. Forcing Functions
 
@@ -42,7 +42,7 @@ Certain requirements (axis labels, state fields) **force explicit articulation**
 
 ---
 
-## The 20 Markers
+## The 21 Markers
 
 ### Category 1: Core Relations (5 markers)
 
@@ -499,7 +499,7 @@ Captures good ideas that are wrong time. Prevents forgetting, but acknowledges "
 
 ---
 
-### Category 4: Insights & Questions (3 markers)
+### Category 4: Insights & Questions (4 markers)
 
 These markers express **thoughts worth preserving** and **questions needing answers**.
 
@@ -597,6 +597,73 @@ Explicit completion tracking. Enables lifecycle automation (completed items can 
 ✓ question resolved
   ↓ (extract to Shared Discoveries)
 [removed from Active Threads after 7 days]
+```
+
+---
+
+#### 4.4 `||` (alternative / mutually exclusive option)
+
+**Semantic Definition:**
+Marks a **mutually exclusive option** under consideration. Used to express alternatives in decision-making contexts.
+
+**Key Properties:**
+- Represents ONE of N possible choices
+- Mutually exclusive with sibling alternatives
+- Typically appears under a question (`?`)
+- Should be resolved with `[decided]` marker
+
+**Usage Pattern:**
+```
+? {question about choice}
+  || {option A}
+     -> {analysis/implications}
+  || {option B}
+     -> {analysis/implications}
+
+[decided(rationale: "...", on: "...")] {chosen option}
+```
+
+**Examples:**
+```
+? authentication strategy
+  || JWT tokens
+     -> stateless
+     -> revocation hard
+  || session + Redis
+     -> instant revocation
+     -> operational complexity
+
+[decided(rationale: "security critical", on: "2025-10-20")] session + Redis
+```
+
+**Invalid Usage:**
+```
+|| standalone alternative    # WRONG: needs question context
+                            # Should be under `?`
+
+? question
+  || A
+  || B                      # WRONG: no [decided] marker
+                            # Violates E006 linter rule
+```
+
+**Composition:**
+```
+! || urgent alternative     # Urgent option
+~ || uncertain alternative  # Uncertain/exploring option
+* || proven alternative     # Validated option
+```
+
+**Linter Rules:**
+- E006: Alternatives without decision - enforces completion
+
+**IR Representation:**
+```json
+{
+  "type": "alternative",
+  "content": "option text",
+  "provenance": { ... }
+}
 ```
 
 ---
