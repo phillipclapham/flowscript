@@ -24,6 +24,16 @@ export interface IndentationScannerOptions {
 }
 
 /**
+ * Result of indentation preprocessing
+ */
+export interface IndentationScannerResult {
+  /** Transformed source with explicit { } blocks */
+  transformed: string;
+  /** Maps transformed line number → original line number */
+  lineMap: Map<number, number>;
+}
+
+/**
  * IndentationScanner preprocessor
  *
  * Transforms indentation-based FlowScript syntax into explicit block syntax
@@ -49,11 +59,20 @@ export class IndentationScanner {
    * Process FlowScript input and transform indentation to explicit blocks
    *
    * @param input - FlowScript source code with indentation
-   * @returns Transformed source with explicit { } blocks
+   * @returns Transformed source with explicit { } blocks and line mapping
    */
-  process(input: string): string {
+  process(input: string): IndentationScannerResult {
+    // Handle empty input specially
+    if (input === '') {
+      return {
+        transformed: '',
+        lineMap: new Map<number, number>()
+      };
+    }
+
     const lines = input.split('\n');
-    const output: string[] = [];
+    const transformedLines: string[] = [];
+    const lineMap = new Map<number, number>();
 
     // Reset state for new processing
     this.indentStack = [0];
@@ -61,31 +80,52 @@ export class IndentationScanner {
     this.blockBaseIndent = null;
     this.savedIndentStack = [];
 
+    // Track the last non-blank original line for EOF closing
+    let lastOriginalLine = lines.length;
+
     // Process each line
     for (let i = 0; i < lines.length; i++) {
-      const lineNum = i + 1; // 1-indexed for user-facing errors
-      const processedLines = this.processLine(lines[i], lineNum);
-      output.push(...processedLines);
+      const originalLineNum = i + 1; // 1-indexed for user-facing errors
+      const processedLines = this.processLine(lines[i], originalLineNum);
+
+      // Track last non-blank line
+      if (lines[i].trim() !== '') {
+        lastOriginalLine = originalLineNum;
+      }
+
+      // Add each processed line with its original line mapping
+      for (const { line, originalLine } of processedLines) {
+        const outputLineNum = transformedLines.length + 1;
+        lineMap.set(outputLineNum, originalLine);
+        transformedLines.push(line);
+      }
     }
 
     // Close all remaining indentation levels at EOF
-    const finalLines = this.finalize();
-    output.push(...finalLines);
+    const finalLines = this.finalize(lastOriginalLine);
+    for (const { line, originalLine } of finalLines) {
+      const outputLineNum = transformedLines.length + 1;
+      lineMap.set(outputLineNum, originalLine);
+      transformedLines.push(line);
+    }
 
-    return output.join('\n');
+    return {
+      transformed: transformedLines.join('\n'),
+      lineMap
+    };
   }
 
   /**
    * Process a single line of input
    *
    * @param line - Line of FlowScript source
-   * @param lineNum - Line number (1-indexed)
-   * @returns Array of output lines (may include inserted { or })
+   * @param lineNum - Line number (1-indexed) in original source
+   * @returns Array of output lines with original line numbers (may include inserted { or })
    */
-  private processLine(line: string, lineNum: number): string[] {
+  private processLine(line: string, lineNum: number): Array<{ line: string; originalLine: number }> {
     // 1. Skip blank lines (whitespace-only or empty)
     if (line.trim() === '') {
-      return [line];
+      return [{ line, originalLine: lineNum }];
     }
 
     // 2. Track explicit block depth
@@ -98,7 +138,7 @@ export class IndentationScanner {
 
     // 3. Handle lines with braces
     if (openBraces > 0 || closeBraces > 0) {
-      const output: string[] = [];
+      const output: Array<{ line: string; originalLine: number }> = [];
 
       // FIRST: Check if this line's indentation needs implicit blocks
       // (before handling the explicit braces)
@@ -112,7 +152,8 @@ export class IndentationScanner {
           this.indentStack.push(indent);
           const spaces = ' '.repeat(indent);
           const content = line.substring(indent);
-          output.push(spaces + '{' + content);
+          // The '{' and content are on the same line, map to original
+          output.push({ line: spaces + '{' + content, originalLine: lineNum });
 
           // Now handle the explicit brace on this line
           if (openBraces > closeBraces) {
@@ -124,14 +165,14 @@ export class IndentationScanner {
           return output;
         } else if (indent < prevIndent) {
           // DEDENT: Close implicit blocks before processing this line
-          const closingBraces: string[] = [];
           while (
             this.indentStack.length > 1 &&
             this.indentStack[this.indentStack.length - 1] > indent
           ) {
             const closingIndent = this.indentStack[this.indentStack.length - 1];
             this.indentStack.pop();
-            closingBraces.push(' '.repeat(closingIndent) + '}');
+            // Closing braces credit to the line that caused the dedent
+            output.push({ line: ' '.repeat(closingIndent) + '}', originalLine: lineNum });
           }
 
           // Verify dedent to valid level
@@ -143,8 +184,8 @@ export class IndentationScanner {
             );
           }
 
-          output.push(...closingBraces);
-          output.push(line);
+          // The line itself
+          output.push({ line, originalLine: lineNum });
 
           // Now handle the explicit brace on this line
           if (openBraces > closeBraces) {
@@ -166,7 +207,8 @@ export class IndentationScanner {
         ) {
           const closingIndent = this.indentStack[this.indentStack.length - 1];
           this.indentStack.pop();
-          output.push(' '.repeat(closingIndent) + '}');
+          // Credit to current line (the explicit close brace line)
+          output.push({ line: ' '.repeat(closingIndent) + '}', originalLine: lineNum });
         }
         // Restore indent stack from before entering the explicit block
         if (this.savedIndentStack.length > 0) {
@@ -186,7 +228,7 @@ export class IndentationScanner {
       }
 
       // Finally: The line with braces itself passes through
-      output.push(line);
+      output.push({ line, originalLine: lineNum });
       return output;
     }
 
@@ -195,7 +237,7 @@ export class IndentationScanner {
       const indent = this.countLeadingSpaces(line);
       this.blockBaseIndent = indent;
       this.indentStack = [indent]; // Base level for this block
-      return [line]; // First line in block passes through unchanged
+      return [{ line, originalLine: lineNum }]; // First line in block passes through unchanged
     }
 
     // 5. Detect tabs (ERROR - not silent conversion)
@@ -220,7 +262,7 @@ export class IndentationScanner {
     // a multiple of 2, confirming this flexible approach.
 
     const prevIndent = this.indentStack[this.indentStack.length - 1];
-    const output: string[] = [];
+    const output: Array<{ line: string; originalLine: number }> = [];
 
     // 8. Compare current indent to previous level
     if (indent > prevIndent) {
@@ -228,14 +270,13 @@ export class IndentationScanner {
       // Push new level onto stack and insert '{' at beginning of content
       this.indentStack.push(indent);
 
-      // Insert '{' after the leading spaces
+      // Insert '{' after the leading spaces (same line as content)
       const spaces = ' '.repeat(indent);
       const content = line.substring(indent);
-      output.push(spaces + '{' + content);
+      output.push({ line: spaces + '{' + content, originalLine: lineNum });
     } else if (indent < prevIndent) {
       // DEDENT: Closing one or more levels
       // Pop stack until we reach the target level, emitting closing braces
-      const closingBraces: string[] = [];
       while (
         this.indentStack.length > 1 &&
         this.indentStack[this.indentStack.length - 1] > indent
@@ -243,7 +284,8 @@ export class IndentationScanner {
         const closingIndent = this.indentStack[this.indentStack.length - 1];
         this.indentStack.pop();
         // Emit '}' at the indentation level being closed
-        closingBraces.push(' '.repeat(closingIndent) + '}');
+        // Credit to the line that caused the dedent
+        output.push({ line: ' '.repeat(closingIndent) + '}', originalLine: lineNum });
       }
 
       // Verify we dedented to a valid level (must exist in stack history)
@@ -255,11 +297,11 @@ export class IndentationScanner {
         );
       }
 
-      output.push(...closingBraces);
-      output.push(line);
+      // The current line itself
+      output.push({ line, originalLine: lineNum });
     } else {
       // EQUAL: Same indentation level, no change needed
-      output.push(line);
+      output.push({ line, originalLine: lineNum });
     }
 
     return output;
@@ -269,17 +311,19 @@ export class IndentationScanner {
    * Finalize processing by closing all remaining indentation levels
    *
    * Called at end of file to emit closing braces for any open indentation.
-   * @returns Array of closing braces (one per remaining indent level)
+   * @param lastOriginalLine - The last non-blank original line number (for provenance)
+   * @returns Array of closing braces with original line mapping
    */
-  private finalize(): string[] {
-    const output: string[] = [];
+  private finalize(lastOriginalLine: number): Array<{ line: string; originalLine: number }> {
+    const output: Array<{ line: string; originalLine: number }> = [];
 
     // Close all levels except the base level (0)
     while (this.indentStack.length > 1) {
       const closingIndent = this.indentStack[this.indentStack.length - 1];
       this.indentStack.pop();
       // Emit '}' at the indentation level being closed
-      output.push(' '.repeat(closingIndent) + '}');
+      // Credit to the last non-blank line (EOF closing)
+      output.push({ line: ' '.repeat(closingIndent) + '}', originalLine: lastOriginalLine });
     }
 
     return output;

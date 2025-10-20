@@ -96,7 +96,9 @@ describe('IndentationScanner', () => {
         const scanner = new IndentationScanner();
         const result = scanner.process(fixture.input);
 
-        expect(result).toBe(fixture.expected);
+        expect(result.transformed).toBe(fixture.expected);
+        expect(result.lineMap).toBeInstanceOf(Map);
+        expect(result.lineMap.size).toBeGreaterThan(0);
       });
     }
   });
@@ -135,27 +137,32 @@ describe('IndentationScanner', () => {
     it('handles empty input', () => {
       const scanner = new IndentationScanner();
       const result = scanner.process('');
-      expect(result).toBe('');
+      expect(result.transformed).toBe('');
+      expect(result.lineMap.size).toBe(0);
     });
 
     it('handles single line at root', () => {
       const scanner = new IndentationScanner();
       const result = scanner.process('A');
-      expect(result).toBe('A');
+      expect(result.transformed).toBe('A');
+      expect(result.lineMap.get(1)).toBe(1);
     });
 
     it('preserves blank lines', () => {
       const scanner = new IndentationScanner();
       const input = 'A\n\nB';
       const result = scanner.process(input);
-      expect(result).toBe('A\n\nB');
+      expect(result.transformed).toBe('A\n\nB');
+      expect(result.lineMap.get(1)).toBe(1); // A
+      expect(result.lineMap.get(2)).toBe(2); // blank
+      expect(result.lineMap.get(3)).toBe(3); // B
     });
 
     it('supports configurable indent size', () => {
       const scanner = new IndentationScanner({ indentSize: 4 });
       const input = 'A\n    B\n    C';
       const result = scanner.process(input);
-      expect(result).toBe('A\n    {B\n    C\n    }');
+      expect(result.transformed).toBe('A\n    {B\n    C\n    }');
     });
   });
 
@@ -166,7 +173,7 @@ describe('IndentationScanner', () => {
       const result = scanner.process(input);
 
       // Should close 3 levels (from 6 -> 0)
-      const expectedClosingBraces = result.match(/}/g);
+      const expectedClosingBraces = result.transformed.match(/}/g);
       expect(expectedClosingBraces).toHaveLength(3);
     });
 
@@ -176,8 +183,8 @@ describe('IndentationScanner', () => {
       const result = scanner.process(input);
 
       // Each indented section should be wrapped
-      expect(result).toContain('{B');
-      expect(result).toContain('{D');
+      expect(result.transformed).toContain('{B');
+      expect(result.transformed).toContain('{D');
     });
   });
 
@@ -188,7 +195,7 @@ describe('IndentationScanner', () => {
       const result = scanner.process(input);
 
       // Should have 3 closing braces at end (levels 2, 4, 6)
-      const lines = result.split('\n');
+      const lines = result.transformed.split('\n');
       const lastThreeLines = lines.slice(-3);
       // Closing braces should be indented at their respective levels
       expect(lastThreeLines[0]).toBe('      }'); // Close level 6
@@ -204,9 +211,9 @@ describe('IndentationScanner', () => {
       const result = scanner.process(input);
 
       // Should not error on whitespace-only line
-      expect(result).toContain('A');
-      expect(result).toContain('{B');
-      expect(result).toContain('C');
+      expect(result.transformed).toContain('A');
+      expect(result.transformed).toContain('{B');
+      expect(result.transformed).toContain('C');
     });
 
     it('preserves trailing whitespace in content lines', () => {
@@ -215,8 +222,8 @@ describe('IndentationScanner', () => {
       const result = scanner.process(input);
 
       // Trailing whitespace should be preserved
-      expect(result).toContain('A  ');
-      expect(result).toContain('B  ');
+      expect(result.transformed).toContain('A  ');
+      expect(result.transformed).toContain('B  ');
     });
   });
 
@@ -242,9 +249,9 @@ describe('IndentationScanner', () => {
       // Note: We removed the "multiple of indentSize" check to match Python's flexible approach
       // This test now verifies that 3-space indentation works (Python allows any indent amount)
       const result = scanner.process('A\n  B\n   C'); // 3 spaces - should work
-      expect(result).toContain('A');
-      expect(result).toContain('{B');
-      expect(result).toContain('{C'); // 3 spaces creates new indent level
+      expect(result.transformed).toContain('A');
+      expect(result.transformed).toContain('{B');
+      expect(result.transformed).toContain('{C'); // 3 spaces creates new indent level
     });
 
     it('reports correct line number for invalid dedent', () => {

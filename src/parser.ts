@@ -10,6 +10,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Node, Relationship, State, IR, Provenance } from './types';
 import { hashContent } from './hash';
+import { IndentationScanner } from './indentation-scanner';
 
 // Load grammar
 const grammarPath = path.join(__dirname, 'grammar.ohm');
@@ -25,14 +26,22 @@ export class Parser {
   private currentSourceNode: Node | null = null;
   private blockStartNodeIndex: number | null = null;  // Track where block nodes start
   private blockPrimaryNode: Node | null = null;        // Cache first node in block
+  private lineMap: Map<number, number> | null = null; // Maps transformed → original line numbers
 
   constructor(sourceFile: string) {
     this.sourceFile = sourceFile;
   }
 
   parse(input: string): IR {
-    // Parse with Ohm
-    const match = grammar.match(input);
+    // Preprocess: Transform indentation to explicit blocks
+    const scanner = new IndentationScanner();
+    const { transformed, lineMap } = scanner.process(input);
+
+    // Store lineMap for provenance mapping
+    this.lineMap = lineMap;
+
+    // Parse transformed source with Ohm
+    const match = grammar.match(transformed);
 
     if (match.failed()) {
       throw new Error(`Parse error: ${match.message}`);
@@ -81,11 +90,14 @@ export class Parser {
     const interval = node.source;
     const lineInfo = interval.getLineAndColumnMessage?.() || '';
     const lineMatch = lineInfo.match(/Line (\d+)/);
-    const line = lineMatch ? parseInt(lineMatch[1]) : 1;
+    const transformedLine = lineMatch ? parseInt(lineMatch[1]) : 1;
+
+    // Map transformed line number back to original line number
+    const originalLine = this.lineMap?.get(transformedLine) ?? transformedLine;
 
     return {
       source_file: this.sourceFile,
-      line_number: line,
+      line_number: originalLine,
       timestamp: new Date().toISOString()
     };
   }
