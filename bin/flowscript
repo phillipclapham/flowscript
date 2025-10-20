@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+/**
+ * FlowScript CLI - Executable entry point
+ *
+ * Usage:
+ *   flowscript parse <file> [options]
+ *   flowscript lint <file> [options]
+ *   flowscript validate <file> [options]
+ */
+
+require('../dist/cli.js');

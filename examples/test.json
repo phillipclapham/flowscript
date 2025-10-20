@@ -1,0 +1,185 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "854d80550d4bd9a07b4364d16df9b0907922f69eae3261fbcfb8656b18676a05",
+      "type": "statement",
+      "content": "# Test FlowScript File",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 1,
+        "timestamp": "2025-10-20T15:19:16.056Z"
+      }
+    },
+    {
+      "id": "d0cf7479ca59c7562a9349f0cfd07c04fb4fc478dffb98320038125988fb2d2c",
+      "type": "statement",
+      "content": "This is a simple test file to validate CLI functionality.",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-20T15:19:16.057Z"
+      }
+    },
+    {
+      "id": "58df721aa30c2ecd501b3f1b074148dfcad68468fac05919cd2287908b2860ab",
+      "type": "statement",
+      "content": "## Problem Statement",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-20T15:19:16.057Z"
+      }
+    },
+    {
+      "id": "194c680193d0826d1654c7acf0469791fa4cd43a43dc7532135be922e9d3ec8b",
+      "type": "question",
+      "content": "How do we test the FlowScript toolchain?",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 7,
+        "timestamp": "2025-10-20T15:19:16.057Z"
+      }
+    },
+    {
+      "id": "6bc6f64d372d1521bc4690a49f35b138185882803dac90fec533e06c5d16cc74",
+      "type": "statement",
+      "content": "## Approach",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 9,
+        "timestamp": "2025-10-20T15:19:16.057Z"
+      }
+    },
+    {
+      "id": "c8c9e7515eda470b983c8f36296fc543822dcf03a4e064f9de159d11e03673ea",
+      "type": "thought",
+      "content": "We need a minimal example that exercises core features",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 11,
+        "timestamp": "2025-10-20T15:19:16.057Z"
+      }
+    },
+    {
+      "id": "88d642d621ed0c0ae91aa7504cb31480206066ba916d2e27b26091d66a71e5a0",
+      "type": "statement",
+      "content": "The solution:",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 13,
+        "timestamp": "2025-10-20T15:19:16.057Z"
+      }
+    },
+    {
+      "id": "c15c150e5893bd50af599b31c3ffecafa2a52037f438e9e920a633b58305cf95",
+      "type": "statement",
+      "content": "-> Write simple FlowScript",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 14,
+        "timestamp": "2025-10-20T15:19:16.057Z"
+      }
+    },
+    {
+      "id": "cf0fc1cbbd82caf5ebadd12ed613c81411cc1b4824475758eb47ae8a26b8f9cd",
+      "type": "statement",
+      "content": "-> Parse to IR JSON",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 15,
+        "timestamp": "2025-10-20T15:19:16.058Z"
+      }
+    },
+    {
+      "id": "496cf6069b32f06f8d51e3bdcf13db9a2537f22f20074fb1e4f952e3b4910f02",
+      "type": "statement",
+      "content": "-> Validate with linter",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 16,
+        "timestamp": "2025-10-20T15:19:16.058Z"
+      }
+    },
+    {
+      "id": "b35dbab6330868e4067254184a7c2d472580a96063dc90fdf42a2360a353a98a",
+      "type": "statement",
+      "content": "## Next Steps",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 20,
+        "timestamp": "2025-10-20T15:19:16.058Z"
+      }
+    },
+    {
+      "id": "3eb13218015b9e62ae3c57930b75cb7d02c01e23a5d0d1083aa088998988c398",
+      "type": "action",
+      "content": "Run parse command",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 22,
+        "timestamp": "2025-10-20T15:19:16.058Z"
+      }
+    },
+    {
+      "id": "7e9afd2d3ebe2faf13071e4fabec88255c54acbe247491d74a6fa9bdff67c597",
+      "type": "action",
+      "content": "Run lint command",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 23,
+        "timestamp": "2025-10-20T15:19:16.058Z"
+      }
+    },
+    {
+      "id": "a1d47727d027a3465d053a6dd1ce735eb3898959158c759ecb08f5804fb28060",
+      "type": "action",
+      "content": "Run validate command",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 24,
+        "timestamp": "2025-10-20T15:19:16.058Z"
+      }
+    },
+    {
+      "id": "57425309dd26913b53034727fb982fc82778f1dc8f9ad332fecf555ab05a46ef",
+      "type": "completion",
+      "content": "CLI tools ready for Phase 4",
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 26,
+        "timestamp": "2025-10-20T15:19:16.058Z"
+      }
+    }
+  ],
+  "relationships": [],
+  "states": [
+    {
+      "id": "74efe747ae06bc309271531605a311ef09ac0f9c11f93b6a87a831cb5acff5dc",
+      "type": "decided",
+      "node_id": "b35dbab6330868e4067254184a7c2d472580a96063dc90fdf42a2360a353a98a",
+      "fields": {
+        "rationale": "covers parse, lint, validate commands",
+        "on": "2025-10-20"
+      },
+      "provenance": {
+        "source_file": "examples/test.fs",
+        "line_number": 18,
+        "timestamp": "2025-10-20T15:19:16.058Z"
+      }
+    }
+  ],
+  "invariants": {
+    "causal_acyclic": true,
+    "all_nodes_reachable": true,
+    "tension_axes_labeled": true,
+    "state_fields_present": true
+  },
+  "metadata": {
+    "source_files": [
+      "examples/test.fs"
+    ],
+    "parsed_at": "2025-10-20T15:19:16.058Z",
+    "parser": "flowscript-peg-parser 1.0.0"
+  }
+}

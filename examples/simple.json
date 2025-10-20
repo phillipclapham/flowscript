@@ -1,0 +1,115 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "ee47d29b8b487272e8e4aed3ab02270d7c17b4f0f13f9051b84eea3efab923a6",
+      "type": "statement",
+      "content": "# Simple Example",
+      "provenance": {
+        "source_file": "examples/simple.fs",
+        "line_number": 1,
+        "timestamp": "2025-10-20T15:37:42.859Z"
+      }
+    },
+    {
+      "id": "d382a6013d38963402e0429b3c9714692aafc3c03d598cb23cf24d95a4936913",
+      "type": "question",
+      "content": "How do we validate the CLI?",
+      "provenance": {
+        "source_file": "examples/simple.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-20T15:37:42.860Z"
+      }
+    },
+    {
+      "id": "d1e90b9c612b159c312f55964323b7ad469733aa026ac483597dfdd044307bbe",
+      "type": "statement",
+      "content": "approach: Write example with relationships",
+      "provenance": {
+        "source_file": "examples/simple.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-20T15:37:42.860Z"
+      }
+    },
+    {
+      "id": "45d2b56c252dea0606c22c40b5a21f3343c8b91102e9ab9e0227eabc20f67739",
+      "type": "statement",
+      "content": "The steps:",
+      "provenance": {
+        "source_file": "examples/simple.fs",
+        "line_number": 7,
+        "timestamp": "2025-10-20T15:37:42.860Z"
+      }
+    },
+    {
+      "id": "cc285d4f5d2bff2c19ec8a8967797391a74591b19a3327ad7c544cf5f880fd05",
+      "type": "statement",
+      "content": "-> Parse FlowScript text",
+      "provenance": {
+        "source_file": "examples/simple.fs",
+        "line_number": 8,
+        "timestamp": "2025-10-20T15:37:42.860Z"
+      }
+    },
+    {
+      "id": "e1b3dccb509ba311e1286bb0126f11b35d906f3782a48d8c3beecfb86c1b7ffd",
+      "type": "statement",
+      "content": "-> Validate IR JSON",
+      "provenance": {
+        "source_file": "examples/simple.fs",
+        "line_number": 9,
+        "timestamp": "2025-10-20T15:37:42.860Z"
+      }
+    },
+    {
+      "id": "325c9cad37ade4496fe77652ccff84539beaa53279e7b8245886e342137a8617",
+      "type": "statement",
+      "content": "-> Check linter output",
+      "provenance": {
+        "source_file": "examples/simple.fs",
+        "line_number": 10,
+        "timestamp": "2025-10-20T15:37:42.860Z"
+      }
+    },
+    {
+      "id": "864d86e847a7638b4a2033381f96d07eb0adf8f7caf3db9c9b1159293ab5e286",
+      "type": "completion",
+      "content": "All commands tested",
+      "provenance": {
+        "source_file": "examples/simple.fs",
+        "line_number": 14,
+        "timestamp": "2025-10-20T15:37:42.860Z"
+      }
+    }
+  ],
+  "relationships": [],
+  "states": [
+    {
+      "id": "74efe747ae06bc309271531605a311ef09ac0f9c11f93b6a87a831cb5acff5dc",
+      "type": "decided",
+      "node_id": "864d86e847a7638b4a2033381f96d07eb0adf8f7caf3db9c9b1159293ab5e286",
+      "fields": {
+        "rationale": "end-to-end workflow test",
+        "on": "2025-10-20"
+      },
+      "provenance": {
+        "source_file": "examples/simple.fs",
+        "line_number": 12,
+        "timestamp": "2025-10-20T15:37:42.860Z"
+      }
+    }
+  ],
+  "invariants": {
+    "causal_acyclic": true,
+    "all_nodes_reachable": true,
+    "tension_axes_labeled": true,
+    "state_fields_present": true
+  },
+  "metadata": {
+    "source_files": [
+      "examples/simple.fs"
+    ],
+    "parsed_at": "2025-10-20T15:37:42.860Z",
+    "parser": "flowscript-peg-parser 1.0.0"
+  }
+}

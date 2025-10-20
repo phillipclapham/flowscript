@@ -26,7 +26,7 @@ export function validateIR(ir: IR): ValidationResult {
   const schema = JSON.parse(fs.readFileSync(schemaPath, 'utf-8'));
 
   // Create validator
-  const ajv = new Ajv({ allErrors: true });
+  const ajv = new Ajv({ allErrors: true, strict: false });
   const validate = ajv.compile(schema);
 
   // Validate

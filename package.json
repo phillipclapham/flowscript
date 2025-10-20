@@ -7,7 +7,7 @@
     "flowscript": "./bin/flowscript"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp src/grammar.ohm dist/grammar.ohm",
     "test": "NODE_OPTIONS='--max-old-space-size=2048' jest",
     "test:watch": "NODE_OPTIONS='--max-old-space-size=2048' jest --watch",
     "clean": "rm -rf dist"
