@@ -26,9 +26,22 @@ export class OrphanedNodesRule extends BaseLintRule {
     // Build set of connected node IDs
     const connectedIds = new Set<string>();
 
+    // 1. Add nodes connected via explicit relationships (->  <- <-> => ><[axis])
     for (const rel of ir.relationships) {
       connectedIds.add(rel.source);
       connectedIds.add(rel.target);
+    }
+
+    // 2. Add nodes connected via block hierarchies (parent-child relationships)
+    for (const node of ir.nodes) {
+      if (node.type === 'block' && node.ext?.children && Array.isArray(node.ext.children)) {
+        // Mark the block as connected
+        connectedIds.add(node.id);
+        // Mark all children as connected
+        for (const child of node.ext.children) {
+          connectedIds.add(child.id);
+        }
+      }
     }
 
     // Check each node for connections

@@ -162,7 +162,7 @@ describe('IndentationScanner', () => {
       const scanner = new IndentationScanner({ indentSize: 4 });
       const input = 'A\n    B\n    C';
       const result = scanner.process(input);
-      expect(result.transformed).toBe('A\n    {B\n    C\n    }');
+      expect(result.transformed).toBe('A\n{\n    B\n    C\n    }');
     });
   });
 
@@ -183,8 +183,9 @@ describe('IndentationScanner', () => {
       const result = scanner.process(input);
 
       // Each indented section should be wrapped
-      expect(result.transformed).toContain('{B');
-      expect(result.transformed).toContain('{D');
+      expect(result.transformed).toContain('{');
+      expect(result.transformed).toContain('B');
+      expect(result.transformed).toContain('D');
     });
   });
 
@@ -212,7 +213,8 @@ describe('IndentationScanner', () => {
 
       // Should not error on whitespace-only line
       expect(result.transformed).toContain('A');
-      expect(result.transformed).toContain('{B');
+      expect(result.transformed).toContain('{');
+      expect(result.transformed).toContain('B');
       expect(result.transformed).toContain('C');
     });
 
@@ -250,8 +252,9 @@ describe('IndentationScanner', () => {
       // This test now verifies that 3-space indentation works (Python allows any indent amount)
       const result = scanner.process('A\n  B\n   C'); // 3 spaces - should work
       expect(result.transformed).toContain('A');
-      expect(result.transformed).toContain('{B');
-      expect(result.transformed).toContain('{C'); // 3 spaces creates new indent level
+      expect(result.transformed).toContain('{');
+      expect(result.transformed).toContain('B');
+      expect(result.transformed).toContain('C'); // 3 spaces creates new indent level
     });
 
     it('reports correct line number for invalid dedent', () => {

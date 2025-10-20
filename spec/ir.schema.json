@@ -112,7 +112,8 @@
             "completion",
             "alternative",
             "exploring",
-            "parking"
+            "parking",
+            "block"
           ],
           "description": "Semantic type of this node"
         },

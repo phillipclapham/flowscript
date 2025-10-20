@@ -11,8 +11,7 @@
 #
 # Usage: Tests should parse this file and validate each case
 
-================================================================================
-TEST: Simple indentation (2 levels)
+================================================================================TEST: Simple indentation (2 levels)
 TYPE: VALID
 DESCRIPTION: Basic 2-level indentation with relationship operators
 
@@ -23,13 +22,13 @@ INPUT:
 
 EXPECTED:
 ? authentication strategy
-  {|| JWT tokens
-     {-> stateless architecture
+{
+  || JWT tokens
+  {
+     -> stateless architecture
      }
   }
-
-================================================================================
-TEST: Deep nesting (5 levels)
+================================================================================TEST: Deep nesting (5 levels)
 TYPE: VALID
 DESCRIPTION: Deep hierarchical structure with 5 indentation levels
 
@@ -42,17 +41,19 @@ A
 
 EXPECTED:
 A
-  {B
-    {C
-      {D
-        {E
+{
+  B
+  {
+    C
+    {
+      D
+      {
+        E
         }
       }
     }
   }
-
-================================================================================
-TEST: Multiple dedent in one step (level 6 to level 0)
+================================================================================TEST: Multiple dedent in one step (level 6 to level 0)
 TYPE: VALID
 DESCRIPTION: Jump from deeply nested back to root level
 
@@ -65,16 +66,17 @@ E
 
 EXPECTED:
 A
-  {B
-    {C
-      {D
+{
+  B
+  {
+    C
+    {
+      D
       }
     }
   }
 E
-
-================================================================================
-TEST: Blank lines within indented sections
+================================================================================TEST: Blank lines within indented sections
 TYPE: VALID
 DESCRIPTION: Blank lines should not affect indentation tracking
 
@@ -89,17 +91,17 @@ E
 
 EXPECTED:
 A
-  {B
+{
+  B
 
   C
-    {D
+  {
+    D
 
     }
   }
 E
-
-================================================================================
-TEST: Mixed explicit blocks and indentation
+================================================================================TEST: Mixed explicit blocks and indentation
 TYPE: VALID
 DESCRIPTION: Explicit {} blocks coexist with indentation-based syntax
 
@@ -118,12 +120,11 @@ A {
   C
 }
 D
-  {E
+{
+  E
   F
   }
-
-================================================================================
-TEST: All relationship operators with indentation
+================================================================================TEST: All relationship operators with indentation
 TYPE: VALID
 DESCRIPTION: All relationship operators work with indentation
 
@@ -138,17 +139,17 @@ INPUT:
 
 EXPECTED:
 ? question
-  {|| alternative
-     {-> causes implication
+{
+  || alternative
+  {
+     -> causes implication
      <- reverse causal
      <-> bidirectional
      => temporal sequence
      ><[axis] tension
      }
   }
-
-================================================================================
-TEST: Alternative marker with deeply indented children
+================================================================================TEST: Alternative marker with deeply indented children
 TYPE: VALID
 DESCRIPTION: || marker with multiple levels of nested implications
 
@@ -164,22 +165,26 @@ INPUT:
 
 EXPECTED:
 ? caching strategy
-  {|| Redis
-     {-> centralized
-        {-> single source of truth
-           {-> consistency guaranteed
+{
+  || Redis
+  {
+     -> centralized
+     {
+        -> single source of truth
+        {
+           -> consistency guaranteed
            }
         }
      }
   || Local cache
-     {-> fast access
-        {-> no network latency
+  {
+     -> fast access
+     {
+        -> no network latency
         }
      }
   }
-
-================================================================================
-TEST: State markers with indentation
+================================================================================TEST: State markers with indentation
 TYPE: VALID
 DESCRIPTION: State markers ([blocked], [decided], etc.) with indented children
 
@@ -192,15 +197,15 @@ INPUT:
 
 EXPECTED:
 * [decided(rationale: "security first", on: "2025-10-15")] session tokens
-  {action: provision Redis
+{
+  action: provision Redis
   action: implement middleware
-    {-> 24hr TTL
+  {
+    -> 24hr TTL
     -> secure cookie storage
     }
   }
-
-================================================================================
-TEST: Modifiers with indentation
+================================================================================TEST: Modifiers with indentation
 TYPE: VALID
 DESCRIPTION: Modifiers (!, ~, ++, --) with indented children
 
@@ -212,15 +217,16 @@ INPUT:
 
 EXPECTED:
 ! urgent production bug
-  {-> timeout errors
-     {-> connection pool exhausted
-        {-> missing release() calls
+{
+  -> timeout errors
+  {
+     -> connection pool exhausted
+     {
+        -> missing release() calls
         }
      }
   }
-
-================================================================================
-TEST: Empty indented sections
+================================================================================TEST: Empty indented sections
 TYPE: VALID
 DESCRIPTION: Indented section with no additional content
 
@@ -231,12 +237,11 @@ C
 
 EXPECTED:
 A
-  {B
+{
+  B
   }
 C
-
-================================================================================
-TEST: Whitespace-only lines treated as blank
+================================================================================TEST: Whitespace-only lines treated as blank
 TYPE: VALID
 DESCRIPTION: Lines with only spaces/tabs are treated as blank
 
@@ -248,13 +253,12 @@ A
 
 EXPECTED:
 A
-  {B
+{
+  B
 
   C
   }
-
-================================================================================
-TEST: Multiple consecutive blank lines
+================================================================================TEST: Multiple consecutive blank lines
 TYPE: VALID
 DESCRIPTION: Multiple blank lines don't affect structure
 
@@ -267,14 +271,13 @@ A
 
 EXPECTED:
 A
-  {B
+{
+  B
 
 
   C
   }
-
-================================================================================
-TEST: Indentation inside explicit blocks
+================================================================================TEST: Indentation inside explicit blocks
 TYPE: VALID
 DESCRIPTION: Indentation can be used inside explicit {} blocks
 
@@ -288,14 +291,14 @@ A {
 EXPECTED:
 A {
   B
-    {C
-      {D
+  {
+    C
+    {
+      D
       }
     }
 }
-
-================================================================================
-TEST: Complex mixed nesting
+================================================================================TEST: Complex mixed nesting
 TYPE: VALID
 DESCRIPTION: Complex combination of indentation and explicit blocks
 
@@ -314,22 +317,23 @@ INPUT:
 
 EXPECTED:
 ? decision
-  {|| option A {
+{
+  || option A {
      -> benefit 1
      -> benefit 2
   }
   || option B
-     {-> benefit 3
-        {-> nested benefit
+  {
+     -> benefit 3
+     {
+        -> nested benefit
         }
      }
   || option C {
      -> benefit 4
   }
   }
-
-================================================================================
-TEST: EOF with open indentation
+================================================================================TEST: EOF with open indentation
 TYPE: VALID
 DESCRIPTION: End of file should close all open indentation levels
 
@@ -341,15 +345,16 @@ A
 
 EXPECTED:
 A
-  {B
-    {C
-      {D
+{
+  B
+  {
+    C
+    {
+      D
       }
     }
   }
-
-================================================================================
-TEST: Single line at root level
+================================================================================TEST: Single line at root level
 TYPE: VALID
 DESCRIPTION: Single line with no indentation
 
@@ -358,9 +363,7 @@ A
 
 EXPECTED:
 A
-
-================================================================================
-TEST: Tension operator with indented analysis
+================================================================================TEST: Tension operator with indented analysis
 TYPE: VALID
 DESCRIPTION: Tension operator ><[axis] with indented supporting nodes
 
@@ -372,12 +375,13 @@ A
 
 EXPECTED:
 A
-  {B ><[cost vs performance] C
-     {-> high cost implications
+{
+  B ><[cost vs performance] C
+  {
+     -> high cost implications
      -> performance benefits
      }
   }
-
 ================================================================================
 ERROR TEST: Tab character detected
 TYPE: ERROR
@@ -481,8 +485,7 @@ A
 EXPECTED_ERROR:
 IndentationError: Tabs not allowed. Use 2 spaces for indentation. (Line 3)
 
-================================================================================
-EDGE TEST: Very deep nesting (10 levels)
+================================================================================EDGE TEST: Very deep nesting (10 levels)
 TYPE: VALID
 DESCRIPTION: Stress test with 10 indentation levels
 
@@ -500,15 +503,24 @@ L0
 
 EXPECTED:
 L0
-  {L1
-    {L2
-      {L3
-        {L4
-          {L5
-            {L6
-              {L7
-                {L8
-                  {L9
+{
+  L1
+  {
+    L2
+    {
+      L3
+      {
+        L4
+        {
+          L5
+          {
+            L6
+            {
+              L7
+              {
+                L8
+                {
+                  L9
                   }
                 }
               }
@@ -518,9 +530,7 @@ L0
       }
     }
   }
-
-================================================================================
-EDGE TEST: Alternating indent/dedent
+================================================================================EDGE TEST: Alternating indent/dedent
 TYPE: VALID
 DESCRIPTION: Up, down, up, down pattern
 
@@ -533,15 +543,15 @@ E
 
 EXPECTED:
 A
-  {B
+{
+  B
   }
 C
-  {D
+{
+  D
   }
 E
-
-================================================================================
-EDGE TEST: Multiple sections at same level
+================================================================================EDGE TEST: Multiple sections at same level
 TYPE: VALID
 DESCRIPTION: Several parallel sections at same indentation
 
@@ -554,14 +564,13 @@ A
 
 EXPECTED:
 A
-  {B1
+{
+  B1
   B2
   B3
   B4
   }
-
-================================================================================
-EDGE TEST: Only blank lines (degenerate case)
+================================================================================EDGE TEST: Only blank lines (degenerate case)
 TYPE: VALID
 DESCRIPTION: Document with only blank lines
 
@@ -570,11 +579,7 @@ INPUT:
 
 
 
-EXPECTED:
-
-
-
-================================================================================
+EXPECTED:================================================================================
 # Summary Statistics
 # Total test cases: 32
 # Valid cases: 24

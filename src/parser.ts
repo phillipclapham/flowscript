@@ -59,6 +59,9 @@ export class Parser {
     // Link state markers to following nodes
     this.linkStatesToNodes();
 
+    // Link questions to their alternatives
+    this.linkQuestionsToAlternatives();
+
     return {
       version: '1.0.0',
       nodes: this.nodes,
@@ -726,6 +729,46 @@ export class Parser {
       }
       // If no following node, leave node_id as empty string
       // (edge case: state at end of document with no following content)
+    }
+  }
+
+  /**
+   * Link questions to their alternatives.
+   * Creates alternative relationships from question nodes to following || markers.
+   */
+  private linkQuestionsToAlternatives(): void {
+    for (let i = 0; i < this.nodes.length; i++) {
+      const node = this.nodes[i];
+
+      if (node.type !== 'question') continue;
+
+      // Find all alternatives that follow this question (before next question or EOF)
+      const questionLine = node.provenance.line_number;
+      const alternatives: Node[] = [];
+
+      for (let j = i + 1; j < this.nodes.length; j++) {
+        const candidate = this.nodes[j];
+
+        // Stop if we hit another question (end of this question's scope)
+        if (candidate.type === 'question') break;
+
+        // Collect alternatives
+        if (candidate.type === 'alternative') {
+          alternatives.push(candidate);
+        }
+      }
+
+      // Create alternative relationships
+      for (const alt of alternatives) {
+        const relationship: Relationship = {
+          id: hashContent({ type: 'alternative', source: node.id, target: alt.id }),
+          type: 'alternative' as any,
+          source: node.id,
+          target: alt.id,
+          provenance: alt.provenance // Use alternative's provenance (line where || appears)
+        };
+        this.relationships.push(relationship);
+      }
     }
   }
 }

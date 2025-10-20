@@ -1,0 +1,507 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "9b20cbf148eeff39ad523fd627409058dcaacd05db1d1424548bb5abdd3f946a",
+      "type": "question",
+      "content": "authentication strategy for v1 launch",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 1,
+        "timestamp": "2025-10-20T22:49:46.181Z"
+      }
+    },
+    {
+      "id": "ea777fb1b1fa873fda66b0bf39372bf5582266ec67f0fe668cc0f4d4a430d832",
+      "type": "alternative",
+      "content": "JWT tokens",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-20T22:49:46.182Z"
+      }
+    },
+    {
+      "id": "6a507bd0dfab438650c3a52dc6088e7902a8b5dff4356911c8d9d71376947e16",
+      "type": "statement",
+      "content": "stateless architecture",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 4,
+        "timestamp": "2025-10-20T22:49:46.182Z"
+      }
+    },
+    {
+      "id": "28451cb48c4cc45c2af223a5d58f9dd9546ad8868b8a599240c82a85107a9a75",
+      "type": "statement",
+      "content": "scales horizontally",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-20T22:49:46.182Z"
+      }
+    },
+    {
+      "id": "b65ad1e5ced09f0c2bfc8fc93cdb4ac753ea5b4160930c9eb66d1f43bbdcf5da",
+      "type": "statement",
+      "content": "no server-side session storage",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 6,
+        "timestamp": "2025-10-20T22:49:46.182Z"
+      }
+    },
+    {
+      "id": "5ff5f71fa17ae993f93372f01f0228339b2f0ea2cfb70502a4012b7ff334e5e0",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "28451cb48c4cc45c2af223a5d58f9dd9546ad8868b8a599240c82a85107a9a75",
+            "type": "statement",
+            "content": "scales horizontally",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 5,
+              "timestamp": "2025-10-20T22:49:46.182Z"
+            }
+          },
+          {
+            "id": "b65ad1e5ced09f0c2bfc8fc93cdb4ac753ea5b4160930c9eb66d1f43bbdcf5da",
+            "type": "statement",
+            "content": "no server-side session storage",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 6,
+              "timestamp": "2025-10-20T22:49:46.182Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "3394d9dfb653ab21852547eeb338c1d6876d484f50415fb6c8bd18c9c02ddd8e",
+      "type": "statement",
+      "content": "revocation difficult",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 7,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "660ee3befd97408ec9f2b378aef96382b2a4fb73ec0e52350ac33e5de33f3548",
+      "type": "statement",
+      "content": "implementation complexity",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 7,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "85e5228cd20f05cac4419fc3e888564c4f2eb0aa13947159e2e72861488a8981",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 4,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "6a507bd0dfab438650c3a52dc6088e7902a8b5dff4356911c8d9d71376947e16",
+            "type": "statement",
+            "content": "stateless architecture",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 4,
+              "timestamp": "2025-10-20T22:49:46.182Z"
+            }
+          },
+          {
+            "id": "5ff5f71fa17ae993f93372f01f0228339b2f0ea2cfb70502a4012b7ff334e5e0",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 5,
+              "timestamp": "2025-10-20T22:49:46.183Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "28451cb48c4cc45c2af223a5d58f9dd9546ad8868b8a599240c82a85107a9a75",
+                  "type": "statement",
+                  "content": "scales horizontally",
+                  "provenance": {
+                    "source_file": "examples/decision.fs",
+                    "line_number": 5,
+                    "timestamp": "2025-10-20T22:49:46.182Z"
+                  }
+                },
+                {
+                  "id": "b65ad1e5ced09f0c2bfc8fc93cdb4ac753ea5b4160930c9eb66d1f43bbdcf5da",
+                  "type": "statement",
+                  "content": "no server-side session storage",
+                  "provenance": {
+                    "source_file": "examples/decision.fs",
+                    "line_number": 6,
+                    "timestamp": "2025-10-20T22:49:46.182Z"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "3394d9dfb653ab21852547eeb338c1d6876d484f50415fb6c8bd18c9c02ddd8e",
+            "type": "statement",
+            "content": "revocation difficult",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 7,
+              "timestamp": "2025-10-20T22:49:46.183Z"
+            }
+          },
+          {
+            "id": "660ee3befd97408ec9f2b378aef96382b2a4fb73ec0e52350ac33e5de33f3548",
+            "type": "statement",
+            "content": "implementation complexity",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 7,
+              "timestamp": "2025-10-20T22:49:46.183Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "a17d33cfe5b9f381a6b2c5659c60af753ec4917a5f57c7e86d731fbc0056adc0",
+      "type": "alternative",
+      "content": "session tokens + Redis",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 9,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "9ad15a50ee18d2a99bbed63b58e55520c1459936eeff6a137fe0cb574c9a111e",
+      "type": "statement",
+      "content": "instant revocation capability",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 10,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "115c9f731907046704483b7914829f27dd73b0d227901d7e9f2a4df02a16462c",
+      "type": "statement",
+      "content": "battle-tested approach",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 11,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "610bf6b2a6e6b0c9988ccad665e59554b42ead7e3597f2601044e3f998ba34a7",
+      "type": "statement",
+      "content": "server-side state required",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 12,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "b0bdc724dd69e88d6a5af484582aa67959579b9efedbf5c9d757e006a4c65512",
+      "type": "statement",
+      "content": "operational complexity",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 12,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "d68a5bc2ca6d961224ca802f36986b58eb569e59d9314d3e7e5d291b280a679a",
+      "type": "statement",
+      "content": "additional infrastructure (Redis cluster)",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 13,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "0407e9cd91cb9da63dbf69e02abe13d3d8d2197eb42d84fef7ed793efc86024a",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 10,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "9ad15a50ee18d2a99bbed63b58e55520c1459936eeff6a137fe0cb574c9a111e",
+            "type": "statement",
+            "content": "instant revocation capability",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 10,
+              "timestamp": "2025-10-20T22:49:46.183Z"
+            }
+          },
+          {
+            "id": "115c9f731907046704483b7914829f27dd73b0d227901d7e9f2a4df02a16462c",
+            "type": "statement",
+            "content": "battle-tested approach",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 11,
+              "timestamp": "2025-10-20T22:49:46.183Z"
+            }
+          },
+          {
+            "id": "610bf6b2a6e6b0c9988ccad665e59554b42ead7e3597f2601044e3f998ba34a7",
+            "type": "statement",
+            "content": "server-side state required",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 12,
+              "timestamp": "2025-10-20T22:49:46.183Z"
+            }
+          },
+          {
+            "id": "b0bdc724dd69e88d6a5af484582aa67959579b9efedbf5c9d757e006a4c65512",
+            "type": "statement",
+            "content": "operational complexity",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 12,
+              "timestamp": "2025-10-20T22:49:46.183Z"
+            }
+          },
+          {
+            "id": "d68a5bc2ca6d961224ca802f36986b58eb569e59d9314d3e7e5d291b280a679a",
+            "type": "statement",
+            "content": "additional infrastructure (Redis cluster)",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 13,
+              "timestamp": "2025-10-20T22:49:46.183Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "ff9f656c1f01dc57c86de9e4f6a54e90ef563712c69dab35efb9db871f7e9400",
+      "type": "statement",
+      "content": "session tokens + Redis",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 15,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "5a1061d557625d66e76adab44320ac1616758c8d5183f6f6e4bd8fcc25d511e1",
+      "type": "action",
+      "content": "provision Redis cluster on AWS ElastiCache",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 16,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "97e1b0db3df97267220a2ff5bf4ce690d7e63159164f2d14f36b21031758fdf0",
+      "type": "action",
+      "content": "implement session middleware with 24hr TTL",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 17,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "66e878592512128848680ce48f18be589fd76d351d275d25ab8e2a508b35538d",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 16,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "5a1061d557625d66e76adab44320ac1616758c8d5183f6f6e4bd8fcc25d511e1",
+            "type": "action",
+            "content": "provision Redis cluster on AWS ElastiCache",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 16,
+              "timestamp": "2025-10-20T22:49:46.183Z"
+            }
+          },
+          {
+            "id": "97e1b0db3df97267220a2ff5bf4ce690d7e63159164f2d14f36b21031758fdf0",
+            "type": "action",
+            "content": "implement session middleware with 24hr TTL",
+            "provenance": {
+              "source_file": "examples/decision.fs",
+              "line_number": 17,
+              "timestamp": "2025-10-20T22:49:46.183Z"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "ac5f66099d9968c2198d63b827acd7a7787a8c5293253f7f4b704c7bd27861fe",
+      "type": "causes",
+      "source": "28451cb48c4cc45c2af223a5d58f9dd9546ad8868b8a599240c82a85107a9a75",
+      "target": "b65ad1e5ced09f0c2bfc8fc93cdb4ac753ea5b4160930c9eb66d1f43bbdcf5da",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 6,
+        "timestamp": "2025-10-20T22:49:46.182Z"
+      }
+    },
+    {
+      "id": "6358f97bab19f4679035fe0a0359781d69f5aa08b57a98513d57933a191a5c6e",
+      "type": "causes",
+      "source": "6a507bd0dfab438650c3a52dc6088e7902a8b5dff4356911c8d9d71376947e16",
+      "target": "3394d9dfb653ab21852547eeb338c1d6876d484f50415fb6c8bd18c9c02ddd8e",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 7,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "023d58a2c13773e8bf28b6aadceabbffad164b54377b3bbe5081619fffababf0",
+      "type": "tension",
+      "source": "6a507bd0dfab438650c3a52dc6088e7902a8b5dff4356911c8d9d71376947e16",
+      "target": "660ee3befd97408ec9f2b378aef96382b2a4fb73ec0e52350ac33e5de33f3548",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 7,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      },
+      "axis_label": "security vs simplicity"
+    },
+    {
+      "id": "d3124ab236ba346a3dd10dc85b56949c8233edf9282eb32fa2aeeac8b87ff924",
+      "type": "causes",
+      "source": "9ad15a50ee18d2a99bbed63b58e55520c1459936eeff6a137fe0cb574c9a111e",
+      "target": "115c9f731907046704483b7914829f27dd73b0d227901d7e9f2a4df02a16462c",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 11,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "100815636a790905496825885ca8f16dce4200a97449129f2e5beea9d336f8b3",
+      "type": "causes",
+      "source": "9ad15a50ee18d2a99bbed63b58e55520c1459936eeff6a137fe0cb574c9a111e",
+      "target": "610bf6b2a6e6b0c9988ccad665e59554b42ead7e3597f2601044e3f998ba34a7",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 12,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "5809af16f009e1a26e044093760acf2d84909efce9207b61a7bcd5f3ed1265ce",
+      "type": "tension",
+      "source": "9ad15a50ee18d2a99bbed63b58e55520c1459936eeff6a137fe0cb574c9a111e",
+      "target": "b0bdc724dd69e88d6a5af484582aa67959579b9efedbf5c9d757e006a4c65512",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 12,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      },
+      "axis_label": "scaling vs security"
+    },
+    {
+      "id": "d3abafea6b81aa2c796d310d5a5700fdd8d9a7424bc3989781542da7f4d00a57",
+      "type": "causes",
+      "source": "9ad15a50ee18d2a99bbed63b58e55520c1459936eeff6a137fe0cb574c9a111e",
+      "target": "d68a5bc2ca6d961224ca802f36986b58eb569e59d9314d3e7e5d291b280a679a",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 13,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    },
+    {
+      "id": "b12447e174aae6a235e74960cf529710fe68629aad6b4927c1be4557f90280e4",
+      "type": "alternative",
+      "source": "9b20cbf148eeff39ad523fd627409058dcaacd05db1d1424548bb5abdd3f946a",
+      "target": "ea777fb1b1fa873fda66b0bf39372bf5582266ec67f0fe668cc0f4d4a430d832",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-20T22:49:46.182Z"
+      }
+    },
+    {
+      "id": "fa46c61b1ae695c8c18e1535344ba3ba27019459a9f9a1769a043d07bf2a303b",
+      "type": "alternative",
+      "source": "9b20cbf148eeff39ad523fd627409058dcaacd05db1d1424548bb5abdd3f946a",
+      "target": "a17d33cfe5b9f381a6b2c5659c60af753ec4917a5f57c7e86d731fbc0056adc0",
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 9,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    }
+  ],
+  "states": [
+    {
+      "id": "74efe747ae06bc309271531605a311ef09ac0f9c11f93b6a87a831cb5acff5dc",
+      "type": "decided",
+      "node_id": "ff9f656c1f01dc57c86de9e4f6a54e90ef563712c69dab35efb9db871f7e9400",
+      "fields": {
+        "rationale": "security > scaling complexity for v1",
+        "on": "2025-10-15"
+      },
+      "provenance": {
+        "source_file": "examples/decision.fs",
+        "line_number": 15,
+        "timestamp": "2025-10-20T22:49:46.183Z"
+      }
+    }
+  ],
+  "invariants": {
+    "causal_acyclic": true,
+    "all_nodes_reachable": true,
+    "tension_axes_labeled": true,
+    "state_fields_present": true
+  },
+  "metadata": {
+    "source_files": [
+      "examples/decision.fs"
+    ],
+    "parsed_at": "2025-10-20T22:49:46.184Z",
+    "parser": "flowscript-peg-parser 1.0.0"
+  }
+}
