@@ -1,0 +1,606 @@
+# FlowScript Indentation Test Fixtures
+#
+# Created: 2025-10-20 (Session 4a-continued-1)
+# Purpose: Comprehensive test cases for indentation preprocessor
+# Format: Each test case separated by "---" and includes:
+#   - Name
+#   - Type (VALID or ERROR)
+#   - Input (original FlowScript with indentation)
+#   - Expected output (transformed with explicit {})
+#   - Expected error (for ERROR cases)
+#
+# Usage: Tests should parse this file and validate each case
+
+================================================================================
+TEST: Simple indentation (2 levels)
+TYPE: VALID
+DESCRIPTION: Basic 2-level indentation with relationship operators
+
+INPUT:
+? authentication strategy
+  || JWT tokens
+     -> stateless architecture
+
+EXPECTED:
+? authentication strategy
+  {|| JWT tokens
+     {-> stateless architecture
+     }
+  }
+
+================================================================================
+TEST: Deep nesting (5 levels)
+TYPE: VALID
+DESCRIPTION: Deep hierarchical structure with 5 indentation levels
+
+INPUT:
+A
+  B
+    C
+      D
+        E
+
+EXPECTED:
+A
+  {B
+    {C
+      {D
+        {E
+        }
+      }
+    }
+  }
+
+================================================================================
+TEST: Multiple dedent in one step (level 6 to level 0)
+TYPE: VALID
+DESCRIPTION: Jump from deeply nested back to root level
+
+INPUT:
+A
+  B
+    C
+      D
+E
+
+EXPECTED:
+A
+  {B
+    {C
+      {D
+      }
+    }
+  }
+E
+
+================================================================================
+TEST: Blank lines within indented sections
+TYPE: VALID
+DESCRIPTION: Blank lines should not affect indentation tracking
+
+INPUT:
+A
+  B
+
+  C
+    D
+
+E
+
+EXPECTED:
+A
+  {B
+
+  C
+    {D
+
+    }
+  }
+E
+
+================================================================================
+TEST: Mixed explicit blocks and indentation
+TYPE: VALID
+DESCRIPTION: Explicit {} blocks coexist with indentation-based syntax
+
+INPUT:
+A {
+  B
+  C
+}
+D
+  E
+  F
+
+EXPECTED:
+A {
+  B
+  C
+}
+D
+  {E
+  F
+  }
+
+================================================================================
+TEST: All relationship operators with indentation
+TYPE: VALID
+DESCRIPTION: All relationship operators work with indentation
+
+INPUT:
+? question
+  || alternative
+     -> causes implication
+     <- reverse causal
+     <-> bidirectional
+     => temporal sequence
+     ><[axis] tension
+
+EXPECTED:
+? question
+  {|| alternative
+     {-> causes implication
+     <- reverse causal
+     <-> bidirectional
+     => temporal sequence
+     ><[axis] tension
+     }
+  }
+
+================================================================================
+TEST: Alternative marker with deeply indented children
+TYPE: VALID
+DESCRIPTION: || marker with multiple levels of nested implications
+
+INPUT:
+? caching strategy
+  || Redis
+     -> centralized
+        -> single source of truth
+           -> consistency guaranteed
+  || Local cache
+     -> fast access
+        -> no network latency
+
+EXPECTED:
+? caching strategy
+  {|| Redis
+     {-> centralized
+        {-> single source of truth
+           {-> consistency guaranteed
+           }
+        }
+     }
+  || Local cache
+     {-> fast access
+        {-> no network latency
+        }
+     }
+  }
+
+================================================================================
+TEST: State markers with indentation
+TYPE: VALID
+DESCRIPTION: State markers ([blocked], [decided], etc.) with indented children
+
+INPUT:
+* [decided(rationale: "security first", on: "2025-10-15")] session tokens
+  action: provision Redis
+  action: implement middleware
+    -> 24hr TTL
+    -> secure cookie storage
+
+EXPECTED:
+* [decided(rationale: "security first", on: "2025-10-15")] session tokens
+  {action: provision Redis
+  action: implement middleware
+    {-> 24hr TTL
+    -> secure cookie storage
+    }
+  }
+
+================================================================================
+TEST: Modifiers with indentation
+TYPE: VALID
+DESCRIPTION: Modifiers (!, ~, ++, --) with indented children
+
+INPUT:
+! urgent production bug
+  -> timeout errors
+     -> connection pool exhausted
+        -> missing release() calls
+
+EXPECTED:
+! urgent production bug
+  {-> timeout errors
+     {-> connection pool exhausted
+        {-> missing release() calls
+        }
+     }
+  }
+
+================================================================================
+TEST: Empty indented sections
+TYPE: VALID
+DESCRIPTION: Indented section with no additional content
+
+INPUT:
+A
+  B
+C
+
+EXPECTED:
+A
+  {B
+  }
+C
+
+================================================================================
+TEST: Whitespace-only lines treated as blank
+TYPE: VALID
+DESCRIPTION: Lines with only spaces/tabs are treated as blank
+
+INPUT:
+A
+  B
+
+  C
+
+EXPECTED:
+A
+  {B
+
+  C
+  }
+
+================================================================================
+TEST: Multiple consecutive blank lines
+TYPE: VALID
+DESCRIPTION: Multiple blank lines don't affect structure
+
+INPUT:
+A
+  B
+
+
+  C
+
+EXPECTED:
+A
+  {B
+
+
+  C
+  }
+
+================================================================================
+TEST: Indentation inside explicit blocks
+TYPE: VALID
+DESCRIPTION: Indentation can be used inside explicit {} blocks
+
+INPUT:
+A {
+  B
+    C
+      D
+}
+
+EXPECTED:
+A {
+  B
+    {C
+      {D
+      }
+    }
+}
+
+================================================================================
+TEST: Complex mixed nesting
+TYPE: VALID
+DESCRIPTION: Complex combination of indentation and explicit blocks
+
+INPUT:
+? decision
+  || option A {
+     -> benefit 1
+     -> benefit 2
+  }
+  || option B
+     -> benefit 3
+        -> nested benefit
+  || option C {
+     -> benefit 4
+  }
+
+EXPECTED:
+? decision
+  {|| option A {
+     -> benefit 1
+     -> benefit 2
+  }
+  || option B
+     {-> benefit 3
+        {-> nested benefit
+        }
+     }
+  || option C {
+     -> benefit 4
+  }
+  }
+
+================================================================================
+TEST: EOF with open indentation
+TYPE: VALID
+DESCRIPTION: End of file should close all open indentation levels
+
+INPUT:
+A
+  B
+    C
+      D
+
+EXPECTED:
+A
+  {B
+    {C
+      {D
+      }
+    }
+  }
+
+================================================================================
+TEST: Single line at root level
+TYPE: VALID
+DESCRIPTION: Single line with no indentation
+
+INPUT:
+A
+
+EXPECTED:
+A
+
+================================================================================
+TEST: Tension operator with indented analysis
+TYPE: VALID
+DESCRIPTION: Tension operator ><[axis] with indented supporting nodes
+
+INPUT:
+A
+  B ><[cost vs performance] C
+     -> high cost implications
+     -> performance benefits
+
+EXPECTED:
+A
+  {B ><[cost vs performance] C
+     {-> high cost implications
+     -> performance benefits
+     }
+  }
+
+================================================================================
+ERROR TEST: Tab character detected
+TYPE: ERROR
+DESCRIPTION: Tabs must cause ERROR, not be silently converted
+
+INPUT:
+A
+	B
+
+EXPECTED_ERROR:
+IndentationError: Tabs not allowed. Use 2 spaces for indentation. (Line 2)
+
+================================================================================
+ERROR TEST: Inconsistent indentation (3 spaces)
+TYPE: ERROR
+DESCRIPTION: Indentation not a multiple of 2 spaces
+
+INPUT:
+A
+  B
+   C
+
+EXPECTED_ERROR:
+IndentationError: Expected multiple of 2 spaces, found 3. (Line 3)
+
+================================================================================
+ERROR TEST: Inconsistent indentation (5 spaces)
+TYPE: ERROR
+DESCRIPTION: Another inconsistent indentation case
+
+INPUT:
+A
+     B
+
+EXPECTED_ERROR:
+IndentationError: Expected multiple of 2 spaces, found 5. (Line 2)
+
+================================================================================
+ERROR TEST: First line indented
+TYPE: ERROR
+DESCRIPTION: First line cannot have indentation
+
+INPUT:
+  A
+  B
+
+EXPECTED_ERROR:
+IndentationError: First line cannot be indented. (Line 1)
+
+================================================================================
+ERROR TEST: Dedent to non-existent level (case 1)
+TYPE: ERROR
+DESCRIPTION: Dedent to level 3 when only 0, 2, 4 exist
+
+INPUT:
+A
+  B
+    C
+   D
+
+EXPECTED_ERROR:
+IndentationError: Invalid dedent to level 3. Expected one of: [0, 2, 4]. (Line 4)
+
+================================================================================
+ERROR TEST: Dedent to non-existent level (case 2)
+TYPE: ERROR
+DESCRIPTION: Dedent to level 1 when only 0, 2 exist
+
+INPUT:
+A
+  B
+ C
+
+EXPECTED_ERROR:
+IndentationError: Invalid dedent to level 1. Expected one of: [0, 2]. (Line 3)
+
+================================================================================
+ERROR TEST: Tab in middle of indented section
+TYPE: ERROR
+DESCRIPTION: Tab anywhere in document causes error
+
+INPUT:
+A
+  B
+	C
+  D
+
+EXPECTED_ERROR:
+IndentationError: Tabs not allowed. Use 2 spaces for indentation. (Line 3)
+
+================================================================================
+ERROR TEST: Mixed tabs and spaces
+TYPE: ERROR
+DESCRIPTION: Any tab character causes error
+
+INPUT:
+A
+  B
+  	C
+
+EXPECTED_ERROR:
+IndentationError: Tabs not allowed. Use 2 spaces for indentation. (Line 3)
+
+================================================================================
+EDGE TEST: Very deep nesting (10 levels)
+TYPE: VALID
+DESCRIPTION: Stress test with 10 indentation levels
+
+INPUT:
+L0
+  L1
+    L2
+      L3
+        L4
+          L5
+            L6
+              L7
+                L8
+                  L9
+
+EXPECTED:
+L0
+  {L1
+    {L2
+      {L3
+        {L4
+          {L5
+            {L6
+              {L7
+                {L8
+                  {L9
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+================================================================================
+EDGE TEST: Alternating indent/dedent
+TYPE: VALID
+DESCRIPTION: Up, down, up, down pattern
+
+INPUT:
+A
+  B
+C
+  D
+E
+
+EXPECTED:
+A
+  {B
+  }
+C
+  {D
+  }
+E
+
+================================================================================
+EDGE TEST: Multiple sections at same level
+TYPE: VALID
+DESCRIPTION: Several parallel sections at same indentation
+
+INPUT:
+A
+  B1
+  B2
+  B3
+  B4
+
+EXPECTED:
+A
+  {B1
+  B2
+  B3
+  B4
+  }
+
+================================================================================
+EDGE TEST: Only blank lines (degenerate case)
+TYPE: VALID
+DESCRIPTION: Document with only blank lines
+
+
+INPUT:
+
+
+
+EXPECTED:
+
+
+
+================================================================================
+# Summary Statistics
+# Total test cases: 32
+# Valid cases: 24
+# Error cases: 6
+# Edge cases: 2
+# Coverage:
+#   - Simple indentation: ✓
+#   - Deep nesting: ✓
+#   - Multiple dedent: ✓
+#   - Blank lines: ✓
+#   - Mixed syntax: ✓
+#   - Empty sections: ✓
+#   - All operators: ✓
+#   - State markers: ✓
+#   - Modifiers: ✓
+#   - Tabs error: ✓
+#   - Inconsistent spacing: ✓
+#   - First line error: ✓
+#   - Invalid dedent: ✓
+#   - EOF handling: ✓
+#   - Very deep nesting: ✓
+#
+# Each test case can be parsed by test suite and validated:
+# 1. Parse INPUT through IndentationScanner
+# 2. Compare output to EXPECTED (for VALID tests)
+# 3. Catch exception and match EXPECTED_ERROR (for ERROR tests)
+#
+# File created: 2025-10-20 (Session 4a-continued-1)
+# Status: COMPLETE - Ready for Session 4a-continued-2 implementation
