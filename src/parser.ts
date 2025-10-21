@@ -308,7 +308,7 @@ export class Parser {
       },
 
       reverseCausal(_arrow) {
-        return { type: 'causes', axisLabel: null, reverse: true };
+        return { type: 'derives_from', axisLabel: null, reverse: false };
       },
 
       temporal(_arrow) {
