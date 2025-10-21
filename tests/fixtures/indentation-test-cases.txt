@@ -22,10 +22,8 @@ INPUT:
 
 EXPECTED:
 ? authentication strategy
-{
-  || JWT tokens
-  {
-     -> stateless architecture
+  {|| JWT tokens
+     {-> stateless architecture
      }
   }
 ================================================================================TEST: Deep nesting (5 levels)
@@ -41,14 +39,10 @@ A
 
 EXPECTED:
 A
-{
-  B
-  {
-    C
-    {
-      D
-      {
-        E
+  {B
+    {C
+      {D
+        {E
         }
       }
     }
@@ -66,12 +60,9 @@ E
 
 EXPECTED:
 A
-{
-  B
-  {
-    C
-    {
-      D
+  {B
+    {C
+      {D
       }
     }
   }
@@ -91,12 +82,10 @@ E
 
 EXPECTED:
 A
-{
-  B
+  {B
 
   C
-  {
-    D
+    {D
 
     }
   }
@@ -120,8 +109,7 @@ A {
   C
 }
 D
-{
-  E
+  {E
   F
   }
 ================================================================================TEST: All relationship operators with indentation
@@ -139,10 +127,8 @@ INPUT:
 
 EXPECTED:
 ? question
-{
-  || alternative
-  {
-     -> causes implication
+  {|| alternative
+     {-> causes implication
      <- reverse causal
      <-> bidirectional
      => temporal sequence
@@ -165,22 +151,16 @@ INPUT:
 
 EXPECTED:
 ? caching strategy
-{
-  || Redis
-  {
-     -> centralized
-     {
-        -> single source of truth
-        {
-           -> consistency guaranteed
+  {|| Redis
+     {-> centralized
+        {-> single source of truth
+           {-> consistency guaranteed
            }
         }
      }
   || Local cache
-  {
-     -> fast access
-     {
-        -> no network latency
+     {-> fast access
+        {-> no network latency
         }
      }
   }
@@ -197,11 +177,9 @@ INPUT:
 
 EXPECTED:
 * [decided(rationale: "security first", on: "2025-10-15")] session tokens
-{
-  action: provision Redis
+  {action: provision Redis
   action: implement middleware
-  {
-    -> 24hr TTL
+    {-> 24hr TTL
     -> secure cookie storage
     }
   }
@@ -217,12 +195,9 @@ INPUT:
 
 EXPECTED:
 ! urgent production bug
-{
-  -> timeout errors
-  {
-     -> connection pool exhausted
-     {
-        -> missing release() calls
+  {-> timeout errors
+     {-> connection pool exhausted
+        {-> missing release() calls
         }
      }
   }
@@ -237,8 +212,7 @@ C
 
 EXPECTED:
 A
-{
-  B
+  {B
   }
 C
 ================================================================================TEST: Whitespace-only lines treated as blank
@@ -253,8 +227,7 @@ A
 
 EXPECTED:
 A
-{
-  B
+  {B
 
   C
   }
@@ -271,8 +244,7 @@ A
 
 EXPECTED:
 A
-{
-  B
+  {B
 
 
   C
@@ -291,10 +263,8 @@ A {
 EXPECTED:
 A {
   B
-  {
-    C
-    {
-      D
+    {C
+      {D
       }
     }
 }
@@ -317,16 +287,13 @@ INPUT:
 
 EXPECTED:
 ? decision
-{
-  || option A {
+  {|| option A {
      -> benefit 1
      -> benefit 2
   }
   || option B
-  {
-     -> benefit 3
-     {
-        -> nested benefit
+     {-> benefit 3
+        {-> nested benefit
         }
      }
   || option C {
@@ -345,12 +312,9 @@ A
 
 EXPECTED:
 A
-{
-  B
-  {
-    C
-    {
-      D
+  {B
+    {C
+      {D
       }
     }
   }
@@ -375,10 +339,8 @@ A
 
 EXPECTED:
 A
-{
-  B ><[cost vs performance] C
-  {
-     -> high cost implications
+  {B ><[cost vs performance] C
+     {-> high cost implications
      -> performance benefits
      }
   }
@@ -503,24 +465,15 @@ L0
 
 EXPECTED:
 L0
-{
-  L1
-  {
-    L2
-    {
-      L3
-      {
-        L4
-        {
-          L5
-          {
-            L6
-            {
-              L7
-              {
-                L8
-                {
-                  L9
+  {L1
+    {L2
+      {L3
+        {L4
+          {L5
+            {L6
+              {L7
+                {L8
+                  {L9
                   }
                 }
               }
@@ -543,12 +496,10 @@ E
 
 EXPECTED:
 A
-{
-  B
+  {B
   }
 C
-{
-  D
+  {D
   }
 E
 ================================================================================EDGE TEST: Multiple sections at same level
@@ -564,8 +515,7 @@ A
 
 EXPECTED:
 A
-{
-  B1
+  {B1
   B2
   B3
   B4

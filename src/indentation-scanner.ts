@@ -151,11 +151,10 @@ export class IndentationScanner {
           // INDENT: Indentation increased - add implicit opening brace
           this.indentStack.push(indent);
 
-          // Insert '{' on its own line at the PARENT's indentation level
-          output.push({ line: ' '.repeat(prevIndent) + '{', originalLine: lineNum });
-
-          // Then output the current line as-is
-          output.push({ line, originalLine: lineNum });
+          // PREFIX '{' to the current line (same line, not separate!)
+          const currentIndent = this.countLeadingSpaces(line);
+          const content = line.trimStart();
+          output.push({ line: ' '.repeat(currentIndent) + '{' + content, originalLine: lineNum });
 
           // Now handle the explicit brace on this line
           if (openBraces > closeBraces) {
@@ -269,15 +268,14 @@ export class IndentationScanner {
     // 8. Compare current indent to previous level
     if (indent > prevIndent) {
       // INDENT: New nested level
-      // Push new level onto stack and insert '{' at parent's indent level
+      // Push new level onto stack and prefix '{' to current line
       this.indentStack.push(indent);
 
-      // Insert '{' on its own line at the PARENT's indentation level (prevIndent)
-      // This ensures the parser sees clean syntax: parent \n { \n child
-      output.push({ line: ' '.repeat(prevIndent) + '{', originalLine: lineNum });
-
-      // Then output the current line as-is
-      output.push({ line, originalLine: lineNum });
+      // PREFIX '{' to the current line (same line, not separate!)
+      // Spec Example 2: "  {B" not "  {\n  B"
+      const currentIndent = this.countLeadingSpaces(line);
+      const content = line.trimStart();
+      output.push({ line: ' '.repeat(currentIndent) + '{' + content, originalLine: lineNum });
     } else if (indent < prevIndent) {
       // DEDENT: Closing one or more levels
       // Pop stack until we reach the target level, emitting closing braces

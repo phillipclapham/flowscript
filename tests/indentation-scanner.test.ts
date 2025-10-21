@@ -162,7 +162,7 @@ describe('IndentationScanner', () => {
       const scanner = new IndentationScanner({ indentSize: 4 });
       const input = 'A\n    B\n    C';
       const result = scanner.process(input);
-      expect(result.transformed).toBe('A\n{\n    B\n    C\n    }');
+      expect(result.transformed).toBe('A\n    {B\n    C\n    }');
     });
   });
 
