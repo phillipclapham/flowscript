@@ -44,20 +44,21 @@ export class OrphanedNodesRule extends BaseLintRule {
       }
     }
 
-    // 3. Build set of node IDs that have states (decided, blocked, etc.)
-    // These are semantically important and shouldn't be flagged as orphaned
-    const nodesWithStates = new Set<string>();
-    for (const state of ir.states || []) {
-      nodesWithStates.add(state.node_id);
+    // 3. Add nodes connected via hierarchical children arrays (spec-compliant)
+    for (const node of ir.nodes) {
+      if (node.children && node.children.length > 0) {
+        // Mark the parent as connected
+        connectedIds.add(node.id);
+        // Mark all children as connected
+        for (const childId of node.children) {
+          connectedIds.add(childId);
+        }
+      }
     }
 
     // Check each node for connections
     for (const node of ir.nodes) {
       if (!connectedIds.has(node.id)) {
-        // Skip nodes with states - they're decision/status nodes, not orphaned
-        if (nodesWithStates.has(node.id)) {
-          continue;
-        }
 
         // Node has degree 0 (no edges)
         results.push(this.createResult(

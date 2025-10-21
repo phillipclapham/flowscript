@@ -94,7 +94,7 @@ export interface Node {
   type: NodeType;
   content: string;
   provenance: Provenance;
-  children?: Node[];
+  children?: string[];  // Array of child node IDs (not full Node objects)
   ext?: Record<string, unknown>;
 }
 

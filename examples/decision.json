@@ -8,8 +8,12 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 1,
-        "timestamp": "2025-10-21T00:47:02.002Z"
-      }
+        "timestamp": "2025-10-21T14:20:35.691Z"
+      },
+      "children": [
+        "ea777fb1b1fa873fda66b0bf39372bf5582266ec67f0fe668cc0f4d4a430d832",
+        "a17d33cfe5b9f381a6b2c5659c60af753ec4917a5f57c7e86d731fbc0056adc0"
+      ]
     },
     {
       "id": "ea777fb1b1fa873fda66b0bf39372bf5582266ec67f0fe668cc0f4d4a430d832",
@@ -18,8 +22,13 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 3,
-        "timestamp": "2025-10-21T00:47:02.003Z"
-      }
+        "timestamp": "2025-10-21T14:20:35.691Z"
+      },
+      "children": [
+        "6a507bd0dfab438650c3a52dc6088e7902a8b5dff4356911c8d9d71376947e16",
+        "3394d9dfb653ab21852547eeb338c1d6876d484f50415fb6c8bd18c9c02ddd8e",
+        "660ee3befd97408ec9f2b378aef96382b2a4fb73ec0e52350ac33e5de33f3548"
+      ]
     },
     {
       "id": "6a507bd0dfab438650c3a52dc6088e7902a8b5dff4356911c8d9d71376947e16",
@@ -28,8 +37,12 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 4,
-        "timestamp": "2025-10-21T00:47:02.003Z"
-      }
+        "timestamp": "2025-10-21T14:20:35.692Z"
+      },
+      "children": [
+        "28451cb48c4cc45c2af223a5d58f9dd9546ad8868b8a599240c82a85107a9a75",
+        "b65ad1e5ced09f0c2bfc8fc93cdb4ac753ea5b4160930c9eb66d1f43bbdcf5da"
+      ]
     },
     {
       "id": "28451cb48c4cc45c2af223a5d58f9dd9546ad8868b8a599240c82a85107a9a75",
@@ -38,7 +51,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 5,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -48,7 +61,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 6,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -58,7 +71,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 5,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       },
       "ext": {
         "children": [
@@ -69,7 +82,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 5,
-              "timestamp": "2025-10-21T00:47:02.003Z"
+              "timestamp": "2025-10-21T14:20:35.692Z"
             }
           },
           {
@@ -79,7 +92,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 6,
-              "timestamp": "2025-10-21T00:47:02.003Z"
+              "timestamp": "2025-10-21T14:20:35.692Z"
             }
           }
         ]
@@ -92,7 +105,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 7,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -102,7 +115,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 7,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -112,7 +125,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 4,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       },
       "ext": {
         "children": [
@@ -123,8 +136,12 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 4,
-              "timestamp": "2025-10-21T00:47:02.003Z"
-            }
+              "timestamp": "2025-10-21T14:20:35.692Z"
+            },
+            "children": [
+              "28451cb48c4cc45c2af223a5d58f9dd9546ad8868b8a599240c82a85107a9a75",
+              "b65ad1e5ced09f0c2bfc8fc93cdb4ac753ea5b4160930c9eb66d1f43bbdcf5da"
+            ]
           },
           {
             "id": "5ff5f71fa17ae993f93372f01f0228339b2f0ea2cfb70502a4012b7ff334e5e0",
@@ -133,7 +150,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 5,
-              "timestamp": "2025-10-21T00:47:02.003Z"
+              "timestamp": "2025-10-21T14:20:35.692Z"
             },
             "ext": {
               "children": [
@@ -144,7 +161,7 @@
                   "provenance": {
                     "source_file": "examples/decision.fs",
                     "line_number": 5,
-                    "timestamp": "2025-10-21T00:47:02.003Z"
+                    "timestamp": "2025-10-21T14:20:35.692Z"
                   }
                 },
                 {
@@ -154,7 +171,7 @@
                   "provenance": {
                     "source_file": "examples/decision.fs",
                     "line_number": 6,
-                    "timestamp": "2025-10-21T00:47:02.003Z"
+                    "timestamp": "2025-10-21T14:20:35.692Z"
                   }
                 }
               ]
@@ -167,7 +184,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 7,
-              "timestamp": "2025-10-21T00:47:02.003Z"
+              "timestamp": "2025-10-21T14:20:35.692Z"
             }
           },
           {
@@ -177,7 +194,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 7,
-              "timestamp": "2025-10-21T00:47:02.003Z"
+              "timestamp": "2025-10-21T14:20:35.692Z"
             }
           }
         ]
@@ -190,8 +207,15 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 9,
-        "timestamp": "2025-10-21T00:47:02.003Z"
-      }
+        "timestamp": "2025-10-21T14:20:35.692Z"
+      },
+      "children": [
+        "9ad15a50ee18d2a99bbed63b58e55520c1459936eeff6a137fe0cb574c9a111e",
+        "115c9f731907046704483b7914829f27dd73b0d227901d7e9f2a4df02a16462c",
+        "610bf6b2a6e6b0c9988ccad665e59554b42ead7e3597f2601044e3f998ba34a7",
+        "b0bdc724dd69e88d6a5af484582aa67959579b9efedbf5c9d757e006a4c65512",
+        "d68a5bc2ca6d961224ca802f36986b58eb569e59d9314d3e7e5d291b280a679a"
+      ]
     },
     {
       "id": "9ad15a50ee18d2a99bbed63b58e55520c1459936eeff6a137fe0cb574c9a111e",
@@ -200,7 +224,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 10,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -210,7 +234,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 11,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -220,7 +244,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 12,
-        "timestamp": "2025-10-21T00:47:02.004Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -230,7 +254,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 12,
-        "timestamp": "2025-10-21T00:47:02.004Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -240,7 +264,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 13,
-        "timestamp": "2025-10-21T00:47:02.004Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -250,7 +274,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 10,
-        "timestamp": "2025-10-21T00:47:02.004Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       },
       "ext": {
         "children": [
@@ -261,7 +285,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 10,
-              "timestamp": "2025-10-21T00:47:02.003Z"
+              "timestamp": "2025-10-21T14:20:35.692Z"
             }
           },
           {
@@ -271,7 +295,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 11,
-              "timestamp": "2025-10-21T00:47:02.003Z"
+              "timestamp": "2025-10-21T14:20:35.692Z"
             }
           },
           {
@@ -281,7 +305,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 12,
-              "timestamp": "2025-10-21T00:47:02.004Z"
+              "timestamp": "2025-10-21T14:20:35.692Z"
             }
           },
           {
@@ -291,7 +315,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 12,
-              "timestamp": "2025-10-21T00:47:02.004Z"
+              "timestamp": "2025-10-21T14:20:35.692Z"
             }
           },
           {
@@ -301,7 +325,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 13,
-              "timestamp": "2025-10-21T00:47:02.004Z"
+              "timestamp": "2025-10-21T14:20:35.692Z"
             }
           }
         ]
@@ -314,8 +338,12 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 15,
-        "timestamp": "2025-10-21T00:47:02.004Z"
-      }
+        "timestamp": "2025-10-21T14:20:35.692Z"
+      },
+      "children": [
+        "5a1061d557625d66e76adab44320ac1616758c8d5183f6f6e4bd8fcc25d511e1",
+        "97e1b0db3df97267220a2ff5bf4ce690d7e63159164f2d14f36b21031758fdf0"
+      ]
     },
     {
       "id": "5a1061d557625d66e76adab44320ac1616758c8d5183f6f6e4bd8fcc25d511e1",
@@ -324,7 +352,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 16,
-        "timestamp": "2025-10-21T00:47:02.004Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -334,7 +362,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 17,
-        "timestamp": "2025-10-21T00:47:02.004Z"
+        "timestamp": "2025-10-21T14:20:35.693Z"
       }
     },
     {
@@ -344,7 +372,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 16,
-        "timestamp": "2025-10-21T00:47:02.004Z"
+        "timestamp": "2025-10-21T14:20:35.693Z"
       },
       "ext": {
         "children": [
@@ -355,7 +383,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 16,
-              "timestamp": "2025-10-21T00:47:02.004Z"
+              "timestamp": "2025-10-21T14:20:35.692Z"
             }
           },
           {
@@ -365,7 +393,7 @@
             "provenance": {
               "source_file": "examples/decision.fs",
               "line_number": 17,
-              "timestamp": "2025-10-21T00:47:02.004Z"
+              "timestamp": "2025-10-21T14:20:35.693Z"
             }
           }
         ]
@@ -381,7 +409,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 6,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -392,7 +420,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 7,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -403,7 +431,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 7,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       },
       "axis_label": "security vs simplicity"
     },
@@ -415,7 +443,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 11,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -426,7 +454,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 12,
-        "timestamp": "2025-10-21T00:47:02.004Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -437,7 +465,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 12,
-        "timestamp": "2025-10-21T00:47:02.004Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       },
       "axis_label": "scaling vs security"
     },
@@ -449,7 +477,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 13,
-        "timestamp": "2025-10-21T00:47:02.004Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     },
     {
@@ -460,7 +488,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 3,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.691Z"
       }
     },
     {
@@ -471,7 +499,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 9,
-        "timestamp": "2025-10-21T00:47:02.003Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     }
   ],
@@ -487,7 +515,7 @@
       "provenance": {
         "source_file": "examples/decision.fs",
         "line_number": 15,
-        "timestamp": "2025-10-21T00:47:02.004Z"
+        "timestamp": "2025-10-21T14:20:35.692Z"
       }
     }
   ],
@@ -501,7 +529,7 @@
     "source_files": [
       "examples/decision.fs"
     ],
-    "parsed_at": "2025-10-21T00:47:02.004Z",
+    "parsed_at": "2025-10-21T14:20:35.693Z",
     "parser": "flowscript-peg-parser 1.0.0"
   }
 }

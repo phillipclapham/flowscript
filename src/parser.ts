@@ -62,6 +62,9 @@ export class Parser {
     // Link questions to their alternatives
     this.linkQuestionsToAlternatives();
 
+    // Populate hierarchical children arrays
+    this.populateChildrenArrays();
+
     return {
       version: '1.0.0',
       nodes: this.nodes,
@@ -770,5 +773,100 @@ export class Parser {
         this.relationships.push(relationship);
       }
     }
+  }
+
+  /**
+   * Populate hierarchical children arrays per spec.
+   * Children represent syntactic nesting (who is indented under whom).
+   *
+   * Two-step process:
+   * 1. Questions get children from alternative relationships
+   * 2. Any node followed by a block inherits that block's children
+   */
+  private populateChildrenArrays(): void {
+    // Step 1: Questions have children = their alternatives (from relationships)
+    for (const rel of this.relationships) {
+      if (rel.type === 'alternative') {
+        const question = this.nodes.find(n => n.id === rel.source);
+        if (question) {
+          if (!question.children) {
+            question.children = [];
+          }
+          question.children.push(rel.target);
+        }
+      }
+    }
+
+    // Step 2: For each block, find the node that precedes its first child
+    // and assign the block's children to that node
+    // (e.g., alternative followed by indented implications)
+    for (const blockNode of this.nodes) {
+      if (blockNode.type !== 'block' || !blockNode.ext?.children || !Array.isArray(blockNode.ext.children)) {
+        continue;
+      }
+
+      const blockChildren = blockNode.ext.children as Node[];
+      if (blockChildren.length === 0) continue;
+
+      // Find the first non-block child in this block
+      let firstChild: Node | null = null;
+      for (const child of blockChildren) {
+        if (child.type !== 'block') {
+          firstChild = child;
+          break;
+        }
+      }
+
+      if (!firstChild) continue;
+
+      // Find the index of this first child in the main nodes array
+      const firstChildIndex = this.nodes.findIndex(n => n.id === firstChild.id);
+      if (firstChildIndex <= 0) continue; // No preceding node
+
+      // The node right before the first child is the parent
+      const parentNode = this.nodes[firstChildIndex - 1];
+
+      // Skip if parent is a block
+      if (parentNode.type === 'block') continue;
+
+      // Get DIRECT children only (exclude nested blocks, don't flatten recursively)
+      const directChildren: string[] = [];
+      for (const child of blockChildren) {
+        if (child.type !== 'block') {
+          directChildren.push(child.id);
+        }
+      }
+
+      if (directChildren.length > 0) {
+        if (!parentNode.children) {
+          parentNode.children = [];
+        }
+        // Append to existing children (e.g., question might already have alternatives)
+        parentNode.children.push(...directChildren);
+      }
+    }
+  }
+
+  /**
+   * Recursively flatten block children to get all descendant node IDs.
+   * Nested blocks are expanded to include their children.
+   *
+   * @param children - Array of child nodes from block.ext.children
+   * @returns Array of node IDs (excludes block nodes themselves)
+   */
+  private flattenBlockChildren(children: Node[]): string[] {
+    const result: string[] = [];
+
+    for (const child of children) {
+      if (child.type === 'block' && child.ext?.children && Array.isArray(child.ext.children)) {
+        // Recursively flatten nested blocks
+        result.push(...this.flattenBlockChildren(child.ext.children as Node[]));
+      } else {
+        // Regular node: add its ID
+        result.push(child.id);
+      }
+    }
+
+    return result;
   }
 }
