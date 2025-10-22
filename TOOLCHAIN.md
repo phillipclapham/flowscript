@@ -264,23 +264,23 @@ Warnings about "unknown format" are non-critical. Validation still works correct
 
 ## Next Steps
 
-### Phase 4: Golden Examples
+### Phase 4: Golden Examples ✅ COMPLETE
 
-With the toolchain complete, Phase 4 will create canonical examples:
+Phase 4 delivered 4 canonical examples (archived to `../historical/PHASE_4_COMPLETION_REPORT.md`):
 
 ```bash
-# Will create:
-examples/decision.fs + .json + .mermaid + README.md
-examples/debug.fs + .json + .mermaid + README.md
-examples/research.fs + .json + .mermaid + README.md
-examples/design.fs + .json + .mermaid + README.md
+# Delivered:
+examples/decision.fs + .json + README.md
+examples/debug.fs + .json + README.md
+examples/research.fs + .json + README.md
+examples/design.fs + .json + README.md
 ```
 
 Each example demonstrates:
 - Pattern usage (decision under tension, debug triage, research plan, design RFC)
 - FlowScript → IR compilation
-- Mermaid graph visualization
-- Critical queries (why?, what_if?, open_questions, etc.)
+- Full spec compliance (0 lint errors, 0 warnings)
+- Real-world usage patterns
 
 ### Phase 6: Continuity Demo
 
@@ -309,9 +309,16 @@ Complete specifications available in `/spec`:
 
 ---
 
-**Status:** Phase 3 COMPLETE ✅
-**Test Coverage:** 100% (77/77 parser tests + 19/19 linter tests)
-**Ready for:** Phase 4 (Golden Examples)
+**Status:** Phase 4 COMPLETE ✅ - Phase 5 (Documentation Updates) IN PROGRESS
+**Test Coverage:** 100% (130/130 tests passing)
+  - Parser tests: Comprehensive coverage of all markers and patterns
+  - Linter tests: All 9 rules validated
+  - Integration tests: End-to-end toolchain validation
+  - Golden examples: 4 patterns, all spec-compliant
+
+**Completed Phases:**
+  - Phase 3: PEG Toolchain ✅ (ARCHIVED)
+  - Phase 4: Golden Examples ✅ (ARCHIVED)
 
 *Built with PEG (Ohm.js), TypeScript, Commander.js*
-*Last updated: 2025-10-20*
+*Last updated: 2025-10-22*

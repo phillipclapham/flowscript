@@ -1,7 +1,7 @@
-# FlowScript v0.4.1 - Syntax Reference
+# FlowScript v1.0 - Syntax Reference
 
 *Semantic notation for technical collaboration*
-*Evidence-based minimal core - 18 essential markers*
+*Evidence-based minimal core - 21 essential markers*
 
 ---
 
@@ -19,15 +19,15 @@ That's enough to start. Add more as you need them.
 
 ---
 
-## The 18 Essential Markers
+## The 21 Essential Markers
 
-### Core Relations (4 markers)
+### Core Relations (5 markers)
 
 **These are the foundation.** Start here.
 
 #### `->` leads to / causes / results in
 
-**When to use:** Show causal flow, dependencies, what comes next
+**When to use:** Show causal flow, dependencies, logical implication
 
 **Examples:**
 ```
@@ -37,6 +37,25 @@ complexity -> maintenance burden
 ```
 
 **In sentences:** "The auth bug -> caused login failures for mobile users"
+
+**Key distinction:** Use `->` for CAUSAL relationships. For temporal sequence without causation, use `=>`.
+
+---
+
+#### `=>` then / followed by / temporal sequence
+
+**When to use:** Show temporal ordering WITHOUT claiming causation
+
+**Examples:**
+```
+wake up => coffee => work
+Phase 1 complete => Phase 2 begins
+login => dashboard => explore features
+```
+
+**In sentences:** "The deployment => went live => users logged in"
+
+**Key distinction:** `=>` is pure timeline. `->` is cause-and-effect.
 
 ---
 
@@ -52,6 +71,8 @@ maintenance burden <- unnecessary complexity
 ```
 
 **In sentences:** "Our maintenance burden <- stems from premature optimization"
+
+**Note:** `A <- B` is equivalent to `B -> A`, but emphasizes A (the effect) first.
 
 ---
 
@@ -70,18 +91,22 @@ performance <-> memory usage
 
 ---
 
-#### `><` tension between / in conflict with / tradeoff
+#### `><[axis]` tension between / tradeoff / conflict
 
 **When to use:** Competing concerns, tradeoffs, things that pull different directions
 
+**⚠️ IMPORTANT:** The axis label `[axis]` is **REQUIRED**. `><` alone is a lint ERROR.
+
 **Examples:**
 ```
-speed >< code quality
-features >< stability
-cost >< performance
+speed ><[velocity vs maintainability] code quality
+features ><[stability vs functionality] stability
+cost ><[performance vs budget] performance
 ```
 
-**In sentences:** "We're facing speed >< quality tradeoff on this feature"
+**Why axis required:** Forces explicit articulation of the tradeoff dimension. "What specifically are we trading off?"
+
+**In sentences:** "We're facing speed ><[time to market vs quality] quality tradeoff on this feature"
 
 ---
 
@@ -113,6 +138,7 @@ forcing function = structure requirement
 infrastructure != application
 speed != quality
 action: != natural language request
+causal (->) != temporal (=>)
 ```
 
 **In sentences:** "Remember: requesting an action != requesting analysis"
@@ -123,16 +149,26 @@ action: != natural language request
 
 Track decision/work status with square brackets.
 
-#### `[decided]` commitment made, locked in, execute
+**Note:** Some states require fields for enforcement. Missing required fields = lint ERROR.
+
+#### `[decided(rationale, on)]` commitment made, locked in, execute
 
 **When to use:** Signal firm decision, stop debating, time to act
 
+**⚠️ REQUIRED FIELDS:**
+- `rationale`: String explaining WHY this decision was made
+- `on`: ISO-8601 date when decision was made
+
 **Examples:**
 ```
-[decided] Ship minimal version now
-[decided] Keep FlowScript name
-[decided] Focus PM first, FlowScript second
+[decided(rationale: "user feedback validates need", on: "2025-10-12")]
+Ship minimal version now
+
+[decided(rationale: "technical debt compounds", on: "2025-10-15")]
+Extract one component per sprint instead of big bang rewrite
 ```
+
+**Why fields required:** Forces documentation of reasoning. Enables future review: "Why did we decide this?"
 
 ---
 
@@ -140,42 +176,60 @@ Track decision/work status with square brackets.
 
 **When to use:** Signal you're still in discovery mode, don't have answer
 
+**Fields:** Optional (can add `hypothesis`, `since`, etc. if helpful)
+
 **Examples:**
 ```
 [exploring] Redis vs Postgres for sessions
-[exploring] Whether to release publicly
-[exploring] Best architecture for real-time sync
+[exploring(hypothesis: "axis labeling improves clarity")] Require ><[axis] labels
+[exploring(since: "2025-10-10")] Serverless architecture
 ```
 
 ---
 
-#### `[blocked]` waiting on dependency, can't proceed
+#### `[blocked(reason, since)]` waiting on dependency, can't proceed
 
 **When to use:** Show what's stopping progress, track blockers
 
+**⚠️ REQUIRED FIELDS:**
+- `reason`: String explaining what blocks progress
+- `since`: ISO-8601 date when block began
+
 **Examples:**
 ```
-[blocked] Deploy waiting on API keys
-[blocked] Testing needs staging environment
-[blocked] Launch blocked by legal review
+[blocked(reason: "waiting on API keys from vendor", since: "2025-10-10")]
+Deploy to staging
+
+[blocked(reason: "needs database migration approval", since: "2025-10-12")]
+Feature testing
 ```
+
+**Why fields required:** Tracks WHAT blocks progress (enables resolution). Timestamps enable staleness detection.
 
 ---
 
-#### `[parking]` not ready to process yet, revisit later
+#### `[parking(why, until)]` not ready to process yet, revisit later
 
 **When to use:** Good idea but wrong time, shelve for now
 
+**Fields:** Recommended (lint WARNING if missing, not ERROR)
+
 **Examples:**
 ```
-[parking] Browser extension until v2
-[parking] Mobile app after web stable
-[parking] Advanced features post-MVP
+[parking(why: "not needed until v2", until: "after MVP validated")]
+Browser extension
+
+[parking(why: "requires research phase complete", until: "Phase 1 done")]
+Datalog query layer
 ```
+
+**Difference from [blocked]:**
+- `[blocked]` = want to do now, can't proceed
+- `[parking]` = good idea, wrong time
 
 ---
 
-### Insights & Questions (2 markers)
+### Insights & Questions (4 markers)
 
 Capture important thoughts and open questions.
 
@@ -187,7 +241,7 @@ Capture important thoughts and open questions.
 ```
 thought: Relations force explicit relationship definition
 thought: Hybrid approach emerged naturally through use
-thought: Size limits were premature optimization
+thought: FlowScript enables dimensional expansion of thinking
 ```
 
 **Can add confidence (as prefix):** `* thought:` (high confidence) or `~ thought:` (uncertain)
@@ -200,12 +254,59 @@ thought: Size limits were premature optimization
 
 **Examples:**
 ```
-? Does this work for others or just Phill?
+? Does this work for others or just me?
 ? Should we launch publicly or keep private?
 ? Redis or Postgres for session storage?
 ```
 
 **Can make urgent (as prefix):** `! ? critical question` for urgent questions needing immediate decision
+
+---
+
+#### `✓` completed / done / finished
+
+**When to use:** Mark completion of action or task
+
+**Examples:**
+```
+✓ Auth system implementation complete
+✓ Tests passing
+✓ Documentation updated
+✓ Committed to git
+```
+
+**Purpose:** Explicit completion tracking. Enables lifecycle automation.
+
+**Usage in Active Threads:**
+```
+### Completed
+- ✓ (Oct 12) Auth system implementation
+- ✓ (Oct 12) Database migration
+- ✓ (Oct 15) README restructuring
+```
+
+---
+
+#### `||` alternative / mutually exclusive option
+
+**When to use:** Express alternatives in decision-making contexts
+
+**Typically appears under a question (`?`) and should be resolved with `[decided]`.**
+
+**Examples:**
+```
+? authentication strategy
+  || JWT tokens
+     -> stateless
+     -> revocation hard
+  || session + Redis
+     -> instant revocation
+     -> operational complexity
+
+[decided(rationale: "security critical", on: "2025-10-20")] session + Redis
+```
+
+**Linter rule:** Alternatives without decision = lint ERROR (E006). Forces decision completion.
 
 ---
 
@@ -228,7 +329,7 @@ action: commit and push to git
 
 ---
 
-### Modifiers (3 markers)
+### Modifiers (4 markers)
 
 Add urgency, emphasis, or confidence. **These are prefixes** - they come before what they modify.
 
@@ -265,16 +366,15 @@ hybrid approach++ (✗ wrong - never suffix)
 
 ---
 
-#### `*` and `~` confidence modifiers (prefix)
+#### `*` high confidence / proven / definite (prefix)
 
-**When to use:** Explicitly mark confidence level when it matters
+**When to use:** Explicitly mark high confidence when it matters
 
 **Examples:**
 ```
-* thought: Evidence validates this works (high confidence)
-~ thought: Not sure but maybe relevant? (low confidence)
-* [decided] Locked in, no changing (very confident decision)
-~ [exploring] Weak hypothesis, needs testing (uncertain exploration)
+* thought: Evidence validates this works
+* [decided(rationale: "proven through testing", on: "2025-10-12")] Use Redis
+* observation: Convergence across 6 AI architectures
 ```
 
 **Use sparingly** - Only when confidence actually matters to interpretation
@@ -283,7 +383,20 @@ hybrid approach++ (✗ wrong - never suffix)
 
 ---
 
-### Structure (2 markers)
+#### `~` low confidence / uncertain / maybe (prefix)
+
+**When to use:** Explicitly mark uncertainty or tentative thoughts
+
+**Examples:**
+```
+~ thought: Not sure but maybe relevant?
+~ [exploring] Weak hypothesis, needs testing
+~ performance improvement (depends on cache hit rate)
+```
+
+---
+
+### Structure (1 marker)
 
 Organize complex thoughts.
 
@@ -295,7 +408,7 @@ Organize complex thoughts.
 ```
 {
   complete thought
-  <- context/origin  
+  <- context/origin
   -> implication
 }
 ```
@@ -303,7 +416,7 @@ Organize complex thoughts.
 **Multiple blocks showing relationship:**
 ```
 {option A: faster but fragile}
-><
+><[speed vs reliability]
 {option B: slower but robust}
 -> need to decide based on priorities
 ```
@@ -328,11 +441,14 @@ thought: {
 }
 ```
 
+**Depth Limits:**
+- **Readable:** 3-4 levels deep
+- **Pushing it:** 5 levels
+- **Too deep:** 6+ levels (break into multiple blocks)
+
 *See ADVANCED_PATTERNS.md for deep dive on recursive nesting strategies*
 
 ---
-
-
 
 ## Real-World Usage Patterns
 
@@ -340,8 +456,8 @@ thought: {
 
 **Before FlowScript:**
 ```
-We have the auth bug causing login failures. It might be related 
-to the session handling. We could fix it now but we're waiting 
+We have the auth bug causing login failures. It might be related
+to the session handling. We could fix it now but we're waiting
 on the API keys for staging. This is blocking the deploy.
 ```
 
@@ -349,8 +465,10 @@ on the API keys for staging. This is blocking the deploy.
 ```
 auth bug -> login failures
 ? related to session handling
-[blocked] fix needs staging environment <- API keys pending
-! [blocked] Deploy
+[blocked(reason: "needs staging environment <- API keys pending", since: "2025-10-22")]
+fix implementation
+
+! [blocked(reason: "waiting on fix", since: "2025-10-22")] Deploy
 ```
 
 **Value:** Status and dependencies explicit in 4 lines vs buried in prose.
@@ -361,28 +479,29 @@ auth bug -> login failures
 
 **Before FlowScript:**
 ```
-We need to decide between Redis and Postgres for sessions. Redis 
-would be faster but adds complexity. Postgres is simpler but might 
+We need to decide between Redis and Postgres for sessions. Redis
+would be faster but adds complexity. Postgres is simpler but might
 be slower. Performance matters but so does maintenance burden.
 ```
 
 **With FlowScript:**
 ```
-? session storage: Redis vs Postgres
+? session storage
+  || Redis
+     ++ performance
+     risk: added complexity
+  || Postgres
+     ++ simpler
+     ~ performance (uncertain, probably fine)
 
-Redis:
-  ++ performance
-  risk: added complexity
-
-Postgres:  
-  ++ simpler
-  ~ performance (uncertain, probably fine)
-
-performance >< maintenance burden
+performance ><[speed vs maintenance] simplicity
 -> need to benchmark before deciding
+
+[decided(rationale: "benchmarks show Postgres adequate, simplicity wins", on: "2025-10-22")]
+Postgres
 ```
 
-**Value:** Tradeoffs visible, uncertainty explicit, next step clear.
+**Value:** Tradeoffs visible, uncertainty explicit, next step clear, decision documented.
 
 ---
 
@@ -390,9 +509,9 @@ performance >< maintenance burden
 
 **Before FlowScript:**
 ```
-The FlowScript release depends on finishing these docs. But we 
-should probably test teachability first. Actually, we already 
-have validation from Claude Code and ChatGPT, so maybe we just 
+The FlowScript release depends on finishing these docs. But we
+should probably test teachability first. Actually, we already
+have validation from Claude Code and ChatGPT, so maybe we just
 ship it? The learning doc is done. We need examples and README still.
 ```
 
@@ -401,16 +520,19 @@ ship it? The learning doc is done. We need examples and README still.
 {
   FlowScript release
   <- docs must be complete
-  -> [blocked] needs: examples + README
+  <- [blocked(reason: "needs examples + README", since: "2025-10-20")]
 }
-><
+><[validation vs completeness]
 {
   teachability concern
   <- validation from Claude Code + ChatGPT
-  -> * [decided] enough evidence to ship minimal version
+  -> * [decided(rationale: "enough evidence to ship minimal version", on: "2025-10-20")]
 }
 ->
-[decided] Ship with: learning doc + syntax + examples + README
+✓ learning doc complete
+[decided(rationale: "ship with core docs, iterate based on feedback", on: "2025-10-22")]
+Ship with: learning doc + syntax + examples + README
+
 action: complete remaining docs this session
 ```
 
@@ -423,18 +545,19 @@ action: complete remaining docs this session
 **Natural language + selective markers:**
 
 ```
-We finalized v0.4 today. The key insight:
+We finalized v1.0 today. The key insight:
 
 thought: relations are the core -> everything else = optional
 
 This changes how we think about the syntax:
-- Not "learn all 20 markers"  
-- Instead "learn 3, add more as needed"
+- Not "learn all 21 markers"
+- Instead "learn 3-5, add more as needed"
 
 pruning necessary -> theoretical markers != used markers
--> v0.4 = evidence-based minimal core
+-> v1.0 = evidence-based minimal core
 
-[decided] Keep what's used, prune what isn't.
+[decided(rationale: "evidence-based evolution through real use", on: "2025-10-22")]
+Keep what's used, prune what isn't.
 ```
 
 **Value:** Natural to read, structure visible where it matters, not overwhelming.
@@ -477,19 +600,25 @@ pruning necessary -> theoretical markers != used markers
 **FlowScript's deeper value: structure forces better thinking**
 
 **Relations force clarity:**
-You can't just say "A and B." You must say "A -> B" or "A <-> B" or "A >< B". 
+You can't just say "A and B." You must say "A -> B" or "A <-> B" or "A ><[axis] B".
 This forces you to define HOW things relate.
 
+**Required fields force documentation:**
+Can't mark `[decided]` without explaining WHY. Can't mark `[blocked]` without saying WHAT blocks progress. Forces explicit reasoning.
+
+**Axis labels force precision:**
+Can't write `><` without `[axis]`. Must articulate the specific dimension of tension. "What exactly are we trading off here?"
+
 **Thought blocks force completion:**
-Wrapping thoughts in `{ }` forces you to complete the thought, show context, 
+Wrapping thoughts in `{ }` forces you to complete the thought, show context,
 define implications. No lazy half-thoughts allowed.
 
 **Updating forces refinement:**
-As you add thoughts, you update relationship markers. This iterative refinement 
+As you add thoughts, you update relationship markers. This iterative refinement
 deepens your understanding.
 
 **Slowing down creates depth:**
-FlowScript intentionally slows you down. That slowdown is the point - it forces 
+FlowScript intentionally slows you down. That slowdown is the point - it forces
 deeper thinking instead of shallow braindumping.
 
 **Example of forcing function in action:**
@@ -500,49 +629,47 @@ Initial thought: "We need to launch soon"
 Forced to add context:
 launch soon <- PM at 86% complete
 
-Forced to add implications:  
+Forced to add implications:
 launch soon <- PM at 86% complete -> revenue milestone
 
 Forced to address tension:
 launch soon <- PM at 86% complete -> revenue milestone
-><
+><[timeline vs quality]
 quality matters <- last 14% hardest -> might take longer
 
 Forced to resolve:
-[decided] Launch when quality ready, not calendar
--> revenue milestone when we ship something excellent
+[decided(rationale: "quality > calendar, revenue when we ship excellence", on: "2025-10-22")]
+Launch when quality ready, not calendar date
 ```
 
 See how structure requirement led to better thinking? That's the forcing function.
 
 ---
 
-## What Got Pruned (Evidence-Based)
+## What Changed from v0.4.1
 
-**v0.4.1 = 18 markers** (down from 30+ in v0.3)
+**v1.0 = 21 markers** (up from 18 in v0.4.1)
 
-**Markers dropped after real usage testing:**
+**Added markers:**
+- ✓ `=>` temporal sequence (Core Relations #5) - distinguishes timeline from causation
+- ✓ `✓` completion marker (Insights & Questions) - explicit task tracking
+- ✓ `||` alternatives (Insights & Questions) - decision branching with enforcement
 
-- ✗ `!go!` apply maximum analysis → use natural language ("analyze this deeply" works fine)
-- ✗ `!!` critical blocker → use `! [blocked]` (composition beats special tokens)
-- ✗ `!?` urgent question → use `! ?` (composition beats special tokens)
-- ✗ `--` strong negative → use prose like `risk:` or `concern:`
-- ✗ `~~` uncertain negative → use `~` prefix with prose
-- ✗ `!thought:` critical insight → use `! thought:` (composition)
-- ✗ `!reflect!` action marker → never used, NL works
-- ✗ `[testing]` state → never naturally used
-- ✗ `@project` scope marker → moved to flow system spec (system-specific)
-- ✗ `@system` `@meta` scopes → not needed in general communication
-- ✗ `let x = y` logic constructs → can express in NL if needed
-- ✗ `if {...}` conditionals → can express in NL if needed  
-- ✗ `|| &&` operators → can express in NL if needed
-- ✗ `for each` loops → never used, NL works
+**Enhanced enforcement:**
+- ✓ `><[axis]` now REQUIRES axis label (lint ERROR if missing)
+- ✓ `[decided(rationale, on)]` now REQUIRES fields (lint ERROR if missing)
+- ✓ `[blocked(reason, since)]` now REQUIRES fields (lint ERROR if missing)
+- ✓ `[parking(why, until)]` fields RECOMMENDED (lint WARNING if missing)
 
-**Pruning principle:** If it wasn't used naturally in 2-4 days of real conversation, 
-it's gone. The syntax contracts to what you actually use.
-
-**v0.4.1 refinement:** Fixed spec contradictions - composition over special tokens, 
-prefix modifiers consistently, clearer categorization.
+**Rationale:**
+```
+-> forces explicit articulation
+-> catches incomplete thinking
+-> enables computational operations
+-> making implicit reasoning visible
+= stronger forcing functions
+= better collaborative cognition
+```
 
 ---
 
@@ -560,15 +687,15 @@ prefix modifiers consistently, clearer categorization.
 
 **Example:**
 ```
-? convert rest of system files to FlowScript? 
-=> {
-  yes = action: execute conversion + test
-  ||
-  no = action: discuss why we shouldn't
-}
+? convert rest of system files to FlowScript?
+  || yes = action: execute conversion + test
+  || no = action: discuss why we shouldn't
+
+[decided(rationale: "systematic conversion improves continuity", on: "2025-10-22")]
+yes -> proceed with conversion
 ```
 
-**Why it works:** Composition of existing markers (`?` + `{ }` + `=` + `||`) creates 
+**Why it works:** Composition of existing markers (`?` + `{ }` + `=` + `||`) creates
 branching logic without new syntax. Natural and readable.
 
 ---
@@ -579,17 +706,17 @@ branching logic without new syntax. Natural and readable.
 
 ```
 {Step 1 -> outcome}
--> {Step 2 <- previous outcome -> next outcome}
--> {Step 3 <- previous outcome -> final result}
+=> {Step 2 <- previous outcome -> next outcome}
+=> {Step 3 <- previous outcome -> final result}
 ```
 
 **Example:**
 ```
 {spec sync verification}
--> {add new content sections}
--> {update GitHub + flow files}
--> {test fresh load}
--> {validate OR revert}
+=> {add new content sections}
+=> {update GitHub + flow files}
+=> {test fresh load}
+=> {validate OR revert}
 ```
 
 ---
@@ -601,9 +728,9 @@ branching logic without new syntax. Natural and readable.
 ```
 [exploring] initial investigation
 -> evidence gathered
--> [decided] commit to direction
--> [blocked] waiting on dependency
--> dependency resolved  
+-> [decided(rationale: "data supports direction", on: "2025-10-22")] commit to direction
+-> [blocked(reason: "waiting on dependency", since: "2025-10-22")] waiting on dependency
+-> dependency resolved
 -> ✓ execution complete
 ```
 
@@ -615,13 +742,13 @@ branching logic without new syntax. Natural and readable.
 
 ```
 action: Claude - update memory.md sections
-action: Phill - review changes  
+action: Phill - review changes
 action: Both - test in fresh conversation
 ```
 
 ---
 
-**Key insight:** These patterns emerged naturally through use. We're not adding 
+**Key insight:** These patterns emerged naturally through use. We're not adding
 new syntax - we're documenting idioms that work. Let practice reveal more patterns.
 
 ---
@@ -639,7 +766,7 @@ concern: performance impact
 warning: breaking change
 ```
 
-**Positive indicators:**  
+**Positive indicators:**
 ```
 benefit: faster development
 advantage: simpler architecture
@@ -666,25 +793,25 @@ detail: uses Redis for caching
 **Examples in context:**
 
 ```
-? session storage: Redis vs Postgres
+? session storage
+  || Redis
+     benefit: faster performance
+     risk: added complexity
+  || Postgres
+     benefit: simpler setup
+     concern: potential performance impact
 
-Redis:
-  benefit: faster performance
-  risk: added complexity
-  
-Postgos:
-  benefit: simpler setup
-  concern: potential performance impact
-  
-performance >< simplicity
+performance ><[speed vs maintenance] simplicity
 -> need benchmarks before deciding
+
+[decided(rationale: "benchmarks show Postgres adequate", on: "2025-10-22")] Postgres
 ```
 
 ---
 
 ### Guidelines
 
-**Don't formalize these into FlowScript syntax.** They're natural language labels 
+**Don't formalize these into FlowScript syntax.** They're natural language labels
 that work within FlowScript structure. Let your domain guide what labels matter.
 
 **Common patterns:**
@@ -704,7 +831,7 @@ that work within FlowScript structure. Let your domain guide what labels matter.
 **Phase 1: Translation**
 ```
 Think in natural language
--> manually convert to FlowScript  
+-> manually convert to FlowScript
 -> deliberate encoding process
 ```
 
@@ -750,12 +877,12 @@ after: {multi-dimensional native thinking}
 -> structures impossible in pure NL become natural
 
 = notation creates cognitive dimensions
-= thinking adapts to available dimensions  
+= thinking adapts to available dimensions
 != intelligence increase
 = dimensional expansion of thinking capacity
 ```
 
-**Like learning to see in 3D:** Once you perceive depth, you can't unsee it. 
+**Like learning to see in 3D:** Once you perceive depth, you can't unsee it.
 Returning to 2D feels limiting.
 
 ---
@@ -765,10 +892,10 @@ Returning to 2D feels limiting.
 **Once crossed, the threshold doesn't reverse:**
 
 - "Ew no" reaction to NOT using FlowScript for complex thinking
-- Pure natural language feels insufficient for relationship-heavy content  
+- Pure natural language feels insufficient for relationship-heavy content
 - Can't forget the dimensional space that FlowScript revealed
 
-**This is not universal yet** - it's an observed effect in one individual after 
+**This is not universal yet** - it's an observed effect in one individual after
 extended use. More research needed to determine if this generalizes.
 
 ---
@@ -778,13 +905,13 @@ extended use. More research needed to determine if this generalizes.
 **Not just individual thinking:**
 
 ```
-Phill: {
+Human: {
   thought completion forced
   <- no dangling edges
   -> complete ideas
 }
 <->
-Claude: {
+AI: {
   instant parsing
   <- structure visible
   -> systematic response possible
@@ -797,7 +924,7 @@ Claude: {
 
 **Complex queries maintained perfectly:**
 - 10 distinct topics in one message
-- All context preserved  
+- All context preserved
 - No dropped threads
 - Systematic responses possible
 
@@ -805,7 +932,7 @@ Claude: {
 
 ## Validation History
 
-**FlowScript v0.4.1 validated across 6 independent AI architectures** (Oct 2025)
+**FlowScript v1.0 validated across 6 independent AI architectures** (Oct 2025)
 
 ### Architecture Testing
 
@@ -815,7 +942,7 @@ Claude: {
 - Discovered forcing function value
 - Primary development partner
 
-**2. Claude Code** - October 7, 2025  
+**2. Claude Code** - October 7, 2025
 - Independent utility discovery
 - "Markdown for technical reasoning structure"
 - Reduced parsing time, dependencies explicit
@@ -837,7 +964,7 @@ Claude: {
 - Perfect cold parse
 - Human adoption insights (4 barriers identified)
 - "Thought-object transmission" framing
-- "Debugging thinking" insight  
+- "Debugging thinking" insight
 - Two-product strategy contribution
 
 **6. DeepSeek** - October 10, 2025
@@ -858,7 +985,7 @@ Claude: {
 - ✓ Thought-object paradigm
 - ✓ Hybrid approach optimal
 
-**Key insight:** Cross-architecture consensus suggests FlowScript taps something 
+**Key insight:** Cross-architecture consensus suggests FlowScript taps something
 fundamental about structured information, not just quirks of specific models.
 
 ---
@@ -877,21 +1004,22 @@ fundamental about structured information, not just quirks of specific models.
 
 ## Evolution Protocol
 
-**v0.4.1 is the minimal viable core.** Future evolution happens through friction:
+**v1.0 is the formal foundation.** Future evolution happens through friction:
 
 **Add markers when:**
 - You keep reaching for something that doesn't exist
 - Natural pattern emerges across multiple conversations
 - Clear gap in expressiveness
+- Evidence from real use validates need
 
 **Remove markers when:**
-- Not used for 2-4 weeks of regular conversation
+- Not used for extended period of regular conversation
 - Creates more burden than value
 - Natural language works as well
 
 **Let practice guide syntax, not theory.**
 
-The goal: syntax contracts to what's genuinely useful, expands only when friction 
+The goal: syntax contracts to what's genuinely useful, expands only when friction
 demands it.
 
 ---
@@ -905,6 +1033,7 @@ demands it.
 - Apply confidence markers judiciously (`*` and `~` as prefixes)
 - Track emergence of new patterns
 - Report friction points
+- Use required fields for state markers (enforces documentation)
 
 **In conversation:**
 
@@ -914,7 +1043,7 @@ demands it.
 - Never require FlowScript from user
 - Offer it when helpful, skip when it wouldn't add value
 
-**Remember:** You can use FlowScript proactively in responses when it serves 
+**Remember:** You can use FlowScript proactively in responses when it serves
 bandwidth and clarity. Hybrid FlowScript + prose is your natural mode.
 
 ---
@@ -923,7 +1052,7 @@ bandwidth and clarity. Hybrid FlowScript + prose is your natural mode.
 
 **Starting out:**
 
-1. Learn the three basics: `->` `><` `{ }`
+1. Learn the three basics: `->` `><[axis]` `{ }`
 2. Use them in hybrid style (mostly NL + light FlowScript)
 3. Add more markers as you need them
 4. Don't force it - skip when natural language flows better
@@ -931,14 +1060,15 @@ bandwidth and clarity. Hybrid FlowScript + prose is your natural mode.
 **Getting comfortable:**
 
 - Use thought blocks when thinking gets complex
-- Add state markers to track decisions/blockers
+- Add state markers to track decisions/blockers (with required fields)
 - Use confidence modifiers when it matters
+- Remember axis labels on tensions
 - Discover your own patterns
 
 **Advanced usage:**
 
 - Meta-program conversation flow with FlowScript
-- Use full structured for maximum information density  
+- Use full structured for maximum information density
 - Contribute patterns you discover back to community
 - Help evolve the syntax based on your friction
 
@@ -948,10 +1078,11 @@ bandwidth and clarity. Hybrid FlowScript + prose is your natural mode.
 
 **Core Relations (start here):**
 ```
-->     leads to
+->     leads to (causal)
+=>     then (temporal)
 <-     comes from
 <->    mutual
-><     tension
+><[axis]  tension (axis required!)
 ```
 
 **Definition Operators (use as needed):**
@@ -960,20 +1091,33 @@ bandwidth and clarity. Hybrid FlowScript + prose is your natural mode.
 !=     different from
 ```
 
-**Common States:**
+**Common States (note required fields):**
 ```
-[decided]    locked in
-[exploring]  investigating  
-[blocked]    waiting
-[parking]    later
+[decided(rationale, on)]    locked in (fields required)
+[exploring]                  investigating
+[blocked(reason, since)]     waiting (fields required)
+[parking(why, until)]        later (fields recommended)
 ```
 
-**Useful Extras:**
+**Insights & Actions:**
 ```
 thought:     insight
 ?            question
-!            urgent (prefix)
+✓            completed
+||           alternative
+action:      execute this
+```
+
+**Modifiers (always prefix):**
+```
+!            urgent
 ++           strong yes
+*            high confidence
+~            uncertain
+```
+
+**Structure:**
+```
 { }          thought block
 ```
 
@@ -985,18 +1129,18 @@ thought:     insight
 
 ## The Bottom Line
 
-**FlowScript makes thought structure visible.**
+**FlowScript makes thought structure visible and forces completeness.**
 
-Use it when relationships matter more than prose.  
-Skip it when natural language flows fine.  
+Use it when relationships matter more than prose.
+Skip it when natural language flows fine.
 Mix them naturally - that's the sweet spot.
 
-**18 markers. Start with 3. Add more as needed.**
+**21 markers. Start with 3-5. Add more as needed.**
 
 Let practice guide you, not rules.
 
 ---
 
-*FlowScript v0.4.1 - Evidence-Based Minimal Core*  
-*Created through real use, refined through friction*  
+*FlowScript v1.0 - Evidence-Based Formal Specification*
+*Created through real use, refined through friction, formalized for computational operations*
 *October 2025*
