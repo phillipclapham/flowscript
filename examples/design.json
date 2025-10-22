@@ -1,0 +1,1227 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "e26889b5d1390cd923d66e62a0330abfbdf5d37ccf249775cd27cc53a2e672ef",
+      "type": "question",
+      "content": "caching strategy for read-heavy API endpoints",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 1,
+        "timestamp": "2025-10-22T18:01:12.186Z"
+      },
+      "children": [
+        "cdeb779fad5de2d20280cc506621ecd7930a30bc43152334ce0d31ea29e1651c",
+        "4a055377bea1f804b9ebb75ae9ad82da8fd05193e25528b56994d4313d996722",
+        "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba"
+      ]
+    },
+    {
+      "id": "cdeb779fad5de2d20280cc506621ecd7930a30bc43152334ce0d31ea29e1651c",
+      "type": "alternative",
+      "content": "client-side caching (browser cache headers)",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-22T18:01:12.187Z"
+      },
+      "children": [
+        "f3675ff8134692c8fe7f004d7978f9f83a08723b2ea51791c9b2843e67c7abdb",
+        "687d7aa3a2a0bdde6226eb44048b21951e1ea9caeea0b0bf9091f4b6002f7753",
+        "05fc93c51556619632808d8a548418630ceafc40c77c1b515c88d8259d8a8989",
+        "699b3cda4b97ea71b2ce4ff9a565033eb67cbb4601d52a4ec4e75308cb7ad941"
+      ]
+    },
+    {
+      "id": "f3675ff8134692c8fe7f004d7978f9f83a08723b2ea51791c9b2843e67c7abdb",
+      "type": "statement",
+      "content": "reduces server load significantly",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 4,
+        "timestamp": "2025-10-22T18:01:12.187Z"
+      }
+    },
+    {
+      "id": "687d7aa3a2a0bdde6226eb44048b21951e1ea9caeea0b0bf9091f4b6002f7753",
+      "type": "statement",
+      "content": "stale data risk for dynamic content",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-22T18:01:12.187Z"
+      }
+    },
+    {
+      "id": "05fc93c51556619632808d8a548418630ceafc40c77c1b515c88d8259d8a8989",
+      "type": "statement",
+      "content": "user experience",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-22T18:01:12.187Z"
+      }
+    },
+    {
+      "id": "699b3cda4b97ea71b2ce4ff9a565033eb67cbb4601d52a4ec4e75308cb7ad941",
+      "type": "statement",
+      "content": "no infrastructure cost",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 6,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "bd395ef25c52097ae18cc6e25635ffa9140c57477ae0054443f96a6edeb8f15b",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 4,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "f3675ff8134692c8fe7f004d7978f9f83a08723b2ea51791c9b2843e67c7abdb",
+            "type": "statement",
+            "content": "reduces server load significantly",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 4,
+              "timestamp": "2025-10-22T18:01:12.187Z"
+            }
+          },
+          {
+            "id": "687d7aa3a2a0bdde6226eb44048b21951e1ea9caeea0b0bf9091f4b6002f7753",
+            "type": "statement",
+            "content": "stale data risk for dynamic content",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 5,
+              "timestamp": "2025-10-22T18:01:12.187Z"
+            }
+          },
+          {
+            "id": "05fc93c51556619632808d8a548418630ceafc40c77c1b515c88d8259d8a8989",
+            "type": "statement",
+            "content": "user experience",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 5,
+              "timestamp": "2025-10-22T18:01:12.187Z"
+            }
+          },
+          {
+            "id": "699b3cda4b97ea71b2ce4ff9a565033eb67cbb4601d52a4ec4e75308cb7ad941",
+            "type": "statement",
+            "content": "no infrastructure cost",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 6,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "4a055377bea1f804b9ebb75ae9ad82da8fd05193e25528b56994d4313d996722",
+      "type": "alternative",
+      "content": "Redis cache layer",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 8,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      },
+      "children": [
+        "fdc98c25796110ba696de95c319432113fd9c870e35e8149a0d0690ff6fb35c6",
+        "08232586395096a3ba0bc36014f1cef42c422c011ea61cf778ca39020d7d545a",
+        "7ef9288366e6717d5634183a6af801e156e7e9c2c2afcaf8381505c604604c29",
+        "b0bdc724dd69e88d6a5af484582aa67959579b9efedbf5c9d757e006a4c65512",
+        "7f8431a32533f34cd9ba448e610b8c1e85922aeaf8c6f0192034766a51828767"
+      ]
+    },
+    {
+      "id": "fdc98c25796110ba696de95c319432113fd9c870e35e8149a0d0690ff6fb35c6",
+      "type": "statement",
+      "content": "centralized cache invalidation",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 9,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "08232586395096a3ba0bc36014f1cef42c422c011ea61cf778ca39020d7d545a",
+      "type": "statement",
+      "content": "consistent across clients",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 10,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "7ef9288366e6717d5634183a6af801e156e7e9c2c2afcaf8381505c604604c29",
+      "type": "statement",
+      "content": "additional infrastructure + monitoring",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 11,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "b0bdc724dd69e88d6a5af484582aa67959579b9efedbf5c9d757e006a4c65512",
+      "type": "statement",
+      "content": "operational complexity",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 11,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "7f8431a32533f34cd9ba448e610b8c1e85922aeaf8c6f0192034766a51828767",
+      "type": "statement",
+      "content": "battle-tested pattern",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 12,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "cfdad2627c0cd3f40d00719368c43a38dd0f84b8a24caa63fc67094732548d8c",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 9,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "fdc98c25796110ba696de95c319432113fd9c870e35e8149a0d0690ff6fb35c6",
+            "type": "statement",
+            "content": "centralized cache invalidation",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 9,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "08232586395096a3ba0bc36014f1cef42c422c011ea61cf778ca39020d7d545a",
+            "type": "statement",
+            "content": "consistent across clients",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 10,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "7ef9288366e6717d5634183a6af801e156e7e9c2c2afcaf8381505c604604c29",
+            "type": "statement",
+            "content": "additional infrastructure + monitoring",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 11,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "b0bdc724dd69e88d6a5af484582aa67959579b9efedbf5c9d757e006a4c65512",
+            "type": "statement",
+            "content": "operational complexity",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 11,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "7f8431a32533f34cd9ba448e610b8c1e85922aeaf8c6f0192034766a51828767",
+            "type": "statement",
+            "content": "battle-tested pattern",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 12,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "type": "alternative",
+      "content": "hybrid CDN + Redis architecture",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 14,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      },
+      "children": [
+        "1933d36ffe5cf3fc9786b10210431e4466f0d53bfff18f43364d95f245d8e933",
+        "c669a73a4ab8b5cd1aa2eb417cb7259ca6e976b00ff6c1b62c98e81de35d8bdf",
+        "7bbeae442c84cf26f3829ad667dc64eaf4e07fbe523a8afe5468f62ce970a40d",
+        "20f38a0d23685489d48bff415947b3033a73a5d7b3b0d713ff0f0f8815a8763a",
+        "122cd50d711ce65674e90dfa75b3c02740e233ec5a4a6677fe1b30ab53f49096",
+        "73036d87677aa262afca7699c4f3b31dae2e1c9dc3967db4390ed76ea823adde",
+        "db6678312c4ba5cc4a9d81d55e191bb02b78db1baddf6b7aa995364f285e8624",
+        "d06483939baaa689f2d9b0b85324e4a541b43d7d211b84c49e89805e0b7cbf48"
+      ]
+    },
+    {
+      "id": "1933d36ffe5cf3fc9786b10210431e4466f0d53bfff18f43364d95f245d8e933",
+      "type": "statement",
+      "content": "CDN for static assets (low latency)",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 15,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "c669a73a4ab8b5cd1aa2eb417cb7259ca6e976b00ff6c1b62c98e81de35d8bdf",
+      "type": "statement",
+      "content": "Redis for dynamic data (consistent invalidation)",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 16,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "7bbeae442c84cf26f3829ad667dc64eaf4e07fbe523a8afe5468f62ce970a40d",
+      "type": "statement",
+      "content": "best of both approaches",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 17,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "20f38a0d23685489d48bff415947b3033a73a5d7b3b0d713ff0f0f8815a8763a",
+      "type": "statement",
+      "content": "implementation effort",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 17,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "122cd50d711ce65674e90dfa75b3c02740e233ec5a4a6677fe1b30ab53f49096",
+      "type": "statement",
+      "content": "geographic distribution (lower latency)",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 18,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "73036d87677aa262afca7699c4f3b31dae2e1c9dc3967db4390ed76ea823adde",
+      "type": "statement",
+      "content": "expensive for cache misses",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 19,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "db6678312c4ba5cc4a9d81d55e191bb02b78db1baddf6b7aa995364f285e8624",
+      "type": "statement",
+      "content": "budget constraints",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 19,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "d06483939baaa689f2d9b0b85324e4a541b43d7d211b84c49e89805e0b7cbf48",
+      "type": "statement",
+      "content": "requires cache key strategy",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 20,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "57db679aee48553ad00d24542f57ae834eb30b39fe4b664e480e55eb8ae2748d",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 15,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "1933d36ffe5cf3fc9786b10210431e4466f0d53bfff18f43364d95f245d8e933",
+            "type": "statement",
+            "content": "CDN for static assets (low latency)",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 15,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "c669a73a4ab8b5cd1aa2eb417cb7259ca6e976b00ff6c1b62c98e81de35d8bdf",
+            "type": "statement",
+            "content": "Redis for dynamic data (consistent invalidation)",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 16,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "7bbeae442c84cf26f3829ad667dc64eaf4e07fbe523a8afe5468f62ce970a40d",
+            "type": "statement",
+            "content": "best of both approaches",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 17,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "20f38a0d23685489d48bff415947b3033a73a5d7b3b0d713ff0f0f8815a8763a",
+            "type": "statement",
+            "content": "implementation effort",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 17,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "122cd50d711ce65674e90dfa75b3c02740e233ec5a4a6677fe1b30ab53f49096",
+            "type": "statement",
+            "content": "geographic distribution (lower latency)",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 18,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "73036d87677aa262afca7699c4f3b31dae2e1c9dc3967db4390ed76ea823adde",
+            "type": "statement",
+            "content": "expensive for cache misses",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 19,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "db6678312c4ba5cc4a9d81d55e191bb02b78db1baddf6b7aa995364f285e8624",
+            "type": "statement",
+            "content": "budget constraints",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 19,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "d06483939baaa689f2d9b0b85324e4a541b43d7d211b84c49e89805e0b7cbf48",
+            "type": "statement",
+            "content": "requires cache key strategy",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 20,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "d262e16be8cc1f6943f93dbd5bc7d6a17219be61a9c740163f84d8bd42189294",
+      "type": "statement",
+      "content": "hybrid CDN + Redis architecture",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 22,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      },
+      "children": [
+        "338da034f2c99047682be1f8f289efbdf4351d0a7cebb82d26ad728b87ebb707",
+        "6870d625a5ac1bdd9a8edea2a835c29fd2a702363d6596fd4d69cc66c4a53e8b",
+        "26e9074dbb3734af3cccedd485425c510560f30edadca791cd7d9819119142c1",
+        "ce15d9b25061e976eae6f5ea5cb2147973f7c4ba6019b09d828504f6bc19109b"
+      ]
+    },
+    {
+      "id": "338da034f2c99047682be1f8f289efbdf4351d0a7cebb82d26ad728b87ebb707",
+      "type": "action",
+      "content": "configure CloudFront for /static/* routes",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 24,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "6870d625a5ac1bdd9a8edea2a835c29fd2a702363d6596fd4d69cc66c4a53e8b",
+      "type": "action",
+      "content": "implement Redis cache for user profile data (5min TTL)",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 25,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      },
+      "children": [
+        "90b2d416794cf0ab315925ce174448ac43875c6e5818f884e9abe0d64c4fc13b"
+      ]
+    },
+    {
+      "id": "90b2d416794cf0ab315925ce174448ac43875c6e5818f884e9abe0d64c4fc13b",
+      "type": "action",
+      "content": "add cache hit/miss monitoring to Datadog",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 26,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "26e9074dbb3734af3cccedd485425c510560f30edadca791cd7d9819119142c1",
+      "type": "completion",
+      "content": "[completed(on: \"2025-10-15\")] CloudFront configuration deployed",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 28,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "ce15d9b25061e976eae6f5ea5cb2147973f7c4ba6019b09d828504f6bc19109b",
+      "type": "completion",
+      "content": "[completed(on: \"2025-10-16\")] Redis cache layer implemented",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 29,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "90b2d416794cf0ab315925ce174448ac43875c6e5818f884e9abe0d64c4fc13b",
+      "type": "action",
+      "content": "add cache hit/miss monitoring to Datadog",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 32,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "99a713407ba56e53f352b11a4dd059a387d1ad57f469c635982b698adb13fbe8",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 32,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "90b2d416794cf0ab315925ce174448ac43875c6e5818f884e9abe0d64c4fc13b",
+            "type": "action",
+            "content": "add cache hit/miss monitoring to Datadog",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 32,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "b7cc4fe777e13331fa13682dc07bd5e2a7fb2588f003e860d3195bb301f657e1",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 24,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "338da034f2c99047682be1f8f289efbdf4351d0a7cebb82d26ad728b87ebb707",
+            "type": "action",
+            "content": "configure CloudFront for /static/* routes",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 24,
+              "timestamp": "2025-10-22T18:01:12.188Z"
+            }
+          },
+          {
+            "id": "6870d625a5ac1bdd9a8edea2a835c29fd2a702363d6596fd4d69cc66c4a53e8b",
+            "type": "action",
+            "content": "implement Redis cache for user profile data (5min TTL)",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 25,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            },
+            "children": [
+              "90b2d416794cf0ab315925ce174448ac43875c6e5818f884e9abe0d64c4fc13b"
+            ]
+          },
+          {
+            "id": "26e9074dbb3734af3cccedd485425c510560f30edadca791cd7d9819119142c1",
+            "type": "completion",
+            "content": "[completed(on: \"2025-10-15\")] CloudFront configuration deployed",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 28,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            }
+          },
+          {
+            "id": "ce15d9b25061e976eae6f5ea5cb2147973f7c4ba6019b09d828504f6bc19109b",
+            "type": "completion",
+            "content": "[completed(on: \"2025-10-16\")] Redis cache layer implemented",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 29,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            }
+          },
+          {
+            "id": "99a713407ba56e53f352b11a4dd059a387d1ad57f469c635982b698adb13fbe8",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 32,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "90b2d416794cf0ab315925ce174448ac43875c6e5818f884e9abe0d64c4fc13b",
+                  "type": "action",
+                  "content": "add cache hit/miss monitoring to Datadog",
+                  "provenance": {
+                    "source_file": "examples/design.fs",
+                    "line_number": 32,
+                    "timestamp": "2025-10-22T18:01:12.189Z"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "06487e81c77b8743e433a86a4286f207427b9a6972040f319e487eb0cdfca3ce",
+      "type": "thought",
+      "content": "cache stampede risk for high-traffic endpoints",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 34,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      },
+      "children": [
+        "ecb5ca8e78983ae8a462fbe08d6e012ade3cc4771827240c567d62fd1b8f809e",
+        "96bcb96c0d8de0f7fa7ef4ebca91779e6a7f95211614bb23edbd67295734e84f",
+        "2fb51537c85b90a57a73d1a1b1d3f77b5ba8a9c8ae634910c889be121a7c5111"
+      ]
+    },
+    {
+      "id": "ecb5ca8e78983ae8a462fbe08d6e012ade3cc4771827240c567d62fd1b8f809e",
+      "type": "statement",
+      "content": "implement probabilistic early expiration",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 35,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "96bcb96c0d8de0f7fa7ef4ebca91779e6a7f95211614bb23edbd67295734e84f",
+      "type": "statement",
+      "content": "add jitter to TTL (±10% randomization)",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 36,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "2fb51537c85b90a57a73d1a1b1d3f77b5ba8a9c8ae634910c889be121a7c5111",
+      "type": "action",
+      "content": "update cache middleware with jitter logic",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 37,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "7690ea9b8fc312af6900bbe2fd6db604299d30daba0b5701fad94f937b5c4add",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 35,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "ecb5ca8e78983ae8a462fbe08d6e012ade3cc4771827240c567d62fd1b8f809e",
+            "type": "statement",
+            "content": "implement probabilistic early expiration",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 35,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            }
+          },
+          {
+            "id": "96bcb96c0d8de0f7fa7ef4ebca91779e6a7f95211614bb23edbd67295734e84f",
+            "type": "statement",
+            "content": "add jitter to TTL (±10% randomization)",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 36,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            }
+          },
+          {
+            "id": "2fb51537c85b90a57a73d1a1b1d3f77b5ba8a9c8ae634910c889be121a7c5111",
+            "type": "action",
+            "content": "update cache middleware with jitter logic",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 37,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "3846a8f6db0e7c8009a9da700f2c528a1f4d2dcc14f6860c1f9e71682fbfbdd1",
+      "type": "statement",
+      "content": "=> performance testing on staging",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 39,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      },
+      "children": [
+        "bb084c96f75023b4271670fbb59922b0ff987b3d77d43f273ed1c1c04f0194d7",
+        "88fb54828c16d3b23b64b67ad5f27ccb2686ba18b8b20866f2714b381c0f0196"
+      ]
+    },
+    {
+      "id": "bb084c96f75023b4271670fbb59922b0ff987b3d77d43f273ed1c1c04f0194d7",
+      "type": "statement",
+      "content": "load testing with k6 (1000 RPS)",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 40,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      },
+      "children": [
+        "88d305b408b8ec969d5847744b85554374334925472875aa903e3b62ae740bda",
+        "121d572d560aca065d0029e82db7329ec62c2b5dc165861c3501a991fb04ba32"
+      ]
+    },
+    {
+      "id": "88d305b408b8ec969d5847744b85554374334925472875aa903e3b62ae740bda",
+      "type": "statement",
+      "content": "95th percentile latency: 45ms (target: <50ms) ✓",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 41,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "121d572d560aca065d0029e82db7329ec62c2b5dc165861c3501a991fb04ba32",
+      "type": "statement",
+      "content": "cache hit rate: 87% (target: >80%) ✓",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 42,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "583ae5a7e7b7a28fca2394f1759269619c22583f297599dbf6a6b29212bcc80e",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 41,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "88d305b408b8ec969d5847744b85554374334925472875aa903e3b62ae740bda",
+            "type": "statement",
+            "content": "95th percentile latency: 45ms (target: <50ms) ✓",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 41,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            }
+          },
+          {
+            "id": "121d572d560aca065d0029e82db7329ec62c2b5dc165861c3501a991fb04ba32",
+            "type": "statement",
+            "content": "cache hit rate: 87% (target: >80%) ✓",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 42,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "88fb54828c16d3b23b64b67ad5f27ccb2686ba18b8b20866f2714b381c0f0196",
+      "type": "statement",
+      "content": "deploy to production with gradual rollout",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 43,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "053c1b034ecae24b54de5c3cf9576eda81272b5a85e05fe4717ba12f44b03f9c",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 40,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "bb084c96f75023b4271670fbb59922b0ff987b3d77d43f273ed1c1c04f0194d7",
+            "type": "statement",
+            "content": "load testing with k6 (1000 RPS)",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 40,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            },
+            "children": [
+              "88d305b408b8ec969d5847744b85554374334925472875aa903e3b62ae740bda",
+              "121d572d560aca065d0029e82db7329ec62c2b5dc165861c3501a991fb04ba32"
+            ]
+          },
+          {
+            "id": "583ae5a7e7b7a28fca2394f1759269619c22583f297599dbf6a6b29212bcc80e",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 41,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "88d305b408b8ec969d5847744b85554374334925472875aa903e3b62ae740bda",
+                  "type": "statement",
+                  "content": "95th percentile latency: 45ms (target: <50ms) ✓",
+                  "provenance": {
+                    "source_file": "examples/design.fs",
+                    "line_number": 41,
+                    "timestamp": "2025-10-22T18:01:12.189Z"
+                  }
+                },
+                {
+                  "id": "121d572d560aca065d0029e82db7329ec62c2b5dc165861c3501a991fb04ba32",
+                  "type": "statement",
+                  "content": "cache hit rate: 87% (target: >80%) ✓",
+                  "provenance": {
+                    "source_file": "examples/design.fs",
+                    "line_number": 42,
+                    "timestamp": "2025-10-22T18:01:12.189Z"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "88fb54828c16d3b23b64b67ad5f27ccb2686ba18b8b20866f2714b381c0f0196",
+            "type": "statement",
+            "content": "deploy to production with gradual rollout",
+            "provenance": {
+              "source_file": "examples/design.fs",
+              "line_number": 43,
+              "timestamp": "2025-10-22T18:01:12.189Z"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "6786a9fe9ca18fa54e758410892d54b305257097314aca853f19182f8bb00eb4",
+      "type": "causes",
+      "source": "cdeb779fad5de2d20280cc506621ecd7930a30bc43152334ce0d31ea29e1651c",
+      "target": "f3675ff8134692c8fe7f004d7978f9f83a08723b2ea51791c9b2843e67c7abdb",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 4,
+        "timestamp": "2025-10-22T18:01:12.187Z"
+      }
+    },
+    {
+      "id": "32dc7018bd96ab1447db6c8e47c8bb5f8f2474d80dd29b24c9f42f7052dfba2f",
+      "type": "causes",
+      "source": "cdeb779fad5de2d20280cc506621ecd7930a30bc43152334ce0d31ea29e1651c",
+      "target": "687d7aa3a2a0bdde6226eb44048b21951e1ea9caeea0b0bf9091f4b6002f7753",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-22T18:01:12.187Z"
+      }
+    },
+    {
+      "id": "01221fe54cae8d17434f6aaa9cb601ce727b82d52876b5a2b3914b914cd6d4e3",
+      "type": "tension",
+      "source": "cdeb779fad5de2d20280cc506621ecd7930a30bc43152334ce0d31ea29e1651c",
+      "target": "05fc93c51556619632808d8a548418630ceafc40c77c1b515c88d8259d8a8989",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      },
+      "axis_label": "performance vs freshness"
+    },
+    {
+      "id": "770b765c1185178423c1905b95eadf628b5e64707fc7ac92b0f3750d0a38392c",
+      "type": "causes",
+      "source": "cdeb779fad5de2d20280cc506621ecd7930a30bc43152334ce0d31ea29e1651c",
+      "target": "699b3cda4b97ea71b2ce4ff9a565033eb67cbb4601d52a4ec4e75308cb7ad941",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 6,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "38eb34be77451e3b9312bedbc21c0d861bb073b09456720fa0d6bd7c75181213",
+      "type": "causes",
+      "source": "4a055377bea1f804b9ebb75ae9ad82da8fd05193e25528b56994d4313d996722",
+      "target": "fdc98c25796110ba696de95c319432113fd9c870e35e8149a0d0690ff6fb35c6",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 9,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "0fb59ee87f0b16587bce40a4ae21daed5eb76a6fea89336f23964a1c3942ac3c",
+      "type": "causes",
+      "source": "4a055377bea1f804b9ebb75ae9ad82da8fd05193e25528b56994d4313d996722",
+      "target": "08232586395096a3ba0bc36014f1cef42c422c011ea61cf778ca39020d7d545a",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 10,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "5b977ecdb4727dac5b1d34ff1e9bb6150b1cadef3f967d2cb4dfc4324f704a5f",
+      "type": "causes",
+      "source": "4a055377bea1f804b9ebb75ae9ad82da8fd05193e25528b56994d4313d996722",
+      "target": "7ef9288366e6717d5634183a6af801e156e7e9c2c2afcaf8381505c604604c29",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 11,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "b63ab0c9a3b6db389b06963db756876757543b9ca633554a5452700cffdbd9bf",
+      "type": "tension",
+      "source": "4a055377bea1f804b9ebb75ae9ad82da8fd05193e25528b56994d4313d996722",
+      "target": "b0bdc724dd69e88d6a5af484582aa67959579b9efedbf5c9d757e006a4c65512",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 11,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      },
+      "axis_label": "cost vs control"
+    },
+    {
+      "id": "c6f85ee72b624a024b11658283196a0363f4bfb4c3f3cadd040c3a7824056d72",
+      "type": "causes",
+      "source": "4a055377bea1f804b9ebb75ae9ad82da8fd05193e25528b56994d4313d996722",
+      "target": "7f8431a32533f34cd9ba448e610b8c1e85922aeaf8c6f0192034766a51828767",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 12,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "2426d672ade8cd9ddaf400207371a8848b46a101386c6e3532a49e51d2474069",
+      "type": "causes",
+      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "target": "1933d36ffe5cf3fc9786b10210431e4466f0d53bfff18f43364d95f245d8e933",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 15,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "f3ddc7796f3265f71ddd51ba3bf699e688ff7aee5b8b16ade7d37916adccdf7e",
+      "type": "causes",
+      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "target": "c669a73a4ab8b5cd1aa2eb417cb7259ca6e976b00ff6c1b62c98e81de35d8bdf",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 16,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "21c1afc273c720e876d05d9afa3d833fda12ad9c54a5033d5915979a0273b989",
+      "type": "causes",
+      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "target": "7bbeae442c84cf26f3829ad667dc64eaf4e07fbe523a8afe5468f62ce970a40d",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 17,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "d4a0b124deb3e4b605148179f9bf146196039cefe8745416da732e5a311605e0",
+      "type": "tension",
+      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "target": "20f38a0d23685489d48bff415947b3033a73a5d7b3b0d713ff0f0f8815a8763a",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 17,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      },
+      "axis_label": "complexity vs performance"
+    },
+    {
+      "id": "fab34d5c8eea1aebc1282b8c4d064dde83195db3209fbd72324c6f98e2853250",
+      "type": "causes",
+      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "target": "122cd50d711ce65674e90dfa75b3c02740e233ec5a4a6677fe1b30ab53f49096",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 18,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "ebeebbb361811f3cbfc6475c6b17f43d1740e899736ae37ea59d751241a770d0",
+      "type": "causes",
+      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "target": "73036d87677aa262afca7699c4f3b31dae2e1c9dc3967db4390ed76ea823adde",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 19,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "8dc1cf320233b99c2d6bb5bfc6da79983ce59cca739fee5a54668ffe92e1ee5e",
+      "type": "tension",
+      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "target": "db6678312c4ba5cc4a9d81d55e191bb02b78db1baddf6b7aa995364f285e8624",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 19,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      },
+      "axis_label": "latency vs cost"
+    },
+    {
+      "id": "d4bdaa00b6d3310f6139e543d3dd11a7e34fd85e7e19673da836a19d0aad00d4",
+      "type": "causes",
+      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "target": "d06483939baaa689f2d9b0b85324e4a541b43d7d211b84c49e89805e0b7cbf48",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 20,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "55f65b55322836d371aed64377bea5fcdba1eb817e09b99832318674e781d4ca",
+      "type": "causes",
+      "source": "06487e81c77b8743e433a86a4286f207427b9a6972040f319e487eb0cdfca3ce",
+      "target": "ecb5ca8e78983ae8a462fbe08d6e012ade3cc4771827240c567d62fd1b8f809e",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 35,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "1c70ec228d180b25dffc7e3a6c6312aaa305a3ce08b04cb4eae4b045058de89e",
+      "type": "causes",
+      "source": "06487e81c77b8743e433a86a4286f207427b9a6972040f319e487eb0cdfca3ce",
+      "target": "96bcb96c0d8de0f7fa7ef4ebca91779e6a7f95211614bb23edbd67295734e84f",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 36,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "cc275c948ec34f3f07d89050ec766f67bc9ec51f8840c92ca19240c76bb9f701",
+      "type": "temporal",
+      "source": "3846a8f6db0e7c8009a9da700f2c528a1f4d2dcc14f6860c1f9e71682fbfbdd1",
+      "target": "bb084c96f75023b4271670fbb59922b0ff987b3d77d43f273ed1c1c04f0194d7",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 40,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "d994d8f227401bb88d53677d9c9c4a6e5164edec5acf2ed35874154853f496b1",
+      "type": "causes",
+      "source": "bb084c96f75023b4271670fbb59922b0ff987b3d77d43f273ed1c1c04f0194d7",
+      "target": "88d305b408b8ec969d5847744b85554374334925472875aa903e3b62ae740bda",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 41,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "5979fd1bdba1113ff2ac6e6c543fb0e570751129d47b665a8e5252e0fe2179a1",
+      "type": "causes",
+      "source": "bb084c96f75023b4271670fbb59922b0ff987b3d77d43f273ed1c1c04f0194d7",
+      "target": "121d572d560aca065d0029e82db7329ec62c2b5dc165861c3501a991fb04ba32",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 42,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "ab4a0f55027fd8ff6d680c93b29761e36de5e124eb2ff3750c6ecd5428b2543a",
+      "type": "temporal",
+      "source": "3846a8f6db0e7c8009a9da700f2c528a1f4d2dcc14f6860c1f9e71682fbfbdd1",
+      "target": "88fb54828c16d3b23b64b67ad5f27ccb2686ba18b8b20866f2714b381c0f0196",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 43,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    },
+    {
+      "id": "1f39bf33bf4601146a1ccd86093f552329ada0f6cd81244dceaf30feed15faa4",
+      "type": "alternative",
+      "source": "e26889b5d1390cd923d66e62a0330abfbdf5d37ccf249775cd27cc53a2e672ef",
+      "target": "cdeb779fad5de2d20280cc506621ecd7930a30bc43152334ce0d31ea29e1651c",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-22T18:01:12.187Z"
+      }
+    },
+    {
+      "id": "90c120d2893b3c686f06808f118d20151becbbd0a4b87737aca6c2ae95a7399d",
+      "type": "alternative",
+      "source": "e26889b5d1390cd923d66e62a0330abfbdf5d37ccf249775cd27cc53a2e672ef",
+      "target": "4a055377bea1f804b9ebb75ae9ad82da8fd05193e25528b56994d4313d996722",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 8,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "195d263e6aea93afb550a0fabbf16d43858e974101561d36f24d2e5d409f2522",
+      "type": "alternative",
+      "source": "e26889b5d1390cd923d66e62a0330abfbdf5d37ccf249775cd27cc53a2e672ef",
+      "target": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 14,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    }
+  ],
+  "states": [
+    {
+      "id": "74efe747ae06bc309271531605a311ef09ac0f9c11f93b6a87a831cb5acff5dc",
+      "type": "decided",
+      "node_id": "d262e16be8cc1f6943f93dbd5bc7d6a17219be61a9c740163f84d8bd42189294",
+      "fields": {
+        "rationale": "hybrid approach: CDN for static assets, Redis for dynamic data",
+        "on": "2025-10-14"
+      },
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 22,
+        "timestamp": "2025-10-22T18:01:12.188Z"
+      }
+    },
+    {
+      "id": "1d0df5b78c47a058caedb459c7e7bcc0b18fbb91fe29a8e2676fac96185c002d",
+      "type": "blocked",
+      "node_id": "90b2d416794cf0ab315925ce174448ac43875c6e5818f884e9abe0d64c4fc13b",
+      "fields": {
+        "reason": "Datadog trial expired, need license approval",
+        "since": "2025-10-16"
+      },
+      "provenance": {
+        "source_file": "examples/design.fs",
+        "line_number": 31,
+        "timestamp": "2025-10-22T18:01:12.189Z"
+      }
+    }
+  ],
+  "invariants": {
+    "causal_acyclic": true,
+    "all_nodes_reachable": true,
+    "tension_axes_labeled": true,
+    "state_fields_present": true
+  },
+  "metadata": {
+    "source_files": [
+      "examples/design.fs"
+    ],
+    "parsed_at": "2025-10-22T18:01:12.190Z",
+    "parser": "flowscript-peg-parser 1.0.0"
+  }
+}

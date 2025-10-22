@@ -1,0 +1,1791 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "12ebe545dea26b5df5893a74b81b83ba02ee7a394b195023e74463e2bd565070",
+      "type": "statement",
+      "content": "quantum computing viability for cryptography",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 1,
+        "timestamp": "2025-10-22T18:01:12.118Z"
+      },
+      "children": [
+        "388bac1f4f74466841329c3b7240088bf82a10b39aa309e89d7aa25b0b5aeb27",
+        "04576e2ee98ad331b439a64c12d9df456b9fde6a0b4791dd98551bb4110b9bf6",
+        "7c34ef4ebc1d3e59760810c51fdcc9a8d18c9f6618552ae932583e0e00719b4f"
+      ]
+    },
+    {
+      "id": "388bac1f4f74466841329c3b7240088bf82a10b39aa309e89d7aa25b0b5aeb27",
+      "type": "statement",
+      "content": "decoherence problem (primary challenge)",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-22T18:01:12.119Z"
+      },
+      "children": [
+        "349eb3c98b29d420b8ad83780d80b39eda0bfcc623ded9294ed1038894209aa9",
+        "4726753e47846fe8b4ad3ef21d341b5d45fedee2333199bb96bb2a51ae2e02a1"
+      ]
+    },
+    {
+      "id": "349eb3c98b29d420b8ad83780d80b39eda0bfcc623ded9294ed1038894209aa9",
+      "type": "statement",
+      "content": "environmental noise interference",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 4,
+        "timestamp": "2025-10-22T18:01:12.119Z"
+      },
+      "children": [
+        "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11"
+      ]
+    },
+    {
+      "id": "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11",
+      "type": "statement",
+      "content": "requires extreme isolation (millikelvin temperatures)",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "children": [
+        "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81"
+      ]
+    },
+    {
+      "id": "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81",
+      "type": "statement",
+      "content": "cryogenic infrastructure cost ($10M+ per system)",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 6,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "47a1bcb6cbeaba518baf99413e577dd99a6f5e8f46cedce1845a9727037e8b78",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 6,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81",
+            "type": "statement",
+            "content": "cryogenic infrastructure cost ($10M+ per system)",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 6,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "fd833782bd39b9076ea87050628446fb2cbb119bfc99b784f457f1e13e7138a6",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11",
+            "type": "statement",
+            "content": "requires extreme isolation (millikelvin temperatures)",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 5,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "children": [
+              "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81"
+            ]
+          },
+          {
+            "id": "47a1bcb6cbeaba518baf99413e577dd99a6f5e8f46cedce1845a9727037e8b78",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 6,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81",
+                  "type": "statement",
+                  "content": "cryogenic infrastructure cost ($10M+ per system)",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 6,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "4726753e47846fe8b4ad3ef21d341b5d45fedee2333199bb96bb2a51ae2e02a1",
+      "type": "statement",
+      "content": "quantum error correction needed",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 7,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "children": [
+        "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
+        "d4eafe3a68fd3f1cbad5694028705f7a84ed8a93f59cb1d6d60fd9fa4fa220c8"
+      ]
+    },
+    {
+      "id": "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
+      "type": "statement",
+      "content": "topological qubits approach",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 8,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "children": [
+        "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
+        "04b85c7cf14ffa56bff43b5605a8003b10c1b9ab156131807e1ce7d4bb9e4d38"
+      ]
+    },
+    {
+      "id": "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
+      "type": "statement",
+      "content": "Microsoft Azure Quantum bet",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 9,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "04b85c7cf14ffa56bff43b5605a8003b10c1b9ab156131807e1ce7d4bb9e4d38",
+      "type": "statement",
+      "content": "still theoretical (no working prototype)",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 10,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "352340955840f29ff37c11f6e40d99a66a141dbc6ca5546a49f2a61b4b62ac5b",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 9,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
+            "type": "statement",
+            "content": "Microsoft Azure Quantum bet",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 9,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            }
+          },
+          {
+            "id": "04b85c7cf14ffa56bff43b5605a8003b10c1b9ab156131807e1ce7d4bb9e4d38",
+            "type": "statement",
+            "content": "still theoretical (no working prototype)",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 10,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "d4eafe3a68fd3f1cbad5694028705f7a84ed8a93f59cb1d6d60fd9fa4fa220c8",
+      "type": "statement",
+      "content": "surface codes approach",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 11,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "children": [
+        "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
+        "fcb6bc85f8d539c42cf9763b2daceb0bb4e5f67d9059e3a6693ebfa925762f87",
+        "0b9723741e7058cc8235abda4119cf5017b840b23d5ddd2f9e72c42cedf97204"
+      ]
+    },
+    {
+      "id": "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
+      "type": "statement",
+      "content": "Google Sycamore implementation",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 12,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "fcb6bc85f8d539c42cf9763b2daceb0bb4e5f67d9059e3a6693ebfa925762f87",
+      "type": "statement",
+      "content": "1000:1 physical-to-logical qubit ratio",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 13,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "0b9723741e7058cc8235abda4119cf5017b840b23d5ddd2f9e72c42cedf97204",
+      "type": "statement",
+      "content": "error tolerance",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 13,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "5f55da5883b689ae26fb399803d852dadf1a61195e55348d15555603957ad628",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 12,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
+            "type": "statement",
+            "content": "Google Sycamore implementation",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 12,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            }
+          },
+          {
+            "id": "fcb6bc85f8d539c42cf9763b2daceb0bb4e5f67d9059e3a6693ebfa925762f87",
+            "type": "statement",
+            "content": "1000:1 physical-to-logical qubit ratio",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 13,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            }
+          },
+          {
+            "id": "0b9723741e7058cc8235abda4119cf5017b840b23d5ddd2f9e72c42cedf97204",
+            "type": "statement",
+            "content": "error tolerance",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 13,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "28ca87e424b7fcf1d866ba8882746db78cb874ed76ac57a0d091477d9d2579d6",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 8,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
+            "type": "statement",
+            "content": "topological qubits approach",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 8,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "children": [
+              "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
+              "04b85c7cf14ffa56bff43b5605a8003b10c1b9ab156131807e1ce7d4bb9e4d38"
+            ]
+          },
+          {
+            "id": "352340955840f29ff37c11f6e40d99a66a141dbc6ca5546a49f2a61b4b62ac5b",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 9,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
+                  "type": "statement",
+                  "content": "Microsoft Azure Quantum bet",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 9,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  }
+                },
+                {
+                  "id": "04b85c7cf14ffa56bff43b5605a8003b10c1b9ab156131807e1ce7d4bb9e4d38",
+                  "type": "statement",
+                  "content": "still theoretical (no working prototype)",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 10,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "d4eafe3a68fd3f1cbad5694028705f7a84ed8a93f59cb1d6d60fd9fa4fa220c8",
+            "type": "statement",
+            "content": "surface codes approach",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 11,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "children": [
+              "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
+              "fcb6bc85f8d539c42cf9763b2daceb0bb4e5f67d9059e3a6693ebfa925762f87",
+              "0b9723741e7058cc8235abda4119cf5017b840b23d5ddd2f9e72c42cedf97204"
+            ]
+          },
+          {
+            "id": "5f55da5883b689ae26fb399803d852dadf1a61195e55348d15555603957ad628",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 12,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
+                  "type": "statement",
+                  "content": "Google Sycamore implementation",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 12,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  }
+                },
+                {
+                  "id": "fcb6bc85f8d539c42cf9763b2daceb0bb4e5f67d9059e3a6693ebfa925762f87",
+                  "type": "statement",
+                  "content": "1000:1 physical-to-logical qubit ratio",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 13,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  }
+                },
+                {
+                  "id": "0b9723741e7058cc8235abda4119cf5017b840b23d5ddd2f9e72c42cedf97204",
+                  "type": "statement",
+                  "content": "error tolerance",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 13,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "aaf3f7ed29b8dd29590afe5e65f70eafa328347086408559041e58feef59262b",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 4,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "349eb3c98b29d420b8ad83780d80b39eda0bfcc623ded9294ed1038894209aa9",
+            "type": "statement",
+            "content": "environmental noise interference",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 4,
+              "timestamp": "2025-10-22T18:01:12.119Z"
+            },
+            "children": [
+              "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11"
+            ]
+          },
+          {
+            "id": "fd833782bd39b9076ea87050628446fb2cbb119bfc99b784f457f1e13e7138a6",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 5,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11",
+                  "type": "statement",
+                  "content": "requires extreme isolation (millikelvin temperatures)",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 5,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "children": [
+                    "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81"
+                  ]
+                },
+                {
+                  "id": "47a1bcb6cbeaba518baf99413e577dd99a6f5e8f46cedce1845a9727037e8b78",
+                  "type": "block",
+                  "content": "",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 6,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "ext": {
+                    "children": [
+                      {
+                        "id": "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81",
+                        "type": "statement",
+                        "content": "cryogenic infrastructure cost ($10M+ per system)",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 6,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "4726753e47846fe8b4ad3ef21d341b5d45fedee2333199bb96bb2a51ae2e02a1",
+            "type": "statement",
+            "content": "quantum error correction needed",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 7,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "children": [
+              "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
+              "d4eafe3a68fd3f1cbad5694028705f7a84ed8a93f59cb1d6d60fd9fa4fa220c8"
+            ]
+          },
+          {
+            "id": "28ca87e424b7fcf1d866ba8882746db78cb874ed76ac57a0d091477d9d2579d6",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 8,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
+                  "type": "statement",
+                  "content": "topological qubits approach",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 8,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "children": [
+                    "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
+                    "04b85c7cf14ffa56bff43b5605a8003b10c1b9ab156131807e1ce7d4bb9e4d38"
+                  ]
+                },
+                {
+                  "id": "352340955840f29ff37c11f6e40d99a66a141dbc6ca5546a49f2a61b4b62ac5b",
+                  "type": "block",
+                  "content": "",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 9,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "ext": {
+                    "children": [
+                      {
+                        "id": "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
+                        "type": "statement",
+                        "content": "Microsoft Azure Quantum bet",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 9,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        }
+                      },
+                      {
+                        "id": "04b85c7cf14ffa56bff43b5605a8003b10c1b9ab156131807e1ce7d4bb9e4d38",
+                        "type": "statement",
+                        "content": "still theoretical (no working prototype)",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 10,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "d4eafe3a68fd3f1cbad5694028705f7a84ed8a93f59cb1d6d60fd9fa4fa220c8",
+                  "type": "statement",
+                  "content": "surface codes approach",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 11,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "children": [
+                    "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
+                    "fcb6bc85f8d539c42cf9763b2daceb0bb4e5f67d9059e3a6693ebfa925762f87",
+                    "0b9723741e7058cc8235abda4119cf5017b840b23d5ddd2f9e72c42cedf97204"
+                  ]
+                },
+                {
+                  "id": "5f55da5883b689ae26fb399803d852dadf1a61195e55348d15555603957ad628",
+                  "type": "block",
+                  "content": "",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 12,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "ext": {
+                    "children": [
+                      {
+                        "id": "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
+                        "type": "statement",
+                        "content": "Google Sycamore implementation",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 12,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        }
+                      },
+                      {
+                        "id": "fcb6bc85f8d539c42cf9763b2daceb0bb4e5f67d9059e3a6693ebfa925762f87",
+                        "type": "statement",
+                        "content": "1000:1 physical-to-logical qubit ratio",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 13,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        }
+                      },
+                      {
+                        "id": "0b9723741e7058cc8235abda4119cf5017b840b23d5ddd2f9e72c42cedf97204",
+                        "type": "statement",
+                        "content": "error tolerance",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 13,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "04576e2ee98ad331b439a64c12d9df456b9fde6a0b4791dd98551bb4110b9bf6",
+      "type": "statement",
+      "content": "scaling challenges",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 15,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "children": [
+        "0dc61bedf5d95d815b1fd31f431b9b0c83f20bcd1a784b6625ae498e213e2043",
+        "dec47424870c7fa010128ad58a087b9f594af7c8f0b641e2f206c991dec36a59"
+      ]
+    },
+    {
+      "id": "0dc61bedf5d95d815b1fd31f431b9b0c83f20bcd1a784b6625ae498e213e2043",
+      "type": "statement",
+      "content": "qubit connectivity limitations",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 16,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "children": [
+        "451583afe36457646e66c061aa0f3c738af69a29e3fe9a10b0aa4c1d40c42292",
+        "d1a4f0a84fb5323ed137f62bb9d2abdc8012554d3d8e3943c48d62a763e55b5a"
+      ]
+    },
+    {
+      "id": "451583afe36457646e66c061aa0f3c738af69a29e3fe9a10b0aa4c1d40c42292",
+      "type": "statement",
+      "content": "2D grid topology (current hardware)",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 17,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "d1a4f0a84fb5323ed137f62bb9d2abdc8012554d3d8e3943c48d62a763e55b5a",
+      "type": "statement",
+      "content": "limits algorithmic complexity",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 18,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "1b2acb0c2652e60e79dade0b0b58eabd53342af8353f794704e69b7034bbdfe8",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 17,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "451583afe36457646e66c061aa0f3c738af69a29e3fe9a10b0aa4c1d40c42292",
+            "type": "statement",
+            "content": "2D grid topology (current hardware)",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 17,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            }
+          },
+          {
+            "id": "d1a4f0a84fb5323ed137f62bb9d2abdc8012554d3d8e3943c48d62a763e55b5a",
+            "type": "statement",
+            "content": "limits algorithmic complexity",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 18,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "dec47424870c7fa010128ad58a087b9f594af7c8f0b641e2f206c991dec36a59",
+      "type": "statement",
+      "content": "refrigeration requirements don't scale linearly",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 19,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "children": [
+        "22ae76cbe11cbbff4cb92829fe6f6a98b798b4e87d11178230a465a12540399e"
+      ]
+    },
+    {
+      "id": "22ae76cbe11cbbff4cb92829fe6f6a98b798b4e87d11178230a465a12540399e",
+      "type": "statement",
+      "content": "heat removal becomes exponential problem",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 20,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "37ab788d3882df8c1e7a1482a566b7f63ef1efd0517d1992647cfdaa067db3ca",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 20,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "22ae76cbe11cbbff4cb92829fe6f6a98b798b4e87d11178230a465a12540399e",
+            "type": "statement",
+            "content": "heat removal becomes exponential problem",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 20,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "1a52d9fd762d38f8be55b5499fbb58aa165bc66344bfe9ea3bc7609768607650",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 16,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "0dc61bedf5d95d815b1fd31f431b9b0c83f20bcd1a784b6625ae498e213e2043",
+            "type": "statement",
+            "content": "qubit connectivity limitations",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 16,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "children": [
+              "451583afe36457646e66c061aa0f3c738af69a29e3fe9a10b0aa4c1d40c42292",
+              "d1a4f0a84fb5323ed137f62bb9d2abdc8012554d3d8e3943c48d62a763e55b5a"
+            ]
+          },
+          {
+            "id": "1b2acb0c2652e60e79dade0b0b58eabd53342af8353f794704e69b7034bbdfe8",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 17,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "451583afe36457646e66c061aa0f3c738af69a29e3fe9a10b0aa4c1d40c42292",
+                  "type": "statement",
+                  "content": "2D grid topology (current hardware)",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 17,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  }
+                },
+                {
+                  "id": "d1a4f0a84fb5323ed137f62bb9d2abdc8012554d3d8e3943c48d62a763e55b5a",
+                  "type": "statement",
+                  "content": "limits algorithmic complexity",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 18,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "dec47424870c7fa010128ad58a087b9f594af7c8f0b641e2f206c991dec36a59",
+            "type": "statement",
+            "content": "refrigeration requirements don't scale linearly",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 19,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "children": [
+              "22ae76cbe11cbbff4cb92829fe6f6a98b798b4e87d11178230a465a12540399e"
+            ]
+          },
+          {
+            "id": "37ab788d3882df8c1e7a1482a566b7f63ef1efd0517d1992647cfdaa067db3ca",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 20,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "22ae76cbe11cbbff4cb92829fe6f6a98b798b4e87d11178230a465a12540399e",
+                  "type": "statement",
+                  "content": "heat removal becomes exponential problem",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 20,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "7c34ef4ebc1d3e59760810c51fdcc9a8d18c9f6618552ae932583e0e00719b4f",
+      "type": "statement",
+      "content": "timeline implications",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 22,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "children": [
+        "e414635236ceb08a4dc56295fc30cd1c103ec176d93882c74d36226ca6aebd86",
+        "eaea4623ba163556c06a81ab83ced494c6c0d6caf16700033490772834446318",
+        "0260b8d529138009a71d08dbfd212b38a2b92b83a94dbbe200f477d64e2825ba"
+      ]
+    },
+    {
+      "id": "e414635236ceb08a4dc56295fc30cd1c103ec176d93882c74d36226ca6aebd86",
+      "type": "statement",
+      "content": "NIST post-quantum cryptography standards (2024)",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 23,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "eaea4623ba163556c06a81ab83ced494c6c0d6caf16700033490772834446318",
+      "type": "statement",
+      "content": "quantum advantage for crypto breaking: 10-15 years (conservative estimate)",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 24,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      }
+    },
+    {
+      "id": "0260b8d529138009a71d08dbfd212b38a2b92b83a94dbbe200f477d64e2825ba",
+      "type": "statement",
+      "content": "migration window: 5-10 years to adopt PQC",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 25,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      }
+    },
+    {
+      "id": "166d53ff9f54d7522d4334765f0d6b1b6ee1a7ebdda4f216bb8d7b38a9f3fc51",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 23,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "e414635236ceb08a4dc56295fc30cd1c103ec176d93882c74d36226ca6aebd86",
+            "type": "statement",
+            "content": "NIST post-quantum cryptography standards (2024)",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 23,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            }
+          },
+          {
+            "id": "eaea4623ba163556c06a81ab83ced494c6c0d6caf16700033490772834446318",
+            "type": "statement",
+            "content": "quantum advantage for crypto breaking: 10-15 years (conservative estimate)",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 24,
+              "timestamp": "2025-10-22T18:01:12.121Z"
+            }
+          },
+          {
+            "id": "0260b8d529138009a71d08dbfd212b38a2b92b83a94dbbe200f477d64e2825ba",
+            "type": "statement",
+            "content": "migration window: 5-10 years to adopt PQC",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 25,
+              "timestamp": "2025-10-22T18:01:12.121Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "bab7e49fe6ab2e038622e17a836ca3b814b07a3c0c182ae7388f9a03579b8568",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "388bac1f4f74466841329c3b7240088bf82a10b39aa309e89d7aa25b0b5aeb27",
+            "type": "statement",
+            "content": "decoherence problem (primary challenge)",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 3,
+              "timestamp": "2025-10-22T18:01:12.119Z"
+            },
+            "children": [
+              "349eb3c98b29d420b8ad83780d80b39eda0bfcc623ded9294ed1038894209aa9",
+              "4726753e47846fe8b4ad3ef21d341b5d45fedee2333199bb96bb2a51ae2e02a1"
+            ]
+          },
+          {
+            "id": "aaf3f7ed29b8dd29590afe5e65f70eafa328347086408559041e58feef59262b",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 4,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "349eb3c98b29d420b8ad83780d80b39eda0bfcc623ded9294ed1038894209aa9",
+                  "type": "statement",
+                  "content": "environmental noise interference",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 4,
+                    "timestamp": "2025-10-22T18:01:12.119Z"
+                  },
+                  "children": [
+                    "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11"
+                  ]
+                },
+                {
+                  "id": "fd833782bd39b9076ea87050628446fb2cbb119bfc99b784f457f1e13e7138a6",
+                  "type": "block",
+                  "content": "",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 5,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "ext": {
+                    "children": [
+                      {
+                        "id": "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11",
+                        "type": "statement",
+                        "content": "requires extreme isolation (millikelvin temperatures)",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 5,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        },
+                        "children": [
+                          "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81"
+                        ]
+                      },
+                      {
+                        "id": "47a1bcb6cbeaba518baf99413e577dd99a6f5e8f46cedce1845a9727037e8b78",
+                        "type": "block",
+                        "content": "",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 6,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        },
+                        "ext": {
+                          "children": [
+                            {
+                              "id": "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81",
+                              "type": "statement",
+                              "content": "cryogenic infrastructure cost ($10M+ per system)",
+                              "provenance": {
+                                "source_file": "examples/research.fs",
+                                "line_number": 6,
+                                "timestamp": "2025-10-22T18:01:12.120Z"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "4726753e47846fe8b4ad3ef21d341b5d45fedee2333199bb96bb2a51ae2e02a1",
+                  "type": "statement",
+                  "content": "quantum error correction needed",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 7,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "children": [
+                    "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
+                    "d4eafe3a68fd3f1cbad5694028705f7a84ed8a93f59cb1d6d60fd9fa4fa220c8"
+                  ]
+                },
+                {
+                  "id": "28ca87e424b7fcf1d866ba8882746db78cb874ed76ac57a0d091477d9d2579d6",
+                  "type": "block",
+                  "content": "",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 8,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "ext": {
+                    "children": [
+                      {
+                        "id": "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
+                        "type": "statement",
+                        "content": "topological qubits approach",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 8,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        },
+                        "children": [
+                          "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
+                          "04b85c7cf14ffa56bff43b5605a8003b10c1b9ab156131807e1ce7d4bb9e4d38"
+                        ]
+                      },
+                      {
+                        "id": "352340955840f29ff37c11f6e40d99a66a141dbc6ca5546a49f2a61b4b62ac5b",
+                        "type": "block",
+                        "content": "",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 9,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        },
+                        "ext": {
+                          "children": [
+                            {
+                              "id": "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
+                              "type": "statement",
+                              "content": "Microsoft Azure Quantum bet",
+                              "provenance": {
+                                "source_file": "examples/research.fs",
+                                "line_number": 9,
+                                "timestamp": "2025-10-22T18:01:12.120Z"
+                              }
+                            },
+                            {
+                              "id": "04b85c7cf14ffa56bff43b5605a8003b10c1b9ab156131807e1ce7d4bb9e4d38",
+                              "type": "statement",
+                              "content": "still theoretical (no working prototype)",
+                              "provenance": {
+                                "source_file": "examples/research.fs",
+                                "line_number": 10,
+                                "timestamp": "2025-10-22T18:01:12.120Z"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "id": "d4eafe3a68fd3f1cbad5694028705f7a84ed8a93f59cb1d6d60fd9fa4fa220c8",
+                        "type": "statement",
+                        "content": "surface codes approach",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 11,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        },
+                        "children": [
+                          "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
+                          "fcb6bc85f8d539c42cf9763b2daceb0bb4e5f67d9059e3a6693ebfa925762f87",
+                          "0b9723741e7058cc8235abda4119cf5017b840b23d5ddd2f9e72c42cedf97204"
+                        ]
+                      },
+                      {
+                        "id": "5f55da5883b689ae26fb399803d852dadf1a61195e55348d15555603957ad628",
+                        "type": "block",
+                        "content": "",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 12,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        },
+                        "ext": {
+                          "children": [
+                            {
+                              "id": "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
+                              "type": "statement",
+                              "content": "Google Sycamore implementation",
+                              "provenance": {
+                                "source_file": "examples/research.fs",
+                                "line_number": 12,
+                                "timestamp": "2025-10-22T18:01:12.120Z"
+                              }
+                            },
+                            {
+                              "id": "fcb6bc85f8d539c42cf9763b2daceb0bb4e5f67d9059e3a6693ebfa925762f87",
+                              "type": "statement",
+                              "content": "1000:1 physical-to-logical qubit ratio",
+                              "provenance": {
+                                "source_file": "examples/research.fs",
+                                "line_number": 13,
+                                "timestamp": "2025-10-22T18:01:12.120Z"
+                              }
+                            },
+                            {
+                              "id": "0b9723741e7058cc8235abda4119cf5017b840b23d5ddd2f9e72c42cedf97204",
+                              "type": "statement",
+                              "content": "error tolerance",
+                              "provenance": {
+                                "source_file": "examples/research.fs",
+                                "line_number": 13,
+                                "timestamp": "2025-10-22T18:01:12.120Z"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "04576e2ee98ad331b439a64c12d9df456b9fde6a0b4791dd98551bb4110b9bf6",
+            "type": "statement",
+            "content": "scaling challenges",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 15,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "children": [
+              "0dc61bedf5d95d815b1fd31f431b9b0c83f20bcd1a784b6625ae498e213e2043",
+              "dec47424870c7fa010128ad58a087b9f594af7c8f0b641e2f206c991dec36a59"
+            ]
+          },
+          {
+            "id": "1a52d9fd762d38f8be55b5499fbb58aa165bc66344bfe9ea3bc7609768607650",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 16,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "0dc61bedf5d95d815b1fd31f431b9b0c83f20bcd1a784b6625ae498e213e2043",
+                  "type": "statement",
+                  "content": "qubit connectivity limitations",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 16,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "children": [
+                    "451583afe36457646e66c061aa0f3c738af69a29e3fe9a10b0aa4c1d40c42292",
+                    "d1a4f0a84fb5323ed137f62bb9d2abdc8012554d3d8e3943c48d62a763e55b5a"
+                  ]
+                },
+                {
+                  "id": "1b2acb0c2652e60e79dade0b0b58eabd53342af8353f794704e69b7034bbdfe8",
+                  "type": "block",
+                  "content": "",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 17,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "ext": {
+                    "children": [
+                      {
+                        "id": "451583afe36457646e66c061aa0f3c738af69a29e3fe9a10b0aa4c1d40c42292",
+                        "type": "statement",
+                        "content": "2D grid topology (current hardware)",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 17,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        }
+                      },
+                      {
+                        "id": "d1a4f0a84fb5323ed137f62bb9d2abdc8012554d3d8e3943c48d62a763e55b5a",
+                        "type": "statement",
+                        "content": "limits algorithmic complexity",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 18,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "dec47424870c7fa010128ad58a087b9f594af7c8f0b641e2f206c991dec36a59",
+                  "type": "statement",
+                  "content": "refrigeration requirements don't scale linearly",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 19,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "children": [
+                    "22ae76cbe11cbbff4cb92829fe6f6a98b798b4e87d11178230a465a12540399e"
+                  ]
+                },
+                {
+                  "id": "37ab788d3882df8c1e7a1482a566b7f63ef1efd0517d1992647cfdaa067db3ca",
+                  "type": "block",
+                  "content": "",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 20,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  },
+                  "ext": {
+                    "children": [
+                      {
+                        "id": "22ae76cbe11cbbff4cb92829fe6f6a98b798b4e87d11178230a465a12540399e",
+                        "type": "statement",
+                        "content": "heat removal becomes exponential problem",
+                        "provenance": {
+                          "source_file": "examples/research.fs",
+                          "line_number": 20,
+                          "timestamp": "2025-10-22T18:01:12.120Z"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "7c34ef4ebc1d3e59760810c51fdcc9a8d18c9f6618552ae932583e0e00719b4f",
+            "type": "statement",
+            "content": "timeline implications",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 22,
+              "timestamp": "2025-10-22T18:01:12.120Z"
+            },
+            "children": [
+              "e414635236ceb08a4dc56295fc30cd1c103ec176d93882c74d36226ca6aebd86",
+              "eaea4623ba163556c06a81ab83ced494c6c0d6caf16700033490772834446318",
+              "0260b8d529138009a71d08dbfd212b38a2b92b83a94dbbe200f477d64e2825ba"
+            ]
+          },
+          {
+            "id": "166d53ff9f54d7522d4334765f0d6b1b6ee1a7ebdda4f216bb8d7b38a9f3fc51",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 23,
+              "timestamp": "2025-10-22T18:01:12.121Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "e414635236ceb08a4dc56295fc30cd1c103ec176d93882c74d36226ca6aebd86",
+                  "type": "statement",
+                  "content": "NIST post-quantum cryptography standards (2024)",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 23,
+                    "timestamp": "2025-10-22T18:01:12.120Z"
+                  }
+                },
+                {
+                  "id": "eaea4623ba163556c06a81ab83ced494c6c0d6caf16700033490772834446318",
+                  "type": "statement",
+                  "content": "quantum advantage for crypto breaking: 10-15 years (conservative estimate)",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 24,
+                    "timestamp": "2025-10-22T18:01:12.121Z"
+                  }
+                },
+                {
+                  "id": "0260b8d529138009a71d08dbfd212b38a2b92b83a94dbbe200f477d64e2825ba",
+                  "type": "statement",
+                  "content": "migration window: 5-10 years to adopt PQC",
+                  "provenance": {
+                    "source_file": "examples/research.fs",
+                    "line_number": 25,
+                    "timestamp": "2025-10-22T18:01:12.121Z"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "78743e00fa114565d39cb6be9ead699b8212643bf97207748c7cd0398d014273",
+      "type": "thought",
+      "content": "current action is PQC migration, not waiting for quantum computers",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 27,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      },
+      "children": [
+        "3008b6b88ff5fea60a08bafd80f3f2441dc753e5aa6df7aa6d786a3cb05344e7"
+      ]
+    },
+    {
+      "id": "3008b6b88ff5fea60a08bafd80f3f2441dc753e5aa6df7aa6d786a3cb05344e7",
+      "type": "statement",
+      "content": "hybrid classical-quantum systems likely intermediate step",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 28,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      }
+    },
+    {
+      "id": "e684b58ca0e92c90dbf3b0ca1b518fff6357b006b53e05d0ccf256279b78207a",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 28,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "3008b6b88ff5fea60a08bafd80f3f2441dc753e5aa6df7aa6d786a3cb05344e7",
+            "type": "statement",
+            "content": "hybrid classical-quantum systems likely intermediate step",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 28,
+              "timestamp": "2025-10-22T18:01:12.121Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "8540e5b7ad73de8b8c352c4f069278ffe906721fe09ea5bfc2f8ca7a99a58259",
+      "type": "thought",
+      "content": "might quantum networking solve connectivity before computing scales?",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 30,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      },
+      "modifiers": [
+        "low_confidence"
+      ],
+      "children": [
+        "8dc07dbd83c475441005ecb0430dedaca391310f405a4c2d76e74dac503ab3de",
+        "4f2b580c747c802a55e9250a4c82ff5756554f9cca56f9c0ad9de877a97bd19e"
+      ]
+    },
+    {
+      "id": "8dc07dbd83c475441005ecb0430dedaca391310f405a4c2d76e74dac503ab3de",
+      "type": "statement",
+      "content": "quantum internet enables distributed computation",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 31,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      }
+    },
+    {
+      "id": "4f2b580c747c802a55e9250a4c82ff5756554f9cca56f9c0ad9de877a97bd19e",
+      "type": "statement",
+      "content": "separate research track to monitor",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 32,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      }
+    },
+    {
+      "id": "29747917ee64b18fda65e243d2f3cbc3959d84449348c7a0409ff16618f219a9",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 31,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "8dc07dbd83c475441005ecb0430dedaca391310f405a4c2d76e74dac503ab3de",
+            "type": "statement",
+            "content": "quantum internet enables distributed computation",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 31,
+              "timestamp": "2025-10-22T18:01:12.121Z"
+            }
+          },
+          {
+            "id": "4f2b580c747c802a55e9250a4c82ff5756554f9cca56f9c0ad9de877a97bd19e",
+            "type": "statement",
+            "content": "separate research track to monitor",
+            "provenance": {
+              "source_file": "examples/research.fs",
+              "line_number": 32,
+              "timestamp": "2025-10-22T18:01:12.121Z"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "9c3f693822b0c6558f4c74eef057c96291c8be3e5d93e3b9e29ba1b5072d3d03",
+      "type": "causes",
+      "source": "12ebe545dea26b5df5893a74b81b83ba02ee7a394b195023e74463e2bd565070",
+      "target": "388bac1f4f74466841329c3b7240088bf82a10b39aa309e89d7aa25b0b5aeb27",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-22T18:01:12.119Z"
+      }
+    },
+    {
+      "id": "1b8a0dbcb095bfbf50f61eec57d06ea792d65e95fe105a4826c98531f0930b50",
+      "type": "causes",
+      "source": "388bac1f4f74466841329c3b7240088bf82a10b39aa309e89d7aa25b0b5aeb27",
+      "target": "349eb3c98b29d420b8ad83780d80b39eda0bfcc623ded9294ed1038894209aa9",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 4,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "0d331523678b7936a5d968b3adff59dcf4af6785c8842d727fc430f43a85c01d",
+      "type": "causes",
+      "source": "349eb3c98b29d420b8ad83780d80b39eda0bfcc623ded9294ed1038894209aa9",
+      "target": "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "8a249d746f22627ba64875ebbfaa207861b766f22de5c0b5cfbb843caa3a42ef",
+      "type": "tension",
+      "source": "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11",
+      "target": "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 6,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "axis_label": "physics vs economics"
+    },
+    {
+      "id": "d17aa8b1588d911001e32b555b119204c897f73d38d6057dc57522f6ffe70a86",
+      "type": "causes",
+      "source": "388bac1f4f74466841329c3b7240088bf82a10b39aa309e89d7aa25b0b5aeb27",
+      "target": "4726753e47846fe8b4ad3ef21d341b5d45fedee2333199bb96bb2a51ae2e02a1",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 7,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "8b948e15b69a06da4c04c0d7044e66514942ee41a3621b88e1d0af19a7c0d306",
+      "type": "causes",
+      "source": "4726753e47846fe8b4ad3ef21d341b5d45fedee2333199bb96bb2a51ae2e02a1",
+      "target": "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 8,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "d35aeebe8f006444f5ab07af04adf541e37f8707bf1cd9892f5e1eb8b0ca5799",
+      "type": "causes",
+      "source": "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
+      "target": "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 9,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "892c5fbe8ba6db6a7ae9ee97406931d23d719585c942fc928e0c7309ea09d6d6",
+      "type": "causes",
+      "source": "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
+      "target": "04b85c7cf14ffa56bff43b5605a8003b10c1b9ab156131807e1ce7d4bb9e4d38",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 10,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "fdda20434019e6bf35fd3fa506dccb46563296fab98248a6cf8a92dd29b08750",
+      "type": "causes",
+      "source": "4726753e47846fe8b4ad3ef21d341b5d45fedee2333199bb96bb2a51ae2e02a1",
+      "target": "d4eafe3a68fd3f1cbad5694028705f7a84ed8a93f59cb1d6d60fd9fa4fa220c8",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 11,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "a61aecbd91accba5efac3d9c9da39dce259f23c7c3792a49cbd530b424692952",
+      "type": "causes",
+      "source": "d4eafe3a68fd3f1cbad5694028705f7a84ed8a93f59cb1d6d60fd9fa4fa220c8",
+      "target": "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 12,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "07c4a3b2cb97db8622237a4f0a279c62c05cc6644247b8318cad90ac5b1308ff",
+      "type": "causes",
+      "source": "d4eafe3a68fd3f1cbad5694028705f7a84ed8a93f59cb1d6d60fd9fa4fa220c8",
+      "target": "fcb6bc85f8d539c42cf9763b2daceb0bb4e5f67d9059e3a6693ebfa925762f87",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 13,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "72efdb5af514f497400fc1debdbe99a04d4aefdf4a1322c774604f8889a08c37",
+      "type": "tension",
+      "source": "d4eafe3a68fd3f1cbad5694028705f7a84ed8a93f59cb1d6d60fd9fa4fa220c8",
+      "target": "0b9723741e7058cc8235abda4119cf5017b840b23d5ddd2f9e72c42cedf97204",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 13,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      },
+      "axis_label": "efficiency vs reliability"
+    },
+    {
+      "id": "d32e6f4ac50fa5954488ce8a7135cc72bd1c35905f24a753601fc2781a942ade",
+      "type": "causes",
+      "source": "12ebe545dea26b5df5893a74b81b83ba02ee7a394b195023e74463e2bd565070",
+      "target": "04576e2ee98ad331b439a64c12d9df456b9fde6a0b4791dd98551bb4110b9bf6",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 15,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "33efc2a35395ab7cb15900664311d4d22922b5611c99070063bfa4de84cbff2e",
+      "type": "causes",
+      "source": "04576e2ee98ad331b439a64c12d9df456b9fde6a0b4791dd98551bb4110b9bf6",
+      "target": "0dc61bedf5d95d815b1fd31f431b9b0c83f20bcd1a784b6625ae498e213e2043",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 16,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "3b8e60293b3c63008d9e4aeaedabe5932f2b0262e081ddc15d3830f90d24a065",
+      "type": "causes",
+      "source": "0dc61bedf5d95d815b1fd31f431b9b0c83f20bcd1a784b6625ae498e213e2043",
+      "target": "451583afe36457646e66c061aa0f3c738af69a29e3fe9a10b0aa4c1d40c42292",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 17,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "f4311f415190496a20c7ba2431136be97cc0fca8b2ad737daef8388d67973b96",
+      "type": "causes",
+      "source": "0dc61bedf5d95d815b1fd31f431b9b0c83f20bcd1a784b6625ae498e213e2043",
+      "target": "d1a4f0a84fb5323ed137f62bb9d2abdc8012554d3d8e3943c48d62a763e55b5a",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 18,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "c277bb44fc7e2bac585bdaa4ce7663d301a76b5697fbd6977b4622ebadd994c5",
+      "type": "causes",
+      "source": "04576e2ee98ad331b439a64c12d9df456b9fde6a0b4791dd98551bb4110b9bf6",
+      "target": "dec47424870c7fa010128ad58a087b9f594af7c8f0b641e2f206c991dec36a59",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 19,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "01cd72d056e4fa644613fa3728703f0f37dc90dfd84a8bec2ddbe86dc970f6e5",
+      "type": "causes",
+      "source": "dec47424870c7fa010128ad58a087b9f594af7c8f0b641e2f206c991dec36a59",
+      "target": "22ae76cbe11cbbff4cb92829fe6f6a98b798b4e87d11178230a465a12540399e",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 20,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "8f33a14947dfd8fa8917f1e1a5ed03f811d923e2afbd9d6cd87fdc8b36dc86ac",
+      "type": "causes",
+      "source": "12ebe545dea26b5df5893a74b81b83ba02ee7a394b195023e74463e2bd565070",
+      "target": "7c34ef4ebc1d3e59760810c51fdcc9a8d18c9f6618552ae932583e0e00719b4f",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 22,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "77b50e827a893c29ebef1d74cb4b04b823baeee94d9dd89c698f47167a7ca57e",
+      "type": "causes",
+      "source": "7c34ef4ebc1d3e59760810c51fdcc9a8d18c9f6618552ae932583e0e00719b4f",
+      "target": "e414635236ceb08a4dc56295fc30cd1c103ec176d93882c74d36226ca6aebd86",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 23,
+        "timestamp": "2025-10-22T18:01:12.120Z"
+      }
+    },
+    {
+      "id": "0235ae7c563e0ced1e348457f3e795bc0e4478d573fc46ad427031c9eb286aa7",
+      "type": "causes",
+      "source": "7c34ef4ebc1d3e59760810c51fdcc9a8d18c9f6618552ae932583e0e00719b4f",
+      "target": "eaea4623ba163556c06a81ab83ced494c6c0d6caf16700033490772834446318",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 24,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      }
+    },
+    {
+      "id": "d98e71c4f8f69f5b5914b9b399214fb5bca009684a5525937165d2afb87691f5",
+      "type": "causes",
+      "source": "7c34ef4ebc1d3e59760810c51fdcc9a8d18c9f6618552ae932583e0e00719b4f",
+      "target": "0260b8d529138009a71d08dbfd212b38a2b92b83a94dbbe200f477d64e2825ba",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 25,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      }
+    },
+    {
+      "id": "9110f898a813d992a117ec97c83735ec054c43a7fdd612bb7e3c272213776cf5",
+      "type": "causes",
+      "source": "78743e00fa114565d39cb6be9ead699b8212643bf97207748c7cd0398d014273",
+      "target": "3008b6b88ff5fea60a08bafd80f3f2441dc753e5aa6df7aa6d786a3cb05344e7",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 28,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      }
+    },
+    {
+      "id": "0413ff1571ff156b3282a4bbb4d16755a1f8cb6e1caffba2d8f44870d19f8e37",
+      "type": "causes",
+      "source": "8540e5b7ad73de8b8c352c4f069278ffe906721fe09ea5bfc2f8ca7a99a58259",
+      "target": "8dc07dbd83c475441005ecb0430dedaca391310f405a4c2d76e74dac503ab3de",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 31,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      }
+    },
+    {
+      "id": "3490163ddb1a2e8401e4064ab9119901a94d331f7b9a652aed3c9df3ca87c6cf",
+      "type": "causes",
+      "source": "8540e5b7ad73de8b8c352c4f069278ffe906721fe09ea5bfc2f8ca7a99a58259",
+      "target": "4f2b580c747c802a55e9250a4c82ff5756554f9cca56f9c0ad9de877a97bd19e",
+      "provenance": {
+        "source_file": "examples/research.fs",
+        "line_number": 32,
+        "timestamp": "2025-10-22T18:01:12.121Z"
+      }
+    }
+  ],
+  "states": [],
+  "invariants": {
+    "causal_acyclic": true,
+    "all_nodes_reachable": true,
+    "tension_axes_labeled": true,
+    "state_fields_present": true
+  },
+  "metadata": {
+    "source_files": [
+      "examples/research.fs"
+    ],
+    "parsed_at": "2025-10-22T18:01:12.121Z",
+    "parser": "flowscript-peg-parser 1.0.0"
+  }
+}
