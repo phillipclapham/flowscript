@@ -296,6 +296,58 @@ C -> A`;
       const e006Errors = errors.filter(e => e.rule === 'E006');
       expect(e006Errors).toHaveLength(0);
     });
+
+    it('passes when decision synthesizes alternatives (hybrid)', () => {
+      const input = `? caching strategy
+  || client-side caching
+  || Redis cache
+  || CDN caching
+
+* [decided(rationale: "hybrid approach", on: "2025-10-22")] hybrid CDN + Redis architecture`;
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
+
+      // Verify alternatives were created
+      const alts = ir.nodes.filter(n => n.type === 'alternative');
+      expect(alts.length).toBe(3);
+
+      // Verify decision exists but doesn't match any alternative exactly
+      const decided = ir.states.filter(s => s.type === 'decided');
+      expect(decided.length).toBe(1);
+
+      // Verify linter passes (hybrid decisions are valid per spec Pattern 4)
+      const linter = new Linter();
+      const results = linter.lint(ir);
+      const errors = linter.getErrors(results);
+
+      const e006Errors = errors.filter(e => e.rule === 'E006');
+      expect(e006Errors.length).toBe(0);
+    });
+
+    it('passes when question has parking state', () => {
+      const input = `[parking(why: "need more data", until: "Q2 2025")]
+? authentication strategy
+  || JWT tokens
+  || session + Redis`;
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
+
+      // Verify alternatives were created
+      const alts = ir.nodes.filter(n => n.type === 'alternative');
+      expect(alts.length).toBe(2);
+
+      // Verify question has parking state
+      const parking = ir.states.filter(s => s.type === 'parking');
+      expect(parking.length).toBe(1);
+
+      // Verify linter passes (parking is valid per spec)
+      const linter = new Linter();
+      const results = linter.lint(ir);
+      const errors = linter.getErrors(results);
+
+      const e006Errors = errors.filter(e => e.rule === 'E006');
+      expect(e006Errors.length).toBe(0);
+    });
   });
 
   // ========================================================================

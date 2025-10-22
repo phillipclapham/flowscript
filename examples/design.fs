@@ -11,10 +11,7 @@
   -> additional infrastructure + monitoring ><[cost vs control] operational complexity
   -> battle-tested pattern
 
-|| hybrid CDN + Redis architecture
-  -> CDN for static assets (low latency)
-  -> Redis for dynamic data (consistent invalidation)
-  -> best of both approaches ><[complexity vs performance] implementation effort
+|| CDN edge caching (CloudFront)
   -> geographic distribution (lower latency)
   -> expensive for cache misses ><[latency vs cost] budget constraints
   -> requires cache key strategy

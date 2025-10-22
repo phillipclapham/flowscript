@@ -670,7 +670,7 @@ Some other thoughts...
 # ERROR: Alternatives presented but never decided
 ```
 
-**How to fix - Option 1: Make decision:**
+**How to fix - Option 1: Make decision (choose one alternative):**
 
 ```
 ? authentication strategy
@@ -681,6 +681,19 @@ Some other thoughts...
 
 [decided(rationale: "security critical for v1", on: "2025-10-15")]
 session + Redis
+```
+
+**How to fix - Option 1b: Make decision (hybrid/synthesis):**
+
+```
+? caching strategy
+  || client-side caching
+  || Redis cache layer
+  || CDN edge caching
+
+* [decided(rationale: "hybrid approach", on: "2025-10-22")]
+  hybrid CDN + Redis architecture
+    -> CDN for static assets, Redis for dynamic data
 ```
 
 **How to fix - Option 2: Park the decision:**
@@ -731,6 +744,7 @@ thought: Should consider JWT vs session tokens
 - Alternatives without question parent → VALID (comparison without formal decision)
 - Question without alternatives → Not subject to this rule
 - [exploring] on question → Still requires eventual decision or parking
+- **Hybrid decisions → VALID** (decided content doesn't match any alternative exactly; synthesizes multiple alternatives into hybrid approach. See Pattern 4 in golden_examples_spec.md)
 
 **Error message template:**
 

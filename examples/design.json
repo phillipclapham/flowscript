@@ -8,12 +8,12 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 1,
-        "timestamp": "2025-10-22T18:01:12.186Z"
+        "timestamp": "2025-10-22T18:40:43.299Z"
       },
       "children": [
         "cdeb779fad5de2d20280cc506621ecd7930a30bc43152334ce0d31ea29e1651c",
         "4a055377bea1f804b9ebb75ae9ad82da8fd05193e25528b56994d4313d996722",
-        "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba"
+        "17d081a5513391dd2e1deccfb28a3ab7de271ce65bca6f6ac34e0193d924d2ac"
       ]
     },
     {
@@ -23,7 +23,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 3,
-        "timestamp": "2025-10-22T18:01:12.187Z"
+        "timestamp": "2025-10-22T18:40:43.300Z"
       },
       "children": [
         "f3675ff8134692c8fe7f004d7978f9f83a08723b2ea51791c9b2843e67c7abdb",
@@ -39,7 +39,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 4,
-        "timestamp": "2025-10-22T18:01:12.187Z"
+        "timestamp": "2025-10-22T18:40:43.300Z"
       }
     },
     {
@@ -49,7 +49,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 5,
-        "timestamp": "2025-10-22T18:01:12.187Z"
+        "timestamp": "2025-10-22T18:40:43.300Z"
       }
     },
     {
@@ -59,7 +59,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 5,
-        "timestamp": "2025-10-22T18:01:12.187Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -69,7 +69,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 6,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -79,7 +79,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 4,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       },
       "ext": {
         "children": [
@@ -90,7 +90,7 @@
             "provenance": {
               "source_file": "examples/design.fs",
               "line_number": 4,
-              "timestamp": "2025-10-22T18:01:12.187Z"
+              "timestamp": "2025-10-22T18:40:43.300Z"
             }
           },
           {
@@ -100,7 +100,7 @@
             "provenance": {
               "source_file": "examples/design.fs",
               "line_number": 5,
-              "timestamp": "2025-10-22T18:01:12.187Z"
+              "timestamp": "2025-10-22T18:40:43.300Z"
             }
           },
           {
@@ -110,7 +110,7 @@
             "provenance": {
               "source_file": "examples/design.fs",
               "line_number": 5,
-              "timestamp": "2025-10-22T18:01:12.187Z"
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           },
           {
@@ -120,7 +120,7 @@
             "provenance": {
               "source_file": "examples/design.fs",
               "line_number": 6,
-              "timestamp": "2025-10-22T18:01:12.188Z"
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           }
         ]
@@ -133,7 +133,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 8,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       },
       "children": [
         "fdc98c25796110ba696de95c319432113fd9c870e35e8149a0d0690ff6fb35c6",
@@ -150,7 +150,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 9,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -160,7 +160,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 10,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -170,7 +170,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 11,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -180,7 +180,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 11,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -190,7 +190,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 12,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -200,7 +200,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 9,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       },
       "ext": {
         "children": [
@@ -211,7 +211,7 @@
             "provenance": {
               "source_file": "examples/design.fs",
               "line_number": 9,
-              "timestamp": "2025-10-22T18:01:12.188Z"
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           },
           {
@@ -221,7 +221,7 @@
             "provenance": {
               "source_file": "examples/design.fs",
               "line_number": 10,
-              "timestamp": "2025-10-22T18:01:12.188Z"
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           },
           {
@@ -231,7 +231,7 @@
             "provenance": {
               "source_file": "examples/design.fs",
               "line_number": 11,
-              "timestamp": "2025-10-22T18:01:12.188Z"
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           },
           {
@@ -241,7 +241,7 @@
             "provenance": {
               "source_file": "examples/design.fs",
               "line_number": 11,
-              "timestamp": "2025-10-22T18:01:12.188Z"
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           },
           {
@@ -251,26 +251,22 @@
             "provenance": {
               "source_file": "examples/design.fs",
               "line_number": 12,
-              "timestamp": "2025-10-22T18:01:12.188Z"
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           }
         ]
       }
     },
     {
-      "id": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "id": "17d081a5513391dd2e1deccfb28a3ab7de271ce65bca6f6ac34e0193d924d2ac",
       "type": "alternative",
-      "content": "hybrid CDN + Redis architecture",
+      "content": "CDN edge caching (CloudFront)",
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 14,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       },
       "children": [
-        "1933d36ffe5cf3fc9786b10210431e4466f0d53bfff18f43364d95f245d8e933",
-        "c669a73a4ab8b5cd1aa2eb417cb7259ca6e976b00ff6c1b62c98e81de35d8bdf",
-        "7bbeae442c84cf26f3829ad667dc64eaf4e07fbe523a8afe5468f62ce970a40d",
-        "20f38a0d23685489d48bff415947b3033a73a5d7b3b0d713ff0f0f8815a8763a",
         "122cd50d711ce65674e90dfa75b3c02740e233ec5a4a6677fe1b30ab53f49096",
         "73036d87677aa262afca7699c4f3b31dae2e1c9dc3967db4390ed76ea823adde",
         "db6678312c4ba5cc4a9d81d55e191bb02b78db1baddf6b7aa995364f285e8624",
@@ -278,53 +274,13 @@
       ]
     },
     {
-      "id": "1933d36ffe5cf3fc9786b10210431e4466f0d53bfff18f43364d95f245d8e933",
-      "type": "statement",
-      "content": "CDN for static assets (low latency)",
-      "provenance": {
-        "source_file": "examples/design.fs",
-        "line_number": 15,
-        "timestamp": "2025-10-22T18:01:12.188Z"
-      }
-    },
-    {
-      "id": "c669a73a4ab8b5cd1aa2eb417cb7259ca6e976b00ff6c1b62c98e81de35d8bdf",
-      "type": "statement",
-      "content": "Redis for dynamic data (consistent invalidation)",
-      "provenance": {
-        "source_file": "examples/design.fs",
-        "line_number": 16,
-        "timestamp": "2025-10-22T18:01:12.188Z"
-      }
-    },
-    {
-      "id": "7bbeae442c84cf26f3829ad667dc64eaf4e07fbe523a8afe5468f62ce970a40d",
-      "type": "statement",
-      "content": "best of both approaches",
-      "provenance": {
-        "source_file": "examples/design.fs",
-        "line_number": 17,
-        "timestamp": "2025-10-22T18:01:12.188Z"
-      }
-    },
-    {
-      "id": "20f38a0d23685489d48bff415947b3033a73a5d7b3b0d713ff0f0f8815a8763a",
-      "type": "statement",
-      "content": "implementation effort",
-      "provenance": {
-        "source_file": "examples/design.fs",
-        "line_number": 17,
-        "timestamp": "2025-10-22T18:01:12.188Z"
-      }
-    },
-    {
       "id": "122cd50d711ce65674e90dfa75b3c02740e233ec5a4a6677fe1b30ab53f49096",
       "type": "statement",
       "content": "geographic distribution (lower latency)",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 18,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "line_number": 15,
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -333,8 +289,8 @@
       "content": "expensive for cache misses",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 19,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "line_number": 16,
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -343,8 +299,8 @@
       "content": "budget constraints",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 19,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "line_number": 16,
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -353,69 +309,29 @@
       "content": "requires cache key strategy",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 20,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "line_number": 17,
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
-      "id": "57db679aee48553ad00d24542f57ae834eb30b39fe4b664e480e55eb8ae2748d",
+      "id": "14e721e4da228979d08ecc8bc7c15125c4ff6b83139cc3c8ab3cbe5134516f27",
       "type": "block",
       "content": "",
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 15,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       },
       "ext": {
         "children": [
-          {
-            "id": "1933d36ffe5cf3fc9786b10210431e4466f0d53bfff18f43364d95f245d8e933",
-            "type": "statement",
-            "content": "CDN for static assets (low latency)",
-            "provenance": {
-              "source_file": "examples/design.fs",
-              "line_number": 15,
-              "timestamp": "2025-10-22T18:01:12.188Z"
-            }
-          },
-          {
-            "id": "c669a73a4ab8b5cd1aa2eb417cb7259ca6e976b00ff6c1b62c98e81de35d8bdf",
-            "type": "statement",
-            "content": "Redis for dynamic data (consistent invalidation)",
-            "provenance": {
-              "source_file": "examples/design.fs",
-              "line_number": 16,
-              "timestamp": "2025-10-22T18:01:12.188Z"
-            }
-          },
-          {
-            "id": "7bbeae442c84cf26f3829ad667dc64eaf4e07fbe523a8afe5468f62ce970a40d",
-            "type": "statement",
-            "content": "best of both approaches",
-            "provenance": {
-              "source_file": "examples/design.fs",
-              "line_number": 17,
-              "timestamp": "2025-10-22T18:01:12.188Z"
-            }
-          },
-          {
-            "id": "20f38a0d23685489d48bff415947b3033a73a5d7b3b0d713ff0f0f8815a8763a",
-            "type": "statement",
-            "content": "implementation effort",
-            "provenance": {
-              "source_file": "examples/design.fs",
-              "line_number": 17,
-              "timestamp": "2025-10-22T18:01:12.188Z"
-            }
-          },
           {
             "id": "122cd50d711ce65674e90dfa75b3c02740e233ec5a4a6677fe1b30ab53f49096",
             "type": "statement",
             "content": "geographic distribution (lower latency)",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 18,
-              "timestamp": "2025-10-22T18:01:12.188Z"
+              "line_number": 15,
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           },
           {
@@ -424,8 +340,8 @@
             "content": "expensive for cache misses",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 19,
-              "timestamp": "2025-10-22T18:01:12.188Z"
+              "line_number": 16,
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           },
           {
@@ -434,8 +350,8 @@
             "content": "budget constraints",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 19,
-              "timestamp": "2025-10-22T18:01:12.188Z"
+              "line_number": 16,
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           },
           {
@@ -444,8 +360,8 @@
             "content": "requires cache key strategy",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 20,
-              "timestamp": "2025-10-22T18:01:12.188Z"
+              "line_number": 17,
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           }
         ]
@@ -457,8 +373,8 @@
       "content": "hybrid CDN + Redis architecture",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 22,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "line_number": 19,
+        "timestamp": "2025-10-22T18:40:43.301Z"
       },
       "children": [
         "338da034f2c99047682be1f8f289efbdf4351d0a7cebb82d26ad728b87ebb707",
@@ -473,8 +389,8 @@
       "content": "configure CloudFront for /static/* routes",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 24,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "line_number": 21,
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -483,8 +399,8 @@
       "content": "implement Redis cache for user profile data (5min TTL)",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 25,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 22,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       },
       "children": [
         "90b2d416794cf0ab315925ce174448ac43875c6e5818f884e9abe0d64c4fc13b"
@@ -496,8 +412,8 @@
       "content": "add cache hit/miss monitoring to Datadog",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 26,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 23,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -506,8 +422,8 @@
       "content": "[completed(on: \"2025-10-15\")] CloudFront configuration deployed",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 28,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 25,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -516,8 +432,8 @@
       "content": "[completed(on: \"2025-10-16\")] Redis cache layer implemented",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 29,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 26,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -526,8 +442,8 @@
       "content": "add cache hit/miss monitoring to Datadog",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 32,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 29,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -536,8 +452,8 @@
       "content": "",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 32,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 29,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       },
       "ext": {
         "children": [
@@ -547,8 +463,8 @@
             "content": "add cache hit/miss monitoring to Datadog",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 32,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 29,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             }
           }
         ]
@@ -560,8 +476,8 @@
       "content": "",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 24,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 21,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       },
       "ext": {
         "children": [
@@ -571,8 +487,8 @@
             "content": "configure CloudFront for /static/* routes",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 24,
-              "timestamp": "2025-10-22T18:01:12.188Z"
+              "line_number": 21,
+              "timestamp": "2025-10-22T18:40:43.301Z"
             }
           },
           {
@@ -581,8 +497,8 @@
             "content": "implement Redis cache for user profile data (5min TTL)",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 25,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 22,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             },
             "children": [
               "90b2d416794cf0ab315925ce174448ac43875c6e5818f884e9abe0d64c4fc13b"
@@ -594,8 +510,8 @@
             "content": "[completed(on: \"2025-10-15\")] CloudFront configuration deployed",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 28,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 25,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             }
           },
           {
@@ -604,8 +520,8 @@
             "content": "[completed(on: \"2025-10-16\")] Redis cache layer implemented",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 29,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 26,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             }
           },
           {
@@ -614,8 +530,8 @@
             "content": "",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 32,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 29,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             },
             "ext": {
               "children": [
@@ -625,8 +541,8 @@
                   "content": "add cache hit/miss monitoring to Datadog",
                   "provenance": {
                     "source_file": "examples/design.fs",
-                    "line_number": 32,
-                    "timestamp": "2025-10-22T18:01:12.189Z"
+                    "line_number": 29,
+                    "timestamp": "2025-10-22T18:40:43.302Z"
                   }
                 }
               ]
@@ -641,8 +557,8 @@
       "content": "cache stampede risk for high-traffic endpoints",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 34,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 31,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       },
       "children": [
         "ecb5ca8e78983ae8a462fbe08d6e012ade3cc4771827240c567d62fd1b8f809e",
@@ -656,8 +572,8 @@
       "content": "implement probabilistic early expiration",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 35,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 32,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -666,8 +582,8 @@
       "content": "add jitter to TTL (±10% randomization)",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 36,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 33,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -676,8 +592,8 @@
       "content": "update cache middleware with jitter logic",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 37,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 34,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -686,8 +602,8 @@
       "content": "",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 35,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 32,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       },
       "ext": {
         "children": [
@@ -697,8 +613,8 @@
             "content": "implement probabilistic early expiration",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 35,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 32,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             }
           },
           {
@@ -707,8 +623,8 @@
             "content": "add jitter to TTL (±10% randomization)",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 36,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 33,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             }
           },
           {
@@ -717,8 +633,8 @@
             "content": "update cache middleware with jitter logic",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 37,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 34,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             }
           }
         ]
@@ -730,8 +646,8 @@
       "content": "=> performance testing on staging",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 39,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 36,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       },
       "children": [
         "bb084c96f75023b4271670fbb59922b0ff987b3d77d43f273ed1c1c04f0194d7",
@@ -744,8 +660,8 @@
       "content": "load testing with k6 (1000 RPS)",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 40,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 37,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       },
       "children": [
         "88d305b408b8ec969d5847744b85554374334925472875aa903e3b62ae740bda",
@@ -758,8 +674,8 @@
       "content": "95th percentile latency: 45ms (target: <50ms) ✓",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 41,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 38,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -768,8 +684,8 @@
       "content": "cache hit rate: 87% (target: >80%) ✓",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 42,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 39,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -778,8 +694,8 @@
       "content": "",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 41,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 38,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       },
       "ext": {
         "children": [
@@ -789,8 +705,8 @@
             "content": "95th percentile latency: 45ms (target: <50ms) ✓",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 41,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 38,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             }
           },
           {
@@ -799,8 +715,8 @@
             "content": "cache hit rate: 87% (target: >80%) ✓",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 42,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 39,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             }
           }
         ]
@@ -812,8 +728,8 @@
       "content": "deploy to production with gradual rollout",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 43,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 40,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -822,8 +738,8 @@
       "content": "",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 40,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 37,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       },
       "ext": {
         "children": [
@@ -833,8 +749,8 @@
             "content": "load testing with k6 (1000 RPS)",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 40,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 37,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             },
             "children": [
               "88d305b408b8ec969d5847744b85554374334925472875aa903e3b62ae740bda",
@@ -847,8 +763,8 @@
             "content": "",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 41,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 38,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             },
             "ext": {
               "children": [
@@ -858,8 +774,8 @@
                   "content": "95th percentile latency: 45ms (target: <50ms) ✓",
                   "provenance": {
                     "source_file": "examples/design.fs",
-                    "line_number": 41,
-                    "timestamp": "2025-10-22T18:01:12.189Z"
+                    "line_number": 38,
+                    "timestamp": "2025-10-22T18:40:43.302Z"
                   }
                 },
                 {
@@ -868,8 +784,8 @@
                   "content": "cache hit rate: 87% (target: >80%) ✓",
                   "provenance": {
                     "source_file": "examples/design.fs",
-                    "line_number": 42,
-                    "timestamp": "2025-10-22T18:01:12.189Z"
+                    "line_number": 39,
+                    "timestamp": "2025-10-22T18:40:43.302Z"
                   }
                 }
               ]
@@ -881,8 +797,8 @@
             "content": "deploy to production with gradual rollout",
             "provenance": {
               "source_file": "examples/design.fs",
-              "line_number": 43,
-              "timestamp": "2025-10-22T18:01:12.189Z"
+              "line_number": 40,
+              "timestamp": "2025-10-22T18:40:43.302Z"
             }
           }
         ]
@@ -898,7 +814,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 4,
-        "timestamp": "2025-10-22T18:01:12.187Z"
+        "timestamp": "2025-10-22T18:40:43.300Z"
       }
     },
     {
@@ -909,7 +825,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 5,
-        "timestamp": "2025-10-22T18:01:12.187Z"
+        "timestamp": "2025-10-22T18:40:43.300Z"
       }
     },
     {
@@ -920,7 +836,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 5,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       },
       "axis_label": "performance vs freshness"
     },
@@ -932,7 +848,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 6,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -943,7 +859,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 9,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -954,7 +870,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 10,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -965,7 +881,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 11,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -976,7 +892,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 11,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       },
       "axis_label": "cost vs control"
     },
@@ -988,97 +904,52 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 12,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
-      "id": "2426d672ade8cd9ddaf400207371a8848b46a101386c6e3532a49e51d2474069",
+      "id": "d67c2fa23d8b754fe56d8f6358904208d1d2d7ccc4d829d4a7aa68812cc54451",
       "type": "causes",
-      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
-      "target": "1933d36ffe5cf3fc9786b10210431e4466f0d53bfff18f43364d95f245d8e933",
-      "provenance": {
-        "source_file": "examples/design.fs",
-        "line_number": 15,
-        "timestamp": "2025-10-22T18:01:12.188Z"
-      }
-    },
-    {
-      "id": "f3ddc7796f3265f71ddd51ba3bf699e688ff7aee5b8b16ade7d37916adccdf7e",
-      "type": "causes",
-      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
-      "target": "c669a73a4ab8b5cd1aa2eb417cb7259ca6e976b00ff6c1b62c98e81de35d8bdf",
-      "provenance": {
-        "source_file": "examples/design.fs",
-        "line_number": 16,
-        "timestamp": "2025-10-22T18:01:12.188Z"
-      }
-    },
-    {
-      "id": "21c1afc273c720e876d05d9afa3d833fda12ad9c54a5033d5915979a0273b989",
-      "type": "causes",
-      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
-      "target": "7bbeae442c84cf26f3829ad667dc64eaf4e07fbe523a8afe5468f62ce970a40d",
-      "provenance": {
-        "source_file": "examples/design.fs",
-        "line_number": 17,
-        "timestamp": "2025-10-22T18:01:12.188Z"
-      }
-    },
-    {
-      "id": "d4a0b124deb3e4b605148179f9bf146196039cefe8745416da732e5a311605e0",
-      "type": "tension",
-      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
-      "target": "20f38a0d23685489d48bff415947b3033a73a5d7b3b0d713ff0f0f8815a8763a",
-      "provenance": {
-        "source_file": "examples/design.fs",
-        "line_number": 17,
-        "timestamp": "2025-10-22T18:01:12.188Z"
-      },
-      "axis_label": "complexity vs performance"
-    },
-    {
-      "id": "fab34d5c8eea1aebc1282b8c4d064dde83195db3209fbd72324c6f98e2853250",
-      "type": "causes",
-      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "source": "17d081a5513391dd2e1deccfb28a3ab7de271ce65bca6f6ac34e0193d924d2ac",
       "target": "122cd50d711ce65674e90dfa75b3c02740e233ec5a4a6677fe1b30ab53f49096",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 18,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "line_number": 15,
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
-      "id": "ebeebbb361811f3cbfc6475c6b17f43d1740e899736ae37ea59d751241a770d0",
+      "id": "f37944b9cf80f0993dec7d7445e80ce21b92193b22fc78591ea1a1058f0e6157",
       "type": "causes",
-      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "source": "17d081a5513391dd2e1deccfb28a3ab7de271ce65bca6f6ac34e0193d924d2ac",
       "target": "73036d87677aa262afca7699c4f3b31dae2e1c9dc3967db4390ed76ea823adde",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 19,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "line_number": 16,
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
-      "id": "8dc1cf320233b99c2d6bb5bfc6da79983ce59cca739fee5a54668ffe92e1ee5e",
+      "id": "183fac1256b0a34071289e9004f0a0b3516f367e78977287a7edaa02d3b1eb97",
       "type": "tension",
-      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "source": "17d081a5513391dd2e1deccfb28a3ab7de271ce65bca6f6ac34e0193d924d2ac",
       "target": "db6678312c4ba5cc4a9d81d55e191bb02b78db1baddf6b7aa995364f285e8624",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 19,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "line_number": 16,
+        "timestamp": "2025-10-22T18:40:43.301Z"
       },
       "axis_label": "latency vs cost"
     },
     {
-      "id": "d4bdaa00b6d3310f6139e543d3dd11a7e34fd85e7e19673da836a19d0aad00d4",
+      "id": "bb4f63fa6c8aff55d0852b53a64b6133f9d7e21b27b215af099b5a9dd3013131",
       "type": "causes",
-      "source": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "source": "17d081a5513391dd2e1deccfb28a3ab7de271ce65bca6f6ac34e0193d924d2ac",
       "target": "d06483939baaa689f2d9b0b85324e4a541b43d7d211b84c49e89805e0b7cbf48",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 20,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "line_number": 17,
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -1088,8 +959,8 @@
       "target": "ecb5ca8e78983ae8a462fbe08d6e012ade3cc4771827240c567d62fd1b8f809e",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 35,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 32,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -1099,8 +970,8 @@
       "target": "96bcb96c0d8de0f7fa7ef4ebca91779e6a7f95211614bb23edbd67295734e84f",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 36,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 33,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -1110,8 +981,8 @@
       "target": "bb084c96f75023b4271670fbb59922b0ff987b3d77d43f273ed1c1c04f0194d7",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 40,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 37,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -1121,8 +992,8 @@
       "target": "88d305b408b8ec969d5847744b85554374334925472875aa903e3b62ae740bda",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 41,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 38,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -1132,8 +1003,8 @@
       "target": "121d572d560aca065d0029e82db7329ec62c2b5dc165861c3501a991fb04ba32",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 42,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 39,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -1143,8 +1014,8 @@
       "target": "88fb54828c16d3b23b64b67ad5f27ccb2686ba18b8b20866f2714b381c0f0196",
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 43,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 40,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     },
     {
@@ -1155,7 +1026,7 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 3,
-        "timestamp": "2025-10-22T18:01:12.187Z"
+        "timestamp": "2025-10-22T18:40:43.300Z"
       }
     },
     {
@@ -1166,18 +1037,18 @@
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 8,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
-      "id": "195d263e6aea93afb550a0fabbf16d43858e974101561d36f24d2e5d409f2522",
+      "id": "f4e7e43d4b95bd2c7d3a63be6b37363477b8bfa00b3d51f41db5ea087dbf10a0",
       "type": "alternative",
       "source": "e26889b5d1390cd923d66e62a0330abfbdf5d37ccf249775cd27cc53a2e672ef",
-      "target": "a830486e455d1f0473df97f88d7070b698ecf5bea9b17aecdf671b7013bc7fba",
+      "target": "17d081a5513391dd2e1deccfb28a3ab7de271ce65bca6f6ac34e0193d924d2ac",
       "provenance": {
         "source_file": "examples/design.fs",
         "line_number": 14,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     }
   ],
@@ -1192,8 +1063,8 @@
       },
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 22,
-        "timestamp": "2025-10-22T18:01:12.188Z"
+        "line_number": 19,
+        "timestamp": "2025-10-22T18:40:43.301Z"
       }
     },
     {
@@ -1206,8 +1077,8 @@
       },
       "provenance": {
         "source_file": "examples/design.fs",
-        "line_number": 31,
-        "timestamp": "2025-10-22T18:01:12.189Z"
+        "line_number": 28,
+        "timestamp": "2025-10-22T18:40:43.302Z"
       }
     }
   ],
@@ -1221,7 +1092,7 @@
     "source_files": [
       "examples/design.fs"
     ],
-    "parsed_at": "2025-10-22T18:01:12.190Z",
+    "parsed_at": "2025-10-22T18:40:43.303Z",
     "parser": "flowscript-peg-parser 1.0.0"
   }
 }
