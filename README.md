@@ -385,41 +385,23 @@ The spontaneous parsing proves this. If it were model-specific, different archit
 
 ---
 
-## Two Product Directions
+## Product Vision
 
-FlowScript as notation is open and free (see [LICENSE](LICENSE)). But the ecosystem enables two commercial products:
+FlowScript as notation is open and free (see [LICENSE](LICENSE)). We're exploring two product concepts built on this foundation:
 
 ### The Bridge (For Everyone)
 
-**Problem:** Most people won't learn notation. "Looks like code" is an adoption barrier.
+**Concept:** Simple interface that generates expert-level prompts using FlowScript behind the scenes. Users get better AI results without learning notation.
 
-**Solution:** Hide the syntax. Conversational interface that generates FlowScript behind the scenes.
+### The Editor (For Power Users)
 
-User describes their thinking in natural language. The Bridge translates to FlowScript. AI receives structured input. User gets better results without learning notation.
+**Concept:** IDE-like environment with real-time visual preview. Power users write FlowScript directly, see structure as graphs, export in multiple formats.
 
-**Target:** Millions of general users who want better AI results without technical overhead.
+### Status
 
-See [docs/bridge.md](docs/bridge.md) for details.
+Both are exploratory concepts, not commitments. FlowScript notation works today and is complete. These products are speculative applications we're validating with community feedback.
 
-### The Editor (For Power Users)  
-
-**Problem:** FlowScript is more powerful when you write directly in notation. But managing bracket depth, relationship structures, and state tracking manually gets complex.
-
-**Solution:** IDE-like environment with visual preview, bracket matching, relationship visualization, and syntax assistance.
-
-Power users write in FlowScript. Editor provides tooling to manage complexity. Visual layer shows structure while editing.
-
-**Target:** Thousands of power users who want to amplify their thinking through direct notation use.
-
-See [docs/editor.md](docs/editor.md) for details.
-
-### Different Markets, Same Foundation
-
-These products serve different needs:
-- **Bridge** democratizes access (prompt engineering as a service)
-- **Editor** amplifies mastery (IDE for collaborative cognition)
-
-One might succeed, both might, neither might. But they share FlowScript as foundation - and the notation itself remains open regardless.
+**→ See [docs/PRODUCT_VISION.md](docs/PRODUCT_VISION.md) for detailed exploration, reality checks, and how to engage.**
 
 ---
 
@@ -433,9 +415,8 @@ One might succeed, both might, neither might. But they share FlowScript as found
 
 ### Understanding the Architecture
 
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Cognitive patterns and meta-analysis
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Cognitive patterns and meta-analysis from real use
 - **[TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md)** - Implementation details for flow system
-- **[docs/philosophy.md](docs/philosophy.md)** - Deeper concepts (Third Mind, cognitive symbiosis)
 
 ---
 
