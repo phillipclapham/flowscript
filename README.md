@@ -401,7 +401,7 @@ FlowScript as notation is open and free (see [LICENSE](LICENSE)). We're explorin
 
 Both are exploratory concepts, not commitments. FlowScript notation works today and is complete. These products are speculative applications we're validating with community feedback.
 
-**→ See [docs/PRODUCT_VISION.md](docs/PRODUCT_VISION.md) for detailed exploration, reality checks, and how to engage.**
+**→ See [PRODUCT_VISION.md](PRODUCT_VISION.md) for detailed exploration, reality checks, and how to engage.**
 
 ---
 
