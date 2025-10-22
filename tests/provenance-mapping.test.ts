@@ -286,8 +286,8 @@ D
       expect(confident?.provenance.line_number).toBe(4);
 
       // Verify modifiers attached
-      expect(urgent?.ext?.modifiers).toContain('urgent');
-      expect(positive?.ext?.modifiers).toContain('strong_positive');
+      expect(urgent?.modifiers).toContain('urgent');
+      expect(positive?.modifiers).toContain('strong_positive');
     });
   });
 

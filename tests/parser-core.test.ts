@@ -88,10 +88,10 @@ describe('Parser', () => {
       const ir = parser.parse(input);
 
       expect(ir.relationships).toHaveLength(1);
-      expect(ir.relationships[0].type).toBe('causes');
-      // Source and target should be swapped for <-
-      expect(ir.relationships[0].source).toBe(ir.nodes[1].id);
-      expect(ir.relationships[0].target).toBe(ir.nodes[0].id);
+      expect(ir.relationships[0].type).toBe('derives_from');
+      // A <- B means "A derives_from B"
+      expect(ir.relationships[0].source).toBe(ir.nodes[0].id); // A
+      expect(ir.relationships[0].target).toBe(ir.nodes[1].id); // B
     });
 
     it('parses bidirectional (<->)', () => {
@@ -214,7 +214,7 @@ describe('Parser', () => {
       const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
-      expect(ir.nodes[0].ext?.modifiers).toContain('urgent');
+      expect(ir.nodes[0].modifiers).toContain('urgent');
     });
 
     it('parses positive modifier (++)', () => {
@@ -223,7 +223,7 @@ describe('Parser', () => {
       const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
-      expect(ir.nodes[0].ext?.modifiers).toContain('strong_positive');
+      expect(ir.nodes[0].modifiers).toContain('strong_positive');
     });
 
     it('parses confident modifier (*)', () => {
@@ -232,7 +232,7 @@ describe('Parser', () => {
       const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
-      expect(ir.nodes[0].ext?.modifiers).toContain('high_confidence');
+      expect(ir.nodes[0].modifiers).toContain('high_confidence');
     });
 
     it('parses uncertain modifier (~)', () => {
@@ -241,7 +241,7 @@ describe('Parser', () => {
       const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
-      expect(ir.nodes[0].ext?.modifiers).toContain('low_confidence');
+      expect(ir.nodes[0].modifiers).toContain('low_confidence');
     });
 
     it('parses multiple modifiers', () => {
@@ -250,8 +250,8 @@ describe('Parser', () => {
       const ir = parser.parse(input);
 
       expect(ir.nodes).toHaveLength(1);
-      expect(ir.nodes[0].ext?.modifiers).toContain('urgent');
-      expect(ir.nodes[0].ext?.modifiers).toContain('high_confidence');
+      expect(ir.nodes[0].modifiers).toContain('urgent');
+      expect(ir.nodes[0].modifiers).toContain('high_confidence');
     });
   });
 
@@ -307,7 +307,7 @@ describe('Parser', () => {
 
       expect(ir.nodes[0].type).toBe('alternative');
       // Note: modifiers stored in parser state, check ext field
-      expect(ir.nodes[0].ext?.modifiers).toContain('urgent');
+      expect(ir.nodes[0].modifiers).toContain('urgent');
     });
   });
 

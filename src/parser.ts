@@ -116,8 +116,9 @@ export class Parser {
       provenance: this.getProvenance(node)
     };
 
+    // Store modifiers at top level per ir.schema.json
     if (modifiers.length > 0) {
-      result.ext = { modifiers };
+      result.modifiers = modifiers;
     }
 
     return result;
@@ -627,9 +628,13 @@ export class Parser {
         // Track nodes and blocks before parsing block content
         const nodesBefore = self.nodes.length;
 
-        // Set block start index and reset primary node for this block
+        // Set block start index
         self.blockStartNodeIndex = nodesBefore;
-        self.blockPrimaryNode = null;
+
+        // Set block primary node to the parent node (node immediately before block)
+        // This enables continuation relationships to reference the correct parent
+        // If no parent exists, set to null (standalone blocks will use first child as fallback)
+        self.blockPrimaryNode = nodesBefore > 0 ? self.nodes[nodesBefore - 1] : null;
 
         // Parse block lines (recursively processes all nested elements)
         blockLines.toIR();

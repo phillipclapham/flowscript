@@ -49,7 +49,7 @@ function why(
 ```
 1. Start at target node (nodeId)
 2. Traverse all incoming relationships of type:
-   - caused_by (<-)
+   - derives_from (<-)
    - Optionally: correlates (=)
 3. For each parent node found:
    - Add to ancestry set
@@ -88,25 +88,25 @@ function why(
       "depth": 4,
       "id": "sha256:cause_4...",
       "content": "no connection pooling tests in CI",
-      "relationship_type": "caused_by"
+      "relationship_type": "derives_from"
     },
     {
       "depth": 3,
       "id": "sha256:cause_3...",
       "content": "copy-paste bug from legacy user_controller.js",
-      "relationship_type": "caused_by"
+      "relationship_type": "derives_from"
     },
     {
       "depth": 2,
       "id": "sha256:cause_2...",
       "content": "connection.release() missing in error handlers",
-      "relationship_type": "caused_by"
+      "relationship_type": "derives_from"
     },
     {
       "depth": 1,
       "id": "sha256:cause_1...",
       "content": "database connection pool exhausted (max 20 connections)",
-      "relationship_type": "caused_by"
+      "relationship_type": "derives_from"
     }
   ],
   "root_cause": {

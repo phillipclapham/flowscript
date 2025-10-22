@@ -1,0 +1,536 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "fbf5096bf1d897cc4f447d65c7982a69febb6e5a433d637556f80481980a7b25",
+      "type": "statement",
+      "content": "timeout errors in production API (500ms+ response times)",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 1,
+        "timestamp": "2025-10-22T15:41:27.870Z"
+      },
+      "modifiers": [
+        "urgent"
+      ],
+      "children": [
+        "518aaeb32bac0ed029742ca2c1b7f787f674bb942c7a1c83349641902a7c6929"
+      ]
+    },
+    {
+      "id": "518aaeb32bac0ed029742ca2c1b7f787f674bb942c7a1c83349641902a7c6929",
+      "type": "statement",
+      "content": "database connection pool exhausted (max 20 connections)",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 2,
+        "timestamp": "2025-10-22T15:41:27.871Z"
+      },
+      "children": [
+        "82962b59d3644ad7a5d1a7c6e8f217caa09425aedc1c2fd35f495a6a79c3e703"
+      ]
+    },
+    {
+      "id": "82962b59d3644ad7a5d1a7c6e8f217caa09425aedc1c2fd35f495a6a79c3e703",
+      "type": "statement",
+      "content": "connection.release() missing in error handlers",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-22T15:41:27.871Z"
+      },
+      "children": [
+        "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34"
+      ]
+    },
+    {
+      "id": "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34",
+      "type": "statement",
+      "content": "copy-paste bug from legacy user_controller.js",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 4,
+        "timestamp": "2025-10-22T15:41:27.871Z"
+      },
+      "children": [
+        "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496"
+      ]
+    },
+    {
+      "id": "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496",
+      "type": "statement",
+      "content": "no connection pooling tests in CI",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-22T15:41:27.871Z"
+      }
+    },
+    {
+      "id": "52f2847735eb0750cbc4382889255971d6bf5574305f085224e93657bd529288",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496",
+            "type": "statement",
+            "content": "no connection pooling tests in CI",
+            "provenance": {
+              "source_file": "examples/debug.fs",
+              "line_number": 5,
+              "timestamp": "2025-10-22T15:41:27.871Z"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "9b39b1f660f51257a114a891a65606c43490426e46cbcbaf6135956a7c29156a",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 4,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34",
+            "type": "statement",
+            "content": "copy-paste bug from legacy user_controller.js",
+            "provenance": {
+              "source_file": "examples/debug.fs",
+              "line_number": 4,
+              "timestamp": "2025-10-22T15:41:27.871Z"
+            },
+            "children": [
+              "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496"
+            ]
+          },
+          {
+            "id": "52f2847735eb0750cbc4382889255971d6bf5574305f085224e93657bd529288",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/debug.fs",
+              "line_number": 5,
+              "timestamp": "2025-10-22T15:41:27.872Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496",
+                  "type": "statement",
+                  "content": "no connection pooling tests in CI",
+                  "provenance": {
+                    "source_file": "examples/debug.fs",
+                    "line_number": 5,
+                    "timestamp": "2025-10-22T15:41:27.871Z"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "21c85b3b9b3a2d744afbe3162e50f1ffdc0a965d4bd4f40e278d37c5113e0554",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "82962b59d3644ad7a5d1a7c6e8f217caa09425aedc1c2fd35f495a6a79c3e703",
+            "type": "statement",
+            "content": "connection.release() missing in error handlers",
+            "provenance": {
+              "source_file": "examples/debug.fs",
+              "line_number": 3,
+              "timestamp": "2025-10-22T15:41:27.871Z"
+            },
+            "children": [
+              "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34"
+            ]
+          },
+          {
+            "id": "9b39b1f660f51257a114a891a65606c43490426e46cbcbaf6135956a7c29156a",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/debug.fs",
+              "line_number": 4,
+              "timestamp": "2025-10-22T15:41:27.872Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34",
+                  "type": "statement",
+                  "content": "copy-paste bug from legacy user_controller.js",
+                  "provenance": {
+                    "source_file": "examples/debug.fs",
+                    "line_number": 4,
+                    "timestamp": "2025-10-22T15:41:27.871Z"
+                  },
+                  "children": [
+                    "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496"
+                  ]
+                },
+                {
+                  "id": "52f2847735eb0750cbc4382889255971d6bf5574305f085224e93657bd529288",
+                  "type": "block",
+                  "content": "",
+                  "provenance": {
+                    "source_file": "examples/debug.fs",
+                    "line_number": 5,
+                    "timestamp": "2025-10-22T15:41:27.872Z"
+                  },
+                  "ext": {
+                    "children": [
+                      {
+                        "id": "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496",
+                        "type": "statement",
+                        "content": "no connection pooling tests in CI",
+                        "provenance": {
+                          "source_file": "examples/debug.fs",
+                          "line_number": 5,
+                          "timestamp": "2025-10-22T15:41:27.871Z"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "8c2144a901c82f823de9931845860aa21548338cd4ad92b0ef0aaafd3be63e8e",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 2,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "518aaeb32bac0ed029742ca2c1b7f787f674bb942c7a1c83349641902a7c6929",
+            "type": "statement",
+            "content": "database connection pool exhausted (max 20 connections)",
+            "provenance": {
+              "source_file": "examples/debug.fs",
+              "line_number": 2,
+              "timestamp": "2025-10-22T15:41:27.871Z"
+            },
+            "children": [
+              "82962b59d3644ad7a5d1a7c6e8f217caa09425aedc1c2fd35f495a6a79c3e703"
+            ]
+          },
+          {
+            "id": "21c85b3b9b3a2d744afbe3162e50f1ffdc0a965d4bd4f40e278d37c5113e0554",
+            "type": "block",
+            "content": "",
+            "provenance": {
+              "source_file": "examples/debug.fs",
+              "line_number": 3,
+              "timestamp": "2025-10-22T15:41:27.872Z"
+            },
+            "ext": {
+              "children": [
+                {
+                  "id": "82962b59d3644ad7a5d1a7c6e8f217caa09425aedc1c2fd35f495a6a79c3e703",
+                  "type": "statement",
+                  "content": "connection.release() missing in error handlers",
+                  "provenance": {
+                    "source_file": "examples/debug.fs",
+                    "line_number": 3,
+                    "timestamp": "2025-10-22T15:41:27.871Z"
+                  },
+                  "children": [
+                    "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34"
+                  ]
+                },
+                {
+                  "id": "9b39b1f660f51257a114a891a65606c43490426e46cbcbaf6135956a7c29156a",
+                  "type": "block",
+                  "content": "",
+                  "provenance": {
+                    "source_file": "examples/debug.fs",
+                    "line_number": 4,
+                    "timestamp": "2025-10-22T15:41:27.872Z"
+                  },
+                  "ext": {
+                    "children": [
+                      {
+                        "id": "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34",
+                        "type": "statement",
+                        "content": "copy-paste bug from legacy user_controller.js",
+                        "provenance": {
+                          "source_file": "examples/debug.fs",
+                          "line_number": 4,
+                          "timestamp": "2025-10-22T15:41:27.871Z"
+                        },
+                        "children": [
+                          "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496"
+                        ]
+                      },
+                      {
+                        "id": "52f2847735eb0750cbc4382889255971d6bf5574305f085224e93657bd529288",
+                        "type": "block",
+                        "content": "",
+                        "provenance": {
+                          "source_file": "examples/debug.fs",
+                          "line_number": 5,
+                          "timestamp": "2025-10-22T15:41:27.872Z"
+                        },
+                        "ext": {
+                          "children": [
+                            {
+                              "id": "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496",
+                              "type": "statement",
+                              "content": "no connection pooling tests in CI",
+                              "provenance": {
+                                "source_file": "examples/debug.fs",
+                                "line_number": 5,
+                                "timestamp": "2025-10-22T15:41:27.871Z"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "58fef44b7c8625b0bd59ab731c9ac8acc6382bef2f9c3a0b6b5c7ed8bb9d17cb",
+      "type": "action",
+      "content": "add connection.release() to all error handlers",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 9,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      }
+    },
+    {
+      "id": "d39bf2cc9002cf4eeba3f09dc42f3d5a501f2a4bbf3a43ca4ca3041a823f6b52",
+      "type": "action",
+      "content": "audit all controllers for resource leaks",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 10,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      }
+    },
+    {
+      "id": "798fa765811c6df68b3d02241d3d703048c543f3ccae39020211ecda3797e2ef",
+      "type": "action",
+      "content": "add connection pool monitoring (Prometheus)",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 11,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      }
+    },
+    {
+      "id": "feb4fd35f7cc3ab48a48879c5a64921e8aab3e133320bd1ddc0e46dcda506224",
+      "type": "action",
+      "content": "write integration tests for connection pooling",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 12,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      },
+      "modifiers": [
+        "strong_positive"
+      ]
+    },
+    {
+      "id": "3494c02472057691e7aaf07b5d0bc7306695811264bed542b31a3829f2104b5d",
+      "type": "thought",
+      "content": "pattern detected across 3 controllers (user, order, payment)",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 14,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      },
+      "children": [
+        "62b1e354fb8b218f4e2517bf15ffd6a49d5090c642be5ed0d88da4f725ed250a",
+        "99949dcf37b64de35e15108ddd121166d7d3053e4ec8ba1a4eb9b538d66a0478"
+      ]
+    },
+    {
+      "id": "62b1e354fb8b218f4e2517bf15ffd6a49d5090c642be5ed0d88da4f725ed250a",
+      "type": "statement",
+      "content": "suggests systematic issue in codebase",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 15,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      }
+    },
+    {
+      "id": "99949dcf37b64de35e15108ddd121166d7d3053e4ec8ba1a4eb9b538d66a0478",
+      "type": "statement",
+      "content": "code review template should check resource cleanup",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 16,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      }
+    },
+    {
+      "id": "2c336d8fd7ffa912097c13904ce5b7601c6c4e98efd975db369661123a5892f6",
+      "type": "block",
+      "content": "",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 15,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      },
+      "ext": {
+        "children": [
+          {
+            "id": "62b1e354fb8b218f4e2517bf15ffd6a49d5090c642be5ed0d88da4f725ed250a",
+            "type": "statement",
+            "content": "suggests systematic issue in codebase",
+            "provenance": {
+              "source_file": "examples/debug.fs",
+              "line_number": 15,
+              "timestamp": "2025-10-22T15:41:27.872Z"
+            }
+          },
+          {
+            "id": "99949dcf37b64de35e15108ddd121166d7d3053e4ec8ba1a4eb9b538d66a0478",
+            "type": "statement",
+            "content": "code review template should check resource cleanup",
+            "provenance": {
+              "source_file": "examples/debug.fs",
+              "line_number": 16,
+              "timestamp": "2025-10-22T15:41:27.872Z"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "id": "5322a0d8e25fd60809e9edfcd6fc9357c07a4202aedcf99678fa36bacdd2407f",
+      "type": "derives_from",
+      "source": "fbf5096bf1d897cc4f447d65c7982a69febb6e5a433d637556f80481980a7b25",
+      "target": "518aaeb32bac0ed029742ca2c1b7f787f674bb942c7a1c83349641902a7c6929",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 2,
+        "timestamp": "2025-10-22T15:41:27.871Z"
+      }
+    },
+    {
+      "id": "a7a9771b9a7c3875f763cf7d438d9f419f84469ca299154e727a86d6c9fbea4a",
+      "type": "derives_from",
+      "source": "518aaeb32bac0ed029742ca2c1b7f787f674bb942c7a1c83349641902a7c6929",
+      "target": "82962b59d3644ad7a5d1a7c6e8f217caa09425aedc1c2fd35f495a6a79c3e703",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 3,
+        "timestamp": "2025-10-22T15:41:27.871Z"
+      }
+    },
+    {
+      "id": "36cca1c7fb76b7592623e603cf7431081db480668133f89c9c873041a5f11b62",
+      "type": "derives_from",
+      "source": "82962b59d3644ad7a5d1a7c6e8f217caa09425aedc1c2fd35f495a6a79c3e703",
+      "target": "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 4,
+        "timestamp": "2025-10-22T15:41:27.871Z"
+      }
+    },
+    {
+      "id": "89743cac1b781ca81a80d50551453e535a504addb593cacdb933bf2c9e2b6182",
+      "type": "derives_from",
+      "source": "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34",
+      "target": "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 5,
+        "timestamp": "2025-10-22T15:41:27.871Z"
+      }
+    },
+    {
+      "id": "2e191aa67bf0c8f3839e5daf34b8aff204c376f6e761f538b9567c93db352bda",
+      "type": "causes",
+      "source": "3494c02472057691e7aaf07b5d0bc7306695811264bed542b31a3829f2104b5d",
+      "target": "62b1e354fb8b218f4e2517bf15ffd6a49d5090c642be5ed0d88da4f725ed250a",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 15,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      }
+    },
+    {
+      "id": "816e02d684b46a988b3cd8df859921a29c5d91caff65ac7c4e1e20d526a1de6f",
+      "type": "causes",
+      "source": "3494c02472057691e7aaf07b5d0bc7306695811264bed542b31a3829f2104b5d",
+      "target": "99949dcf37b64de35e15108ddd121166d7d3053e4ec8ba1a4eb9b538d66a0478",
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 16,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      }
+    }
+  ],
+  "states": [
+    {
+      "id": "1d0df5b78c47a058caedb459c7e7bcc0b18fbb91fe29a8e2676fac96185c002d",
+      "type": "blocked",
+      "node_id": "58fef44b7c8625b0bd59ab731c9ac8acc6382bef2f9c3a0b6b5c7ed8bb9d17cb",
+      "fields": {
+        "reason": "need staging environment to validate fix",
+        "since": "2025-10-16"
+      },
+      "provenance": {
+        "source_file": "examples/debug.fs",
+        "line_number": 7,
+        "timestamp": "2025-10-22T15:41:27.872Z"
+      }
+    }
+  ],
+  "invariants": {
+    "causal_acyclic": true,
+    "all_nodes_reachable": true,
+    "tension_axes_labeled": true,
+    "state_fields_present": true
+  },
+  "metadata": {
+    "source_files": [
+      "examples/debug.fs"
+    ],
+    "parsed_at": "2025-10-22T15:41:27.872Z",
+    "parser": "flowscript-peg-parser 1.0.0"
+  }
+}

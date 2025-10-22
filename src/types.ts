@@ -95,6 +95,7 @@ export interface Node {
   content: string;
   provenance: Provenance;
   children?: string[];  // Array of child node IDs (not full Node objects)
+  modifiers?: string[];  // Modifiers: "urgent", "strong_positive", "high_confidence", "low_confidence"
   ext?: Record<string, unknown>;
 }
 

@@ -7,7 +7,7 @@ FlowScript {
   Content = State | Insight | Question | Completion | Alternative | Block | Statement
 
   BlankLine = space* "\n"
-  Statement = (~("\n" | "{" | "}") any)+ "\n"?
+  Statement = ~Modifier (~("\n" | "{" | "}") any)+ "\n"?
 
   // Blocks (thought blocks / atomic processing units)
   Block = "{" (space | "\n")* BlockLine* (space | "\n")* "}"

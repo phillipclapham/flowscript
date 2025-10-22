@@ -609,7 +609,7 @@ thought: pattern detected across 3 controllers (user, order, payment)
   "relationships": [
     {
       "id": "sha256:rev_cause_1...",
-      "type": "caused_by",
+      "type": "derives_from",
       "source": "sha256:urgent_1...",
       "target": "sha256:cause_1...",
       "provenance": {
@@ -620,7 +620,7 @@ thought: pattern detected across 3 controllers (user, order, payment)
     },
     {
       "id": "sha256:rev_cause_2...",
-      "type": "caused_by",
+      "type": "derives_from",
       "source": "sha256:cause_1...",
       "target": "sha256:cause_2...",
       "provenance": {
@@ -631,7 +631,7 @@ thought: pattern detected across 3 controllers (user, order, payment)
     },
     {
       "id": "sha256:rev_cause_3...",
-      "type": "caused_by",
+      "type": "derives_from",
       "source": "sha256:cause_2...",
       "target": "sha256:cause_3...",
       "provenance": {
@@ -642,7 +642,7 @@ thought: pattern detected across 3 controllers (user, order, payment)
     },
     {
       "id": "sha256:rev_cause_4...",
-      "type": "caused_by",
+      "type": "derives_from",
       "source": "sha256:cause_3...",
       "target": "sha256:cause_4...",
       "provenance": {
