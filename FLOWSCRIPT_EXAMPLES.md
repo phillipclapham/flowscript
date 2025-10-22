@@ -1077,6 +1077,6 @@ Use it when structure helps thinking, not as a requirement.
 
 ---
 
-*FlowScript Examples v0.4.1*  
-*Real patterns from real use*  
+*FlowScript Examples v1.0*
+*Real patterns from real use*
 *October 2025*

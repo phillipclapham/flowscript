@@ -165,7 +165,7 @@ thought: FlowScript reduces parsing overhead for both human and AI
 [decided] Auth system implementation complete
 ```
 
-See the [full reference](#) for all markers, but these core ones solve 90% of use cases.
+See the [full reference](FLOWSCRIPT_SYNTAX.md) for all markers, but these core ones solve 90% of use cases.
 
 ## What Success Looks Like
 
@@ -204,9 +204,11 @@ When prose flows perfectly → Don't force it
 
 **That's it.** No training required. No commitment needed. Just try it and see if it reduces friction.
 
-**Full syntax reference:** [Link to FLOWSCRIPT_SYNTAX.md]
-**Examples and patterns:** [Link to examples]
-**Open source repo:** [GitHub link]
+**Full syntax reference:** [FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md)
+**Examples and patterns:** [FLOWSCRIPT_EXAMPLES.md](FLOWSCRIPT_EXAMPLES.md)
+**Advanced patterns:** [ADVANCED_PATTERNS.md](ADVANCED_PATTERNS.md)
+**Golden examples (canonical references):** [examples/](examples/)
+**Open source repo:** [GitHub](https://github.com/phillipclapham/flowscript)
 
 ---
 

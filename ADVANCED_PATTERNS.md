@@ -720,6 +720,40 @@ This unlocks:
 
 ---
 
+## Golden Examples as Learning Tools
+
+For canonical demonstrations of advanced patterns in practice, see the golden examples:
+
+**Pattern 1: Decision Making** - [examples/decision-README.md](examples/decision-README.md)
+- Demonstrates: Tradeoff analysis, decision tracking, blocker management
+- Complexity: Multi-dimensional decision with constraints
+- IR compilation: Full relationship graph with provenance
+
+**Pattern 2: Debug Investigation** - [examples/debug-README.md](examples/debug-README.md)
+- Demonstrates: Hypothesis tracking, evidence chains, temporal sequences
+- Complexity: Multi-hypothesis debugging with async operations
+- IR compilation: Causal chains with confidence markers
+
+**Pattern 3: Research Planning** - [examples/research-README.md](examples/research-README.md)
+- Demonstrates: Question tracking, parking lot, exploration states
+- Complexity: Research roadmap with uncertain outcomes
+- IR compilation: State transitions and lifecycle tracking
+
+**Pattern 4: Design Discussion** - [examples/design-README.md](examples/design-README.md)
+- Demonstrates: Alternative architectures, nested tradeoffs, synthesis
+- Complexity: Multi-option architectural decision
+- IR compilation: Hierarchical thought structures with alternatives
+
+**Why study golden examples:**
+- See advanced patterns in complete context
+- Understand how markers compose in real scenarios
+- Learn IR compilation patterns
+- Reference spec-compliant implementations
+
+These examples are not just demonstrations - they're **canonical references** maintained with 100% test coverage and full IR validation.
+
+---
+
 ## The Bottom Line
 
 **Nesting is FlowScript's most powerful capability.**
