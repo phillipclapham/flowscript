@@ -59,6 +59,12 @@ export class OrphanedNodesRule extends BaseLintRule {
     // Check each node for connections
     for (const node of ir.nodes) {
       if (!connectedIds.has(node.id)) {
+        // Exempt action and completion nodes from orphan detection
+        // These are metadata (todos, tracking) not graph semantics
+        // Spec Pattern 2 demonstrates this: action nodes as todo lists
+        if (node.type === 'action' || node.type === 'completion') {
+          continue;
+        }
 
         // Node has degree 0 (no edges)
         results.push(this.createResult(

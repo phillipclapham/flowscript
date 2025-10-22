@@ -147,6 +147,59 @@ C -> D`;
       const e004Errors = errors.filter(e => e.rule === 'E004');
       expect(e004Errors).toHaveLength(0);
     });
+
+    it('allows orphaned action nodes (todo list pattern)', () => {
+      const input = `thought: incident analysis
+  -> root cause identified
+
+action: fix the bug
+action: add tests
+action: deploy fix`;
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
+
+      const linter = new Linter();
+      const results = linter.lint(ir);
+      const errors = linter.getErrors(results);
+
+      const e004Errors = errors.filter(e => e.rule === 'E004');
+      expect(e004Errors).toHaveLength(0); // No E004 for orphaned actions
+    });
+
+    it('allows orphaned completion nodes', () => {
+      const input = `A -> B
+
+✓ wrote documentation
+✓ reviewed code
+✓ deployed to production`;
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
+
+      const linter = new Linter();
+      const results = linter.lint(ir);
+      const errors = linter.getErrors(results);
+
+      const e004Errors = errors.filter(e => e.rule === 'E004');
+      expect(e004Errors).toHaveLength(0); // No E004 for orphaned completions
+    });
+
+    it('still catches orphaned thought nodes', () => {
+      const input = `A -> B
+
+Random orphaned thought here
+
+C -> D`;
+      const parser = new Parser('test.fs');
+      const ir = parser.parse(input);
+
+      const linter = new Linter();
+      const results = linter.lint(ir);
+      const errors = linter.getErrors(results);
+
+      const e004Errors = errors.filter(e => e.rule === 'E004');
+      expect(e004Errors.length).toBeGreaterThan(0); // Still catches real orphans
+      expect(e004Errors[0].message).toContain('Orphaned');
+    });
   });
 
   describe('E005: Causal Cycles', () => {

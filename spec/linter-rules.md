@@ -369,7 +369,12 @@ FlowScript is about **relationships between thoughts**. Isolated nodes break the
 **Exceptions:**
 - Root questions (starting point for exploration) - degree 0 acceptable
 - Standalone insights marked with `thought:` - acceptable if intentional
+- Action nodes - todo items that don't require graph connections
+- Completion nodes - finished work tracking (metadata, not graph semantics)
 - Top-level statements that spawn relationships - not orphaned
+
+**Rationale for action/completion exemption:**
+Actions and completions serve as metadata (todo lists, completion tracking) rather than participating in the causal/relational reasoning graph. They represent OUTPUTS of reasoning (what to do, what was done) rather than the reasoning itself. This pattern is demonstrated in spec Pattern 2 (debug/incident triage) where action nodes form a todo list separate from the causal analysis.
 
 **Note:** This is NOT "unreachable from {goal}" (too strict). This is "completely isolated" (no connections at all).
 
