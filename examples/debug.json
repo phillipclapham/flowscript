@@ -8,7 +8,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 1,
-        "timestamp": "2025-10-22T15:41:27.870Z"
+        "timestamp": "2025-10-22T18:44:11.613Z"
       },
       "modifiers": [
         "urgent"
@@ -24,7 +24,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 2,
-        "timestamp": "2025-10-22T15:41:27.871Z"
+        "timestamp": "2025-10-22T18:44:11.614Z"
       },
       "children": [
         "82962b59d3644ad7a5d1a7c6e8f217caa09425aedc1c2fd35f495a6a79c3e703"
@@ -37,7 +37,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 3,
-        "timestamp": "2025-10-22T15:41:27.871Z"
+        "timestamp": "2025-10-22T18:44:11.614Z"
       },
       "children": [
         "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34"
@@ -50,7 +50,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 4,
-        "timestamp": "2025-10-22T15:41:27.871Z"
+        "timestamp": "2025-10-22T18:44:11.614Z"
       },
       "children": [
         "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496"
@@ -63,7 +63,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 5,
-        "timestamp": "2025-10-22T15:41:27.871Z"
+        "timestamp": "2025-10-22T18:44:11.614Z"
       }
     },
     {
@@ -73,7 +73,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 5,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       },
       "ext": {
         "children": [
@@ -84,7 +84,7 @@
             "provenance": {
               "source_file": "examples/debug.fs",
               "line_number": 5,
-              "timestamp": "2025-10-22T15:41:27.871Z"
+              "timestamp": "2025-10-22T18:44:11.614Z"
             }
           }
         ]
@@ -97,7 +97,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 4,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       },
       "ext": {
         "children": [
@@ -108,7 +108,7 @@
             "provenance": {
               "source_file": "examples/debug.fs",
               "line_number": 4,
-              "timestamp": "2025-10-22T15:41:27.871Z"
+              "timestamp": "2025-10-22T18:44:11.614Z"
             },
             "children": [
               "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496"
@@ -121,7 +121,7 @@
             "provenance": {
               "source_file": "examples/debug.fs",
               "line_number": 5,
-              "timestamp": "2025-10-22T15:41:27.872Z"
+              "timestamp": "2025-10-22T18:44:11.615Z"
             },
             "ext": {
               "children": [
@@ -132,7 +132,7 @@
                   "provenance": {
                     "source_file": "examples/debug.fs",
                     "line_number": 5,
-                    "timestamp": "2025-10-22T15:41:27.871Z"
+                    "timestamp": "2025-10-22T18:44:11.614Z"
                   }
                 }
               ]
@@ -148,7 +148,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 3,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       },
       "ext": {
         "children": [
@@ -159,7 +159,7 @@
             "provenance": {
               "source_file": "examples/debug.fs",
               "line_number": 3,
-              "timestamp": "2025-10-22T15:41:27.871Z"
+              "timestamp": "2025-10-22T18:44:11.614Z"
             },
             "children": [
               "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34"
@@ -172,7 +172,7 @@
             "provenance": {
               "source_file": "examples/debug.fs",
               "line_number": 4,
-              "timestamp": "2025-10-22T15:41:27.872Z"
+              "timestamp": "2025-10-22T18:44:11.615Z"
             },
             "ext": {
               "children": [
@@ -183,7 +183,7 @@
                   "provenance": {
                     "source_file": "examples/debug.fs",
                     "line_number": 4,
-                    "timestamp": "2025-10-22T15:41:27.871Z"
+                    "timestamp": "2025-10-22T18:44:11.614Z"
                   },
                   "children": [
                     "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496"
@@ -196,7 +196,7 @@
                   "provenance": {
                     "source_file": "examples/debug.fs",
                     "line_number": 5,
-                    "timestamp": "2025-10-22T15:41:27.872Z"
+                    "timestamp": "2025-10-22T18:44:11.615Z"
                   },
                   "ext": {
                     "children": [
@@ -207,7 +207,7 @@
                         "provenance": {
                           "source_file": "examples/debug.fs",
                           "line_number": 5,
-                          "timestamp": "2025-10-22T15:41:27.871Z"
+                          "timestamp": "2025-10-22T18:44:11.614Z"
                         }
                       }
                     ]
@@ -226,7 +226,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 2,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       },
       "ext": {
         "children": [
@@ -237,7 +237,7 @@
             "provenance": {
               "source_file": "examples/debug.fs",
               "line_number": 2,
-              "timestamp": "2025-10-22T15:41:27.871Z"
+              "timestamp": "2025-10-22T18:44:11.614Z"
             },
             "children": [
               "82962b59d3644ad7a5d1a7c6e8f217caa09425aedc1c2fd35f495a6a79c3e703"
@@ -250,7 +250,7 @@
             "provenance": {
               "source_file": "examples/debug.fs",
               "line_number": 3,
-              "timestamp": "2025-10-22T15:41:27.872Z"
+              "timestamp": "2025-10-22T18:44:11.615Z"
             },
             "ext": {
               "children": [
@@ -261,7 +261,7 @@
                   "provenance": {
                     "source_file": "examples/debug.fs",
                     "line_number": 3,
-                    "timestamp": "2025-10-22T15:41:27.871Z"
+                    "timestamp": "2025-10-22T18:44:11.614Z"
                   },
                   "children": [
                     "6170db1864724d19616758f75ba951602ff78d97ffa61d6acdf908a27cf3de34"
@@ -274,7 +274,7 @@
                   "provenance": {
                     "source_file": "examples/debug.fs",
                     "line_number": 4,
-                    "timestamp": "2025-10-22T15:41:27.872Z"
+                    "timestamp": "2025-10-22T18:44:11.615Z"
                   },
                   "ext": {
                     "children": [
@@ -285,7 +285,7 @@
                         "provenance": {
                           "source_file": "examples/debug.fs",
                           "line_number": 4,
-                          "timestamp": "2025-10-22T15:41:27.871Z"
+                          "timestamp": "2025-10-22T18:44:11.614Z"
                         },
                         "children": [
                           "f08dda3af024d367eb6ae7ab394daffa2923310441ea350c29affc14740f6496"
@@ -298,7 +298,7 @@
                         "provenance": {
                           "source_file": "examples/debug.fs",
                           "line_number": 5,
-                          "timestamp": "2025-10-22T15:41:27.872Z"
+                          "timestamp": "2025-10-22T18:44:11.615Z"
                         },
                         "ext": {
                           "children": [
@@ -309,7 +309,7 @@
                               "provenance": {
                                 "source_file": "examples/debug.fs",
                                 "line_number": 5,
-                                "timestamp": "2025-10-22T15:41:27.871Z"
+                                "timestamp": "2025-10-22T18:44:11.614Z"
                               }
                             }
                           ]
@@ -331,7 +331,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 9,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       }
     },
     {
@@ -341,7 +341,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 10,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       }
     },
     {
@@ -351,7 +351,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 11,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       }
     },
     {
@@ -361,7 +361,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 12,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       },
       "modifiers": [
         "strong_positive"
@@ -374,7 +374,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 14,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       },
       "children": [
         "62b1e354fb8b218f4e2517bf15ffd6a49d5090c642be5ed0d88da4f725ed250a",
@@ -388,7 +388,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 15,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       }
     },
     {
@@ -398,7 +398,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 16,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       }
     },
     {
@@ -408,7 +408,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 15,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       },
       "ext": {
         "children": [
@@ -419,7 +419,7 @@
             "provenance": {
               "source_file": "examples/debug.fs",
               "line_number": 15,
-              "timestamp": "2025-10-22T15:41:27.872Z"
+              "timestamp": "2025-10-22T18:44:11.615Z"
             }
           },
           {
@@ -429,7 +429,7 @@
             "provenance": {
               "source_file": "examples/debug.fs",
               "line_number": 16,
-              "timestamp": "2025-10-22T15:41:27.872Z"
+              "timestamp": "2025-10-22T18:44:11.615Z"
             }
           }
         ]
@@ -445,7 +445,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 2,
-        "timestamp": "2025-10-22T15:41:27.871Z"
+        "timestamp": "2025-10-22T18:44:11.614Z"
       }
     },
     {
@@ -456,7 +456,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 3,
-        "timestamp": "2025-10-22T15:41:27.871Z"
+        "timestamp": "2025-10-22T18:44:11.614Z"
       }
     },
     {
@@ -467,7 +467,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 4,
-        "timestamp": "2025-10-22T15:41:27.871Z"
+        "timestamp": "2025-10-22T18:44:11.614Z"
       }
     },
     {
@@ -478,7 +478,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 5,
-        "timestamp": "2025-10-22T15:41:27.871Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       }
     },
     {
@@ -489,7 +489,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 15,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       }
     },
     {
@@ -500,7 +500,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 16,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       }
     }
   ],
@@ -516,7 +516,7 @@
       "provenance": {
         "source_file": "examples/debug.fs",
         "line_number": 7,
-        "timestamp": "2025-10-22T15:41:27.872Z"
+        "timestamp": "2025-10-22T18:44:11.615Z"
       }
     }
   ],
@@ -530,7 +530,7 @@
     "source_files": [
       "examples/debug.fs"
     ],
-    "parsed_at": "2025-10-22T15:41:27.872Z",
+    "parsed_at": "2025-10-22T18:44:11.615Z",
     "parser": "flowscript-peg-parser 1.0.0"
   }
 }

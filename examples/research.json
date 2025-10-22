@@ -8,7 +8,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 1,
-        "timestamp": "2025-10-22T18:01:12.118Z"
+        "timestamp": "2025-10-22T18:44:11.683Z"
       },
       "children": [
         "388bac1f4f74466841329c3b7240088bf82a10b39aa309e89d7aa25b0b5aeb27",
@@ -23,7 +23,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 3,
-        "timestamp": "2025-10-22T18:01:12.119Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       },
       "children": [
         "349eb3c98b29d420b8ad83780d80b39eda0bfcc623ded9294ed1038894209aa9",
@@ -37,7 +37,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 4,
-        "timestamp": "2025-10-22T18:01:12.119Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       },
       "children": [
         "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11"
@@ -50,7 +50,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 5,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       },
       "children": [
         "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81"
@@ -63,7 +63,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 6,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       }
     },
     {
@@ -73,7 +73,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 6,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       },
       "ext": {
         "children": [
@@ -84,7 +84,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 6,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.684Z"
             }
           }
         ]
@@ -97,7 +97,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 5,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       },
       "ext": {
         "children": [
@@ -108,7 +108,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 5,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.684Z"
             },
             "children": [
               "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81"
@@ -121,7 +121,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 6,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.684Z"
             },
             "ext": {
               "children": [
@@ -132,7 +132,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 6,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.684Z"
                   }
                 }
               ]
@@ -148,7 +148,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 7,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       },
       "children": [
         "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
@@ -162,7 +162,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 8,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       },
       "children": [
         "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
@@ -176,7 +176,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 9,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       }
     },
     {
@@ -186,7 +186,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 10,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -196,7 +196,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 9,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "ext": {
         "children": [
@@ -207,7 +207,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 9,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.684Z"
             }
           },
           {
@@ -217,7 +217,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 10,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           }
         ]
@@ -230,7 +230,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 11,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "children": [
         "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
@@ -245,7 +245,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 12,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -255,7 +255,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 13,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -265,7 +265,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 13,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -275,7 +275,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 12,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "ext": {
         "children": [
@@ -286,7 +286,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 12,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           },
           {
@@ -296,7 +296,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 13,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           },
           {
@@ -306,7 +306,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 13,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           }
         ]
@@ -319,7 +319,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 8,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "ext": {
         "children": [
@@ -330,7 +330,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 8,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.684Z"
             },
             "children": [
               "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
@@ -344,7 +344,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 9,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "ext": {
               "children": [
@@ -355,7 +355,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 9,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.684Z"
                   }
                 },
                 {
@@ -365,7 +365,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 10,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   }
                 }
               ]
@@ -378,7 +378,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 11,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "children": [
               "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
@@ -393,7 +393,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 12,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "ext": {
               "children": [
@@ -404,7 +404,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 12,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   }
                 },
                 {
@@ -414,7 +414,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 13,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   }
                 },
                 {
@@ -424,7 +424,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 13,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   }
                 }
               ]
@@ -440,7 +440,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 4,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "ext": {
         "children": [
@@ -451,7 +451,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 4,
-              "timestamp": "2025-10-22T18:01:12.119Z"
+              "timestamp": "2025-10-22T18:44:11.684Z"
             },
             "children": [
               "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11"
@@ -464,7 +464,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 5,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.684Z"
             },
             "ext": {
               "children": [
@@ -475,7 +475,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 5,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.684Z"
                   },
                   "children": [
                     "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81"
@@ -488,7 +488,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 6,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.684Z"
                   },
                   "ext": {
                     "children": [
@@ -499,7 +499,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 6,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.684Z"
                         }
                       }
                     ]
@@ -515,7 +515,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 7,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.684Z"
             },
             "children": [
               "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
@@ -529,7 +529,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 8,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "ext": {
               "children": [
@@ -540,7 +540,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 8,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.684Z"
                   },
                   "children": [
                     "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
@@ -554,7 +554,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 9,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   },
                   "ext": {
                     "children": [
@@ -565,7 +565,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 9,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.684Z"
                         }
                       },
                       {
@@ -575,7 +575,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 10,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.685Z"
                         }
                       }
                     ]
@@ -588,7 +588,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 11,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   },
                   "children": [
                     "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
@@ -603,7 +603,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 12,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   },
                   "ext": {
                     "children": [
@@ -614,7 +614,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 12,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.685Z"
                         }
                       },
                       {
@@ -624,7 +624,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 13,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.685Z"
                         }
                       },
                       {
@@ -634,7 +634,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 13,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.685Z"
                         }
                       }
                     ]
@@ -653,7 +653,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 15,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "children": [
         "0dc61bedf5d95d815b1fd31f431b9b0c83f20bcd1a784b6625ae498e213e2043",
@@ -667,7 +667,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 16,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "children": [
         "451583afe36457646e66c061aa0f3c738af69a29e3fe9a10b0aa4c1d40c42292",
@@ -681,7 +681,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 17,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -691,7 +691,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 18,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -701,7 +701,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 17,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "ext": {
         "children": [
@@ -712,7 +712,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 17,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           },
           {
@@ -722,7 +722,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 18,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           }
         ]
@@ -735,7 +735,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 19,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "children": [
         "22ae76cbe11cbbff4cb92829fe6f6a98b798b4e87d11178230a465a12540399e"
@@ -748,7 +748,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 20,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -758,7 +758,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 20,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "ext": {
         "children": [
@@ -769,7 +769,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 20,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           }
         ]
@@ -782,7 +782,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 16,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "ext": {
         "children": [
@@ -793,7 +793,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 16,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "children": [
               "451583afe36457646e66c061aa0f3c738af69a29e3fe9a10b0aa4c1d40c42292",
@@ -807,7 +807,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 17,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "ext": {
               "children": [
@@ -818,7 +818,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 17,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   }
                 },
                 {
@@ -828,7 +828,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 18,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   }
                 }
               ]
@@ -841,7 +841,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 19,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "children": [
               "22ae76cbe11cbbff4cb92829fe6f6a98b798b4e87d11178230a465a12540399e"
@@ -854,7 +854,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 20,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "ext": {
               "children": [
@@ -865,7 +865,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 20,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   }
                 }
               ]
@@ -881,7 +881,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 22,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "children": [
         "e414635236ceb08a4dc56295fc30cd1c103ec176d93882c74d36226ca6aebd86",
@@ -896,7 +896,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 23,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -906,7 +906,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 24,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -916,7 +916,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 25,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -926,7 +926,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 23,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "ext": {
         "children": [
@@ -937,7 +937,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 23,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           },
           {
@@ -947,7 +947,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 24,
-              "timestamp": "2025-10-22T18:01:12.121Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           },
           {
@@ -957,7 +957,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 25,
-              "timestamp": "2025-10-22T18:01:12.121Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           }
         ]
@@ -970,7 +970,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 3,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "ext": {
         "children": [
@@ -981,7 +981,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 3,
-              "timestamp": "2025-10-22T18:01:12.119Z"
+              "timestamp": "2025-10-22T18:44:11.684Z"
             },
             "children": [
               "349eb3c98b29d420b8ad83780d80b39eda0bfcc623ded9294ed1038894209aa9",
@@ -995,7 +995,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 4,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "ext": {
               "children": [
@@ -1006,7 +1006,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 4,
-                    "timestamp": "2025-10-22T18:01:12.119Z"
+                    "timestamp": "2025-10-22T18:44:11.684Z"
                   },
                   "children": [
                     "3f74f831ebf5fc2e8a28fc2f59521695ac1f1078d7cb2d4306e54aeac46e4c11"
@@ -1019,7 +1019,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 5,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.684Z"
                   },
                   "ext": {
                     "children": [
@@ -1030,7 +1030,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 5,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.684Z"
                         },
                         "children": [
                           "ccd73155013eb18954efad9561271624d4de0001aeb7ccbb927277bbcedb5b81"
@@ -1043,7 +1043,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 6,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.684Z"
                         },
                         "ext": {
                           "children": [
@@ -1054,7 +1054,7 @@
                               "provenance": {
                                 "source_file": "examples/research.fs",
                                 "line_number": 6,
-                                "timestamp": "2025-10-22T18:01:12.120Z"
+                                "timestamp": "2025-10-22T18:44:11.684Z"
                               }
                             }
                           ]
@@ -1070,7 +1070,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 7,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.684Z"
                   },
                   "children": [
                     "ff876f686666e369377ec37d61afca01a8ea175c59a4a41a736fcd9381c38ef9",
@@ -1084,7 +1084,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 8,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   },
                   "ext": {
                     "children": [
@@ -1095,7 +1095,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 8,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.684Z"
                         },
                         "children": [
                           "767cc5f1124fa25276f0adc1a59b9aa02bc8d9fec156013be1761ea693ef7a67",
@@ -1109,7 +1109,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 9,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.685Z"
                         },
                         "ext": {
                           "children": [
@@ -1120,7 +1120,7 @@
                               "provenance": {
                                 "source_file": "examples/research.fs",
                                 "line_number": 9,
-                                "timestamp": "2025-10-22T18:01:12.120Z"
+                                "timestamp": "2025-10-22T18:44:11.684Z"
                               }
                             },
                             {
@@ -1130,7 +1130,7 @@
                               "provenance": {
                                 "source_file": "examples/research.fs",
                                 "line_number": 10,
-                                "timestamp": "2025-10-22T18:01:12.120Z"
+                                "timestamp": "2025-10-22T18:44:11.685Z"
                               }
                             }
                           ]
@@ -1143,7 +1143,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 11,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.685Z"
                         },
                         "children": [
                           "0ada57c0a98f4ae022dc1d99e3f54768ec60f96204699c9267c0855df32ebd1c",
@@ -1158,7 +1158,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 12,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.685Z"
                         },
                         "ext": {
                           "children": [
@@ -1169,7 +1169,7 @@
                               "provenance": {
                                 "source_file": "examples/research.fs",
                                 "line_number": 12,
-                                "timestamp": "2025-10-22T18:01:12.120Z"
+                                "timestamp": "2025-10-22T18:44:11.685Z"
                               }
                             },
                             {
@@ -1179,7 +1179,7 @@
                               "provenance": {
                                 "source_file": "examples/research.fs",
                                 "line_number": 13,
-                                "timestamp": "2025-10-22T18:01:12.120Z"
+                                "timestamp": "2025-10-22T18:44:11.685Z"
                               }
                             },
                             {
@@ -1189,7 +1189,7 @@
                               "provenance": {
                                 "source_file": "examples/research.fs",
                                 "line_number": 13,
-                                "timestamp": "2025-10-22T18:01:12.120Z"
+                                "timestamp": "2025-10-22T18:44:11.685Z"
                               }
                             }
                           ]
@@ -1208,7 +1208,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 15,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "children": [
               "0dc61bedf5d95d815b1fd31f431b9b0c83f20bcd1a784b6625ae498e213e2043",
@@ -1222,7 +1222,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 16,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "ext": {
               "children": [
@@ -1233,7 +1233,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 16,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   },
                   "children": [
                     "451583afe36457646e66c061aa0f3c738af69a29e3fe9a10b0aa4c1d40c42292",
@@ -1247,7 +1247,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 17,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   },
                   "ext": {
                     "children": [
@@ -1258,7 +1258,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 17,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.685Z"
                         }
                       },
                       {
@@ -1268,7 +1268,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 18,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.685Z"
                         }
                       }
                     ]
@@ -1281,7 +1281,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 19,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   },
                   "children": [
                     "22ae76cbe11cbbff4cb92829fe6f6a98b798b4e87d11178230a465a12540399e"
@@ -1294,7 +1294,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 20,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   },
                   "ext": {
                     "children": [
@@ -1305,7 +1305,7 @@
                         "provenance": {
                           "source_file": "examples/research.fs",
                           "line_number": 20,
-                          "timestamp": "2025-10-22T18:01:12.120Z"
+                          "timestamp": "2025-10-22T18:44:11.685Z"
                         }
                       }
                     ]
@@ -1321,7 +1321,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 22,
-              "timestamp": "2025-10-22T18:01:12.120Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "children": [
               "e414635236ceb08a4dc56295fc30cd1c103ec176d93882c74d36226ca6aebd86",
@@ -1336,7 +1336,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 23,
-              "timestamp": "2025-10-22T18:01:12.121Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             },
             "ext": {
               "children": [
@@ -1347,7 +1347,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 23,
-                    "timestamp": "2025-10-22T18:01:12.120Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   }
                 },
                 {
@@ -1357,7 +1357,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 24,
-                    "timestamp": "2025-10-22T18:01:12.121Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   }
                 },
                 {
@@ -1367,7 +1367,7 @@
                   "provenance": {
                     "source_file": "examples/research.fs",
                     "line_number": 25,
-                    "timestamp": "2025-10-22T18:01:12.121Z"
+                    "timestamp": "2025-10-22T18:44:11.685Z"
                   }
                 }
               ]
@@ -1383,7 +1383,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 27,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "children": [
         "3008b6b88ff5fea60a08bafd80f3f2441dc753e5aa6df7aa6d786a3cb05344e7"
@@ -1396,7 +1396,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 28,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1406,7 +1406,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 28,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "ext": {
         "children": [
@@ -1417,7 +1417,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 28,
-              "timestamp": "2025-10-22T18:01:12.121Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           }
         ]
@@ -1430,7 +1430,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 30,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "modifiers": [
         "low_confidence"
@@ -1447,7 +1447,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 31,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1457,7 +1457,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 32,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1467,7 +1467,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 31,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.686Z"
       },
       "ext": {
         "children": [
@@ -1478,7 +1478,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 31,
-              "timestamp": "2025-10-22T18:01:12.121Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           },
           {
@@ -1488,7 +1488,7 @@
             "provenance": {
               "source_file": "examples/research.fs",
               "line_number": 32,
-              "timestamp": "2025-10-22T18:01:12.121Z"
+              "timestamp": "2025-10-22T18:44:11.685Z"
             }
           }
         ]
@@ -1504,7 +1504,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 3,
-        "timestamp": "2025-10-22T18:01:12.119Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       }
     },
     {
@@ -1515,7 +1515,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 4,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       }
     },
     {
@@ -1526,7 +1526,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 5,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       }
     },
     {
@@ -1537,7 +1537,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 6,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       },
       "axis_label": "physics vs economics"
     },
@@ -1549,7 +1549,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 7,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       }
     },
     {
@@ -1560,7 +1560,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 8,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.684Z"
       }
     },
     {
@@ -1571,7 +1571,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 9,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1582,7 +1582,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 10,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1593,7 +1593,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 11,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1604,7 +1604,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 12,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1615,7 +1615,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 13,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1626,7 +1626,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 13,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       },
       "axis_label": "efficiency vs reliability"
     },
@@ -1638,7 +1638,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 15,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1649,7 +1649,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 16,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1660,7 +1660,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 17,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1671,7 +1671,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 18,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1682,7 +1682,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 19,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1693,7 +1693,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 20,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1704,7 +1704,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 22,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1715,7 +1715,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 23,
-        "timestamp": "2025-10-22T18:01:12.120Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1726,7 +1726,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 24,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1737,7 +1737,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 25,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1748,7 +1748,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 28,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1759,7 +1759,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 31,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     },
     {
@@ -1770,7 +1770,7 @@
       "provenance": {
         "source_file": "examples/research.fs",
         "line_number": 32,
-        "timestamp": "2025-10-22T18:01:12.121Z"
+        "timestamp": "2025-10-22T18:44:11.685Z"
       }
     }
   ],
@@ -1785,7 +1785,7 @@
     "source_files": [
       "examples/research.fs"
     ],
-    "parsed_at": "2025-10-22T18:01:12.121Z",
+    "parsed_at": "2025-10-22T18:44:11.686Z",
     "parser": "flowscript-peg-parser 1.0.0"
   }
 }
