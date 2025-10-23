@@ -387,7 +387,7 @@ These queries prove FlowScript is **computable substrate**, not just notation:
 
 ### Performance
 
-All queries execute in **<3ms** on typical cognitive graphs (10-40 nodes, 10-30 relationships). Fast enough for real-time use, even on modest hardware.
+All queries execute in **<1ms** on typical cognitive graphs (20-41 nodes, 6-25 relationships - measured). Fast enough for real-time use, even on modest hardware.
 
 ### Learn More
 

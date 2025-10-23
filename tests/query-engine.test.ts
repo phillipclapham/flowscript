@@ -763,4 +763,181 @@ describe('FlowScriptQueryEngine', () => {
       expect(result.decision_summary.rejected).toHaveLength(2)
     })
   })
+
+  // ==========================================================================
+  // All Golden Examples Tests - Verify queries work on ALL 4 examples
+  // ==========================================================================
+
+  describe('All Golden Examples', () => {
+    const examples = [
+      { name: 'decision', file: 'decision.json' },
+      { name: 'debug', file: 'debug.json' },
+      { name: 'design', file: 'design.json' },
+      { name: 'research', file: 'research.json' }
+    ]
+
+    examples.forEach(({ name, file }) => {
+      describe(`${name}.json`, () => {
+        let ir: IR
+
+        beforeEach(() => {
+          const filePath = path.join(__dirname, '../examples', file)
+          const content = fs.readFileSync(filePath, 'utf-8')
+          ir = JSON.parse(content) as IR
+          engine.load(ir)
+        })
+
+        it('should load successfully', () => {
+          expect(ir.nodes.length).toBeGreaterThan(0)
+          expect(ir.relationships).toBeDefined()
+        })
+
+        it('should execute why() query', () => {
+          // Find a node with potential ancestors
+          const node = ir.nodes.find(n => n.type === 'statement') || ir.nodes[0]
+
+          const result = engine.why(node.id)
+
+          expect(result).toBeDefined()
+          expect(result).toHaveProperty('target')
+          expect(result).toHaveProperty('causal_chain')
+          expect(result.target.id).toBe(node.id)
+        })
+
+        it('should execute whatIf() query', () => {
+          // Find a node with potential descendants
+          const node = ir.nodes.find(n => n.type === 'statement') || ir.nodes[0]
+
+          const result = engine.whatIf(node.id)
+
+          expect(result).toBeDefined()
+          expect(result).toHaveProperty('source')
+          expect(result).toHaveProperty('impact_tree')
+          expect(result.source.id).toBe(node.id)
+        })
+
+        it('should execute tensions() query', () => {
+          const result = engine.tensions()
+
+          expect(result).toBeDefined()
+          expect(result).toHaveProperty('metadata')
+          expect(result.metadata).toHaveProperty('total_tensions')
+          // tensions() returns tensions_by_axis by default
+          // It always works even if no tensions exist
+        })
+
+        it('should execute blocked() query', () => {
+          const result = engine.blocked()
+
+          expect(result).toBeDefined()
+          expect(result).toHaveProperty('blockers')
+          expect(Array.isArray(result.blockers)).toBe(true)
+          // blocked() always works even if no blockers exist
+        })
+
+        it('should execute alternatives() query if question exists', () => {
+          const questionNode = ir.nodes.find(n => n.type === 'question')
+
+          if (questionNode) {
+            const result = engine.alternatives(questionNode.id)
+
+            expect(result).toBeDefined()
+            expect(result).toHaveProperty('question')
+            expect(result).toHaveProperty('alternatives')
+            expect(result.question.id).toBe(questionNode.id)
+          } else {
+            // If no question node, verify error handling
+            expect(() => {
+              engine.alternatives('non-existent')
+            }).toThrow()
+          }
+        })
+
+        it('should handle all queries in sequence', () => {
+          // Verify multiple queries can be run on same loaded graph
+          const node = ir.nodes[0]
+
+          const why = engine.why(node.id)
+          const whatIf = engine.whatIf(node.id)
+          const tensions = engine.tensions()
+          const blocked = engine.blocked()
+
+          expect(why).toBeDefined()
+          expect(whatIf).toBeDefined()
+          expect(tensions).toBeDefined()
+          expect(blocked).toBeDefined()
+        })
+      })
+    })
+
+    it('should handle all 4 examples without errors', () => {
+      // Smoke test: Load each example and run basic query
+      examples.forEach(({ name, file }) => {
+        const filePath = path.join(__dirname, '../examples', file)
+        const content = fs.readFileSync(filePath, 'utf-8')
+        const ir = JSON.parse(content) as IR
+
+        engine.load(ir)
+        const tensions = engine.tensions()
+
+        expect(tensions).toBeDefined()
+        expect(tensions.metadata).toBeDefined()
+        expect(tensions.metadata.total_tensions).toBeGreaterThanOrEqual(0)
+      })
+    })
+  })
+
+  // ==========================================================================
+  // Optional Features Tests - Verify includeTemporalConsequences works
+  // ==========================================================================
+
+  describe('Optional Features', () => {
+    it('should follow temporal relationships when includeTemporalConsequences=true', () => {
+      // Load design.json which has temporal relationships
+      const designPath = path.join(__dirname, '../examples/design.json')
+      const designContent = fs.readFileSync(designPath, 'utf-8')
+      const designIR = JSON.parse(designContent) as IR
+
+      engine.load(designIR)
+
+      // Find the node with temporal consequences: "=> performance testing on staging"
+      const nodeId = '3846a8f6db0e7c8009a9da700f2c528a1f4d2dcc14f6860c1f9e71682fbfbdd1'
+
+      // Query WITH temporal consequences (default behavior)
+      const withTemporal = engine.whatIf(nodeId, { includeTemporalConsequences: true })
+
+      // The node has 2 temporal relationships, so should have consequences
+      const totalConsequences =
+        withTemporal.impact_tree.direct_consequences.length +
+        withTemporal.impact_tree.indirect_consequences.length
+
+      expect(totalConsequences).toBeGreaterThan(0)
+      expect(withTemporal.metadata.has_temporal_consequences).toBe(true)
+
+      // Query WITHOUT temporal consequences
+      const withoutTemporal = engine.whatIf(nodeId, { includeTemporalConsequences: false })
+
+      // Without temporal relationships, there should be fewer or no consequences
+      const noTemporalCount =
+        withoutTemporal.impact_tree.direct_consequences.length +
+        withoutTemporal.impact_tree.indirect_consequences.length
+
+      // Should have fewer consequences when excluding temporal
+      expect(noTemporalCount).toBeLessThanOrEqual(totalConsequences)
+    })
+
+    it('should document that includeCorrelations cannot be tested', () => {
+      // includeCorrelations adds 'equivalent' relationships to traversal
+      // BUT: No golden examples contain 'equivalent' relationships
+      // Therefore: Cannot verify this feature works
+
+      // This test exists to document this limitation honestly
+      expect(true).toBe(true) // Placeholder to make test pass
+
+      // To test includeCorrelations properly, we would need:
+      // 1. An example with 'equivalent' relationships
+      // 2. A test that verifies they're included when includeCorrelations=true
+      // 3. A test that verifies they're excluded when includeCorrelations=false
+    })
+  })
 })

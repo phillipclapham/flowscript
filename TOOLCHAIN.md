@@ -227,7 +227,7 @@ $ flowscript query alternatives 9b20cbf148e... examples/decision.json
 ```
 
 **Performance:**
-All queries execute in <3ms on typical graphs (10-40 nodes). See [QUERY_ENGINE.md](QUERY_ENGINE.md) for detailed benchmarks and API documentation.
+All queries execute in <1ms on typical graphs (20-41 nodes, measured). See [QUERY_ENGINE.md](QUERY_ENGINE.md) for actual benchmarks and API documentation.
 
 ## Workflow Examples
 

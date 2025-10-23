@@ -13,7 +13,7 @@ The query engine operates on FlowScript IR (Intermediate Representation) to perf
 - **Input:** Parsed FlowScript IR (JSON)
 - **Operations:** 5 critical queries for cognitive graph analysis
 - **Output:** Structured results (JSON)
-- **Performance:** <100ms per query on typical graphs (17 nodes, 12 relationships)
+- **Performance:** <1ms per query on typical graphs (measured: 20-41 nodes, 6-25 relationships)
 
 ### Architecture
 
@@ -441,24 +441,27 @@ try {
 
 ### Benchmarks (Golden Examples)
 
-Measured on golden example graphs:
-- **decision.json**: 17 nodes, 12 relationships
-- **debug.json**: 15 nodes, 11 relationships
-- **design.json**: 24 nodes, 19 relationships
-- **research.json**: 40 nodes, 32 relationships
+**ACTUAL measurements** from `scripts/benchmark-queries.ts` (run 2025-10-23):
 
-**Results (all <100ms):**
+Tested on golden example graphs:
+- **decision.json**: 20 nodes, 12 relationships
+- **debug.json**: 17 nodes, 6 relationships
+- **design.json**: 41 nodes, 22 relationships
+- **research.json**: 41 nodes, 25 relationships
+
+**Results (measured on MacBook Apple Silicon):**
 ```
 Query          | decision.json | debug.json | design.json | research.json
 ---------------|---------------|------------|-------------|---------------
-why()          | <1ms          | <1ms       | <1ms        | <2ms
-whatIf()       | <1ms          | <1ms       | <1ms        | <2ms
-tensions()     | <2ms          | <1ms       | <2ms        | <3ms
-blocked()      | <1ms          | <1ms       | <1ms        | <2ms
-alternatives() | <1ms          | <1ms       | <1ms        | <2ms
+Load           | <1ms          | <1ms       | <1ms        | <1ms
+why()          | <1ms          | <1ms       | <1ms        | <1ms
+whatIf()       | <1ms          | <1ms       | <1ms        | <1ms
+tensions()     | <1ms          | <1ms       | <1ms        | <1ms
+blocked()      | <1ms          | <1ms       | <1ms        | <1ms
+alternatives() | <1ms          | <1ms       | <1ms        | <1ms
 ```
 
-All queries execute in **<3ms** even on the largest graph (40 nodes).
+All queries execute in **<1ms** even on graphs with 41 nodes and 25 relationships. ✅ **All queries meet <100ms target.**
 
 **Performance characteristics:**
 - **Index building:** O(N + E) where N = nodes, E = relationships
@@ -470,7 +473,7 @@ All queries execute in **<3ms** even on the largest graph (40 nodes).
 
 For typical cognitive graphs (10-100 nodes):
 - Current implementation is sufficient
-- No caching needed (queries are already <3ms)
+- No caching needed (queries are already <1ms)
 - Map-based indexes provide O(1) lookups
 
 For larger graphs (1000+ nodes):
@@ -612,6 +615,40 @@ The engine throws errors for:
 - Invalid node type: `Node <id> is not a question (type: <type>)`
 - Invalid IR: Validation errors during load
 - Missing relationships: Gracefully returns empty results
+
+---
+
+## Known Limitations
+
+### Version 1.0 - Not Implemented
+
+The following features are defined in the spec but **not implemented** in v1.0:
+
+#### alternatives() Query Options
+
+**`showRejectedReasons` option:**
+- **Status:** Not implemented
+- **Spec says:** Extract why alternatives weren't chosen
+- **Reality:** Option is accepted but ignored
+- **Reason:** No rejection notes exist in test data to validate implementation
+- **Planned:** v1.1
+
+**`format` option for alternatives():**
+- **Status:** Partially implemented
+- **Spec says:** Support 'comparison' | 'tree' | 'simple' formats
+- **Reality:** Only 'comparison' format implemented; 'tree' and 'simple' options accepted but ignored
+- **Current behavior:** Always returns comparison format regardless of format parameter
+- **Planned:** v1.1
+
+### Honest Documentation
+
+This section exists because **Session 6c overclaimed completeness**. These features were documented as working when they weren't implemented. This is now fixed:
+
+- ✅ Documentation matches implementation
+- ✅ No hidden "accepted but ignored" options
+- ✅ Users can trust what the docs say
+
+If you need these features, please open an issue on GitHub.
 
 ---
 
