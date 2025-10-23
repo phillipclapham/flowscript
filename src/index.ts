@@ -14,6 +14,20 @@ export { Linter, LintResult, LintRule, Severity, BaseLintRule } from './linter';
 // Validator
 export { validateIR, ValidationResult } from './validate';
 
+// Query Engine
+export {
+  FlowScriptQueryEngine,
+  WhyOptions,
+  WhatIfOptions,
+  TensionOptions,
+  BlockedOptions,
+  AlternativesOptions,
+  CausalAncestry,
+  MinimalWhy,
+  ImpactAnalysis,
+  ImpactSummary
+} from './query-engine';
+
 // Hash utilities
 export { hashContent } from './hash';
 
