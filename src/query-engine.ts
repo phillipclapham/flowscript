@@ -132,6 +132,93 @@ export interface ImpactSummary {
   key_tradeoff: string | null
 }
 
+export interface TensionDetail {
+  source: {
+    id: string
+    content: string
+  }
+  target: {
+    id: string
+    content: string
+  }
+  context?: Array<{
+    id: string
+    content: string
+  }>
+}
+
+export interface TensionsResult {
+  tensions_by_axis?: Record<string, TensionDetail[]>
+  tensions_by_node?: Record<string, TensionDetail[]>
+  tensions?: TensionDetail[]
+  metadata: {
+    total_tensions: number
+    unique_axes: string[]
+    most_common_axis: string | null
+  }
+}
+
+export interface BlockerDetail {
+  node: {
+    id: string
+    content: string
+  }
+  blocked_state: {
+    reason: string
+    since: string
+    days_blocked: number
+  }
+  transitive_causes?: Array<{
+    id: string
+    content: string
+  }>
+  transitive_effects?: Array<{
+    id: string
+    content: string
+  }>
+  impact_score: number
+}
+
+export interface BlockedResult {
+  blockers: BlockerDetail[]
+  metadata: {
+    total_blockers: number
+    high_priority_count: number
+    average_days_blocked: number
+    oldest_blocker: {
+      id: string
+      days: number
+    } | null
+  }
+}
+
+export interface AlternativeDetail {
+  id: string
+  content: string
+  chosen: boolean
+  rationale?: string
+  decided_on?: string
+  consequences?: Array<{
+    id: string
+    content: string
+  }>
+  tensions?: TensionInfo[]
+}
+
+export interface AlternativesResult {
+  question: {
+    id: string
+    content: string
+  }
+  alternatives: AlternativeDetail[]
+  decision_summary: {
+    chosen: string | null
+    rationale: string | null
+    rejected: string[]
+    key_factors: string[]
+  }
+}
+
 // ============================================================================
 // FlowScript Query Engine
 // ============================================================================
@@ -326,26 +413,405 @@ export class FlowScriptQueryEngine {
 
   /**
    * Query 3: Tradeoff mapping (tension extraction)
-   * Implementation in Session 6b
+   *
+   * Extracts all tension relationships, groups by axis or node.
+   * Returns systematic view of tradeoffs in the graph.
    */
-  tensions(options: TensionOptions = {}): any {
-    throw new Error('Not implemented yet - Session 6b')
+  tensions(options: TensionOptions = {}): TensionsResult {
+    const groupBy = options.groupBy || 'axis'
+    const filterByAxis = options.filterByAxis
+    const includeContext = options.includeContext || false
+    const scope = options.scope
+
+    // Get all tension relationships
+    let tensionRels = this.ir.relationships.filter(rel => rel.type === 'tension')
+
+    // Filter by scope if provided
+    if (scope) {
+      const scopeNodeIds = new Set<string>()
+      scopeNodeIds.add(scope)
+
+      // Get all descendants of scope node
+      const descendants = this.traverseForward(scope, ['causes', 'temporal', 'derives_from'])
+      descendants.forEach(d => scopeNodeIds.add(d.id))
+
+      // Filter tensions to those within scope
+      tensionRels = tensionRels.filter(rel =>
+        scopeNodeIds.has(rel.source) && scopeNodeIds.has(rel.target)
+      )
+    }
+
+    // Filter by axis if specified
+    if (filterByAxis && filterByAxis.length > 0) {
+      tensionRels = tensionRels.filter(rel =>
+        rel.axis_label && filterByAxis.includes(rel.axis_label)
+      )
+    }
+
+    // Build tension details
+    const tensionDetails: Array<TensionDetail & { axis: string }> = []
+
+    for (const rel of tensionRels) {
+      const sourceNode = this.nodeMap.get(rel.source)
+      const targetNode = this.nodeMap.get(rel.target)
+
+      if (!sourceNode || !targetNode) continue
+
+      const detail: TensionDetail & { axis: string } = {
+        axis: rel.axis_label || 'unlabeled',
+        source: {
+          id: sourceNode.id,
+          content: sourceNode.content
+        },
+        target: {
+          id: targetNode.id,
+          content: targetNode.content
+        }
+      }
+
+      // Include context (parent nodes) if requested
+      if (includeContext) {
+        const context: Array<{ id: string; content: string }> = []
+
+        // Find parents of source node
+        const sourceParents = this.relationshipsToTarget.get(rel.source) || []
+        for (const parentRel of sourceParents) {
+          if (parentRel.type !== 'tension') {
+            const parentNode = this.nodeMap.get(parentRel.source)
+            if (parentNode) {
+              context.push({
+                id: parentNode.id,
+                content: parentNode.content
+              })
+            }
+          }
+        }
+
+        if (context.length > 0) {
+          detail.context = context
+        }
+      }
+
+      tensionDetails.push(detail)
+    }
+
+    // Calculate metadata
+    const uniqueAxes = Array.from(new Set(tensionDetails.map(t => t.axis)))
+    const axisCounts = new Map<string, number>()
+    tensionDetails.forEach(t => {
+      axisCounts.set(t.axis, (axisCounts.get(t.axis) || 0) + 1)
+    })
+
+    let mostCommonAxis: string | null = null
+    let maxCount = 0
+    for (const [axis, count] of axisCounts) {
+      if (count > maxCount) {
+        mostCommonAxis = axis
+        maxCount = count
+      }
+    }
+
+    const metadata = {
+      total_tensions: tensionDetails.length,
+      unique_axes: uniqueAxes,
+      most_common_axis: mostCommonAxis
+    }
+
+    // Group by option
+    if (groupBy === 'axis') {
+      const byAxis: Record<string, TensionDetail[]> = {}
+      tensionDetails.forEach(t => {
+        if (!byAxis[t.axis]) {
+          byAxis[t.axis] = []
+        }
+        const { axis, ...detail } = t
+        byAxis[t.axis].push(detail)
+      })
+
+      return {
+        tensions_by_axis: byAxis,
+        metadata
+      }
+    } else if (groupBy === 'node') {
+      const byNode: Record<string, TensionDetail[]> = {}
+      tensionDetails.forEach(t => {
+        const nodeId = t.source.id
+        if (!byNode[nodeId]) {
+          byNode[nodeId] = []
+        }
+        const { axis, ...detail } = t
+        byNode[nodeId].push(detail)
+      })
+
+      return {
+        tensions_by_node: byNode,
+        metadata
+      }
+    } else {
+      // groupBy === 'none' - flat array
+      const flatTensions = tensionDetails.map(t => {
+        const { axis, ...detail } = t
+        return detail
+      })
+
+      return {
+        tensions: flatTensions,
+        metadata
+      }
+    }
   }
 
   /**
    * Query 4: Blocker tracking (state + dependencies)
-   * Implementation in Session 6b
+   *
+   * Finds all blocked nodes, calculates impact, shows transitive causes/effects.
+   * Returns priority-sorted list of blockers.
    */
-  blocked(options: BlockedOptions = {}): any {
-    throw new Error('Not implemented yet - Session 6b')
+  blocked(options: BlockedOptions = {}): BlockedResult {
+    const since = options.since
+    const includeTransitiveCauses = options.includeTransitiveCauses !== false
+    const includeTransitiveEffects = options.includeTransitiveEffects !== false
+
+    // Find all blocked states
+    let blockedStates = (this.ir.states || []).filter(state => state.type === 'blocked')
+
+    // Filter by since date if provided
+    if (since) {
+      blockedStates = blockedStates.filter(state => {
+        const stateSince = state.fields?.since
+        if (!stateSince) return false
+        return stateSince >= since
+      })
+    }
+
+    // Build blocker details
+    const blockers: BlockerDetail[] = []
+    const today = new Date()
+
+    for (const state of blockedStates) {
+      const node = this.nodeMap.get(state.node_id)
+      if (!node) continue
+
+      const reason = state.fields?.reason || 'unknown'
+      const sinceDate = state.fields?.since || ''
+
+      // Calculate days blocked
+      let daysBlocked = 0
+      if (sinceDate) {
+        const sinceTime = new Date(sinceDate).getTime()
+        const todayTime = today.getTime()
+        daysBlocked = Math.floor((todayTime - sinceTime) / (1000 * 60 * 60 * 24))
+      }
+
+      const detail: BlockerDetail = {
+        node: {
+          id: node.id,
+          content: node.content
+        },
+        blocked_state: {
+          reason,
+          since: sinceDate,
+          days_blocked: daysBlocked
+        },
+        impact_score: 0
+      }
+
+      // Find transitive causes (what's blocking this blocker)
+      if (includeTransitiveCauses) {
+        const causes = this.traverseBackward(node.id, ['derives_from', 'causes'])
+        detail.transitive_causes = causes.map(c => ({
+          id: c.id,
+          content: c.content
+        }))
+      }
+
+      // Find transitive effects (what's blocked by this blocker)
+      if (includeTransitiveEffects) {
+        const effects = this.traverseForward(node.id, ['causes', 'temporal'])
+        detail.transitive_effects = effects.map(e => ({
+          id: e.id,
+          content: e.content
+        }))
+        detail.impact_score = effects.length
+      }
+
+      blockers.push(detail)
+    }
+
+    // Sort by impact score (descending), then by days blocked (descending)
+    blockers.sort((a, b) => {
+      if (a.impact_score !== b.impact_score) {
+        return b.impact_score - a.impact_score
+      }
+      return b.blocked_state.days_blocked - a.blocked_state.days_blocked
+    })
+
+    // Calculate metadata
+    const totalBlockers = blockers.length
+    const highPriorityCount = blockers.filter(b =>
+      b.impact_score > 0 || b.blocked_state.days_blocked > 7
+    ).length
+
+    const avgDaysBlocked = totalBlockers > 0
+      ? blockers.reduce((sum, b) => sum + b.blocked_state.days_blocked, 0) / totalBlockers
+      : 0
+
+    let oldestBlocker: { id: string; days: number } | null = null
+    if (blockers.length > 0) {
+      const oldest = blockers.reduce((max, b) =>
+        b.blocked_state.days_blocked > max.blocked_state.days_blocked ? b : max
+      )
+      oldestBlocker = {
+        id: oldest.node.id,
+        days: oldest.blocked_state.days_blocked
+      }
+    }
+
+    return {
+      blockers,
+      metadata: {
+        total_blockers: totalBlockers,
+        high_priority_count: highPriorityCount,
+        average_days_blocked: Math.round(avgDaysBlocked * 10) / 10,
+        oldest_blocker: oldestBlocker
+      }
+    }
   }
 
   /**
    * Query 5: Decision reconstruction (alternatives + rationale)
-   * Implementation in Session 6b
+   *
+   * Reconstructs decision with all alternatives, showing which was chosen and why.
+   * Returns comparison of all options with decision rationale.
    */
-  alternatives(questionId: string, options: AlternativesOptions = {}): any {
-    throw new Error('Not implemented yet - Session 6b')
+  alternatives(questionId: string, options: AlternativesOptions = {}): AlternativesResult {
+    const includeRationale = options.includeRationale !== false
+    const includeConsequences = options.includeConsequences || false
+
+    // Verify questionId is a question node
+    const questionNode = this.nodeMap.get(questionId)
+    if (!questionNode) {
+      throw new Error(`Node not found: ${questionId}`)
+    }
+    if (questionNode.type !== 'question') {
+      throw new Error(`Node ${questionId} is not a question (type: ${questionNode.type})`)
+    }
+
+    // Find all alternative relationships from question
+    const altRels = (this.relationshipsFromSource.get(questionId) || [])
+      .filter(rel => rel.type === 'alternative')
+
+    // Build alternative details
+    const alternatives: AlternativeDetail[] = []
+    let chosenAlternative: AlternativeDetail | null = null
+
+    for (const altRel of altRels) {
+      const altNode = this.nodeMap.get(altRel.target)
+      if (!altNode) continue
+
+      // Check if this alternative was chosen (has decided state)
+      // Note: decided state might be on a child node that references the alternative
+      let isChosen = false
+      let rationale: string | undefined
+      let decidedOn: string | undefined
+
+      // Check all states for decisions related to this alternative
+      for (const state of this.ir.states || []) {
+        if (state.type === 'decided') {
+          const stateNode = this.nodeMap.get(state.node_id)
+          if (stateNode && stateNode.content === altNode.content) {
+            isChosen = true
+            if (includeRationale && state.fields) {
+              rationale = state.fields.rationale
+              decidedOn = state.fields.on
+            }
+          }
+        }
+      }
+
+      const detail: AlternativeDetail = {
+        id: altNode.id,
+        content: altNode.content,
+        chosen: isChosen
+      }
+
+      if (isChosen && rationale) {
+        detail.rationale = rationale
+        detail.decided_on = decidedOn
+      }
+
+      // Get consequences (children of alternative)
+      if (includeConsequences) {
+        const consequences = (this.relationshipsFromSource.get(altNode.id) || [])
+          .filter(rel => rel.type === 'causes')
+          .map(rel => {
+            const childNode = this.nodeMap.get(rel.target)
+            return childNode ? {
+              id: childNode.id,
+              content: childNode.content
+            } : null
+          })
+          .filter(c => c !== null) as Array<{ id: string; content: string }>
+
+        if (consequences.length > 0) {
+          detail.consequences = consequences
+        }
+      }
+
+      // Find tensions within this alternative
+      const altTensions = (this.relationshipsFromSource.get(altNode.id) || [])
+        .filter(rel => rel.type === 'tension')
+        .map(rel => {
+          const targetNode = this.nodeMap.get(rel.target)
+          if (!targetNode) return null
+          return {
+            axis: rel.axis_label || 'unlabeled',
+            source: {
+              id: altNode.id,
+              content: altNode.content
+            },
+            target: {
+              id: targetNode.id,
+              content: targetNode.content
+            }
+          }
+        })
+        .filter(t => t !== null) as TensionInfo[]
+
+      if (altTensions.length > 0) {
+        detail.tensions = altTensions
+      }
+
+      alternatives.push(detail)
+
+      if (isChosen) {
+        chosenAlternative = detail
+      }
+    }
+
+    // Build decision summary
+    const rejected = alternatives
+      .filter(alt => !alt.chosen)
+      .map(alt => alt.content)
+
+    const keyFactors: string[] = []
+    if (chosenAlternative?.tensions) {
+      keyFactors.push(...chosenAlternative.tensions.map(t => t.axis))
+    }
+
+    return {
+      question: {
+        id: questionNode.id,
+        content: questionNode.content
+      },
+      alternatives,
+      decision_summary: {
+        chosen: chosenAlternative?.content || null,
+        rationale: chosenAlternative?.rationale || null,
+        rejected,
+        key_factors: Array.from(new Set(keyFactors))
+      }
+    }
   }
 
   // ==========================================================================

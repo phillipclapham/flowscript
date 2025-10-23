@@ -25,7 +25,14 @@ export {
   CausalAncestry,
   MinimalWhy,
   ImpactAnalysis,
-  ImpactSummary
+  ImpactSummary,
+  TensionsResult,
+  TensionDetail,
+  BlockedResult,
+  BlockerDetail,
+  AlternativesResult,
+  AlternativeDetail,
+  TensionInfo
 } from './query-engine';
 
 // Hash utilities
