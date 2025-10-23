@@ -1,14 +1,14 @@
 # FlowScript Toolchain
 
-**Production-quality parser, linter, and CLI tools for FlowScript**
+**Production-quality parser, linter, validator, and query engine for FlowScript**
 
-Status: Phase 3 Complete ✅ (100% test coverage)
+Status: Phase 6 Complete ✅ (167/167 tests passing, 100% coverage)
 
 ---
 
 ## Overview
 
-The FlowScript toolchain compiles FlowScript notation into queryable IR JSON:
+The FlowScript toolchain compiles FlowScript notation into queryable IR JSON and enables computational operations on cognitive graphs:
 
 ```
 FlowScript text (.fs)
@@ -18,6 +18,8 @@ Canonical IR JSON (.json)
 Validated graph
   ↓ lint (semantic rules)
 Quality-checked cognitive graph
+  ↓ query (graph operations)
+Computational insights (why, what-if, tensions, blocked, alternatives)
 ```
 
 ## Installation
@@ -129,6 +131,103 @@ flowscript validate graph.json --verbose
 $ flowscript validate examples/test.json
 ✓ examples/test.json: Valid IR
 ```
+
+### query - Execute cognitive graph queries
+
+```bash
+# Trace causal ancestry
+flowscript query why <node-id> graph.json
+
+# Calculate impact analysis
+flowscript query what-if <node-id> graph.json
+
+# Extract all tensions/tradeoffs
+flowscript query tensions graph.json
+
+# Find blocked tasks
+flowscript query blocked graph.json
+
+# Reconstruct decision rationale
+flowscript query alternatives <question-id> graph.json
+```
+
+**What it does:**
+- Loads IR JSON and builds efficient indexes
+- Executes one of 5 computational queries:
+  - **why(nodeId)**: Trace backward through causal relationships
+  - **whatIf(nodeId)**: Calculate forward impact analysis
+  - **tensions()**: Extract all tradeoff relationships systematically
+  - **blocked()**: Find blocked nodes with dependency chains
+  - **alternatives(questionId)**: Reconstruct decision from alternatives
+- Returns structured JSON results
+
+**Exit codes:**
+- `0` = Success
+- `1` = Query error (node not found, invalid IR, etc.)
+
+**Common options:**
+```bash
+# Format options (vary by query)
+--format=chain|tree|minimal    # why query
+--format=tree|list|summary     # what-if query
+--format=detailed|summary      # blocked query
+--format=comparison|simple     # alternatives query
+
+# Grouping/filtering
+--group-by=axis|node|none      # tensions query
+--axis="security vs speed"     # tensions filter
+--since=2025-10-01             # blocked filter
+
+# Traversal control
+--max-depth=3                  # limit graph traversal
+--with-context                 # include parent context
+```
+
+**Examples:**
+```bash
+# Trace why a node exists
+$ flowscript query why 6a507bd0df... examples/decision.json --format=chain
+{
+  "target": { "id": "6a507bd0df...", "content": "stateless architecture" },
+  "causal_chain": [...],
+  "root_cause": { "id": "ea777fb1b1...", "content": "JWT tokens" }
+}
+
+# Calculate impact of a change
+$ flowscript query what-if ea777fb1b1... examples/decision.json --format=summary
+{
+  "impact_summary": "JWT tokens affects 4 downstream considerations",
+  "benefits": ["stateless architecture", "scales horizontally", ...],
+  "risks": []
+}
+
+# Find all tradeoffs grouped by axis
+$ flowscript query tensions examples/decision.json --group-by=axis
+{
+  "tensions_by_axis": {
+    "security vs simplicity": [...],
+    "scaling vs security": [...]
+  }
+}
+
+# Find blocked work
+$ flowscript query blocked examples/decision.json --since=2025-10-01
+{
+  "blockers": [...],
+  "metadata": { "total_blockers": 0 }
+}
+
+# Reconstruct a decision
+$ flowscript query alternatives 9b20cbf148e... examples/decision.json
+{
+  "question": { "content": "authentication strategy for v1 launch" },
+  "alternatives": [...],
+  "decision_summary": { "chosen": "session tokens + Redis", ... }
+}
+```
+
+**Performance:**
+All queries execute in <3ms on typical graphs (10-40 nodes). See [QUERY_ENGINE.md](QUERY_ENGINE.md) for detailed benchmarks and API documentation.
 
 ## Workflow Examples
 

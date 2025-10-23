@@ -325,6 +325,79 @@ If semantic notation can enable cognitive symbiosis for one person in 6 weeks, w
 
 ---
 
+## Toolchain & Query Engine
+
+While FlowScript works as notation with any AI (no installation needed), we've also built a complete formal toolchain that proves FlowScript is computable substrate:
+
+### The Toolchain
+
+**Parser:** Compiles FlowScript text → Intermediate Representation (IR) JSON
+**Linter:** Validates semantic correctness (9 rules: 6 errors, 3 warnings)
+**Validator:** Verifies IR against canonical schema
+**Query Engine:** Executes 5 computational queries on cognitive graphs
+
+```bash
+# Parse FlowScript to IR
+flowscript parse example.fs -o example.json
+
+# Lint for semantic errors
+flowscript lint example.fs
+
+# Validate IR structure
+flowscript validate example.json
+
+# Query the graph
+flowscript query why <node-id> example.json
+flowscript query what-if <node-id> example.json
+flowscript query tensions example.json
+flowscript query blocked example.json
+flowscript query alternatives <question-id> example.json
+```
+
+### The Five Queries
+
+The query engine demonstrates operations **impossible with unstructured text**:
+
+**1. why(nodeId) - Causal Ancestry**
+Trace backward through causal relationships automatically. "Why does this exist?" becomes a computational query, not manual tracing.
+
+**2. whatIf(nodeId) - Impact Analysis**
+Calculate forward impact transitively. "What happens if I change this?" becomes automatic, not guesswork.
+
+**3. tensions() - Tradeoff Mapping**
+Extract all tensions systematically. "What tradeoffs exist?" becomes guaranteed complete, not best-effort search.
+
+**4. blocked() - Blocker Tracking**
+Find blocked nodes with dependency chains. "What's blocking critical work?" becomes automated lifecycle management.
+
+**5. alternatives(questionId) - Decision Reconstruction**
+Reconstruct decision rationale from graph structure. "Why did we choose this?" becomes recoverable after the fact.
+
+### The Proof
+
+These queries prove FlowScript is **computable substrate**, not just notation:
+
+- ❌ Can't automatically trace causal chains in prose
+- ❌ Can't calculate transitive impact without structure
+- ❌ Can't guarantee you found all tradeoffs in text
+- ❌ Can't compute dependency chains from descriptions
+- ❌ Can't reconstruct decision rationale after the fact
+
+✅ **FlowScript IR enables ALL of these operations computationally**
+
+### Performance
+
+All queries execute in **<3ms** on typical cognitive graphs (10-40 nodes, 10-30 relationships). Fast enough for real-time use, even on modest hardware.
+
+### Learn More
+
+- **[TOOLCHAIN.md](TOOLCHAIN.md)** - Complete toolchain documentation
+- **[QUERY_ENGINE.md](QUERY_ENGINE.md)** - Query engine guide with examples
+- **[spec/](spec/)** - Formal specifications (grammar, IR schema, linter rules)
+- **[examples/](examples/)** - Golden examples with IR pairs
+
+---
+
 ## Evidence: Cross-Architecture Validation
 
 Here's what convinced us FlowScript was real:
