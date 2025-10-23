@@ -762,6 +762,318 @@ describe('FlowScriptQueryEngine', () => {
       expect(result.decision_summary.rationale).toBeNull()
       expect(result.decision_summary.rejected).toHaveLength(2)
     })
+
+    // New comprehensive tests for Session 6e features
+    describe('showRejectedReasons feature', () => {
+      it('should extract thought nodes as rejection reasons', () => {
+        // Create IR with thought node under rejected alternative
+        const irWithThoughts: IR = {
+          ...decisionIR,
+          nodes: [
+            ...decisionIR.nodes,
+            {
+              id: 'thought-1',
+              type: 'thought',
+              content: 'Security team raised concerns about JWT revocation'
+            }
+          ],
+          relationships: [
+            ...decisionIR.relationships,
+            {
+              source: decisionIR.nodes.find(n => n.content === 'JWT tokens')!.id,
+              target: 'thought-1',
+              type: 'causes'
+            }
+          ]
+        }
+
+        engine.load(irWithThoughts)
+        const questionNode = irWithThoughts.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, {
+          showRejectedReasons: true
+        })
+
+        if (result.format === 'comparison') {
+          const jwtAlt = result.alternatives.find(a => a.content === 'JWT tokens')
+          expect(jwtAlt).toBeDefined()
+          expect(jwtAlt!.chosen).toBe(false)
+          expect(jwtAlt!.rejection_reasons).toBeDefined()
+          expect(jwtAlt!.rejection_reasons).toContain('Security team raised concerns about JWT revocation')
+        }
+      })
+
+      it('should not add rejection_reasons to chosen alternative', () => {
+        const questionNode = decisionIR.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, {
+          showRejectedReasons: true
+        })
+
+        if (result.format === 'comparison') {
+          const chosenAlt = result.alternatives.find(a => a.chosen)
+          expect(chosenAlt).toBeDefined()
+          expect(chosenAlt!.rejection_reasons).toBeUndefined()
+        }
+      })
+
+      it('should not add rejection_reasons when option is false', () => {
+        const questionNode = decisionIR.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, {
+          showRejectedReasons: false
+        })
+
+        if (result.format === 'comparison') {
+          result.alternatives.forEach(alt => {
+            expect(alt.rejection_reasons).toBeUndefined()
+          })
+        }
+      })
+
+      it('should handle alternative with multiple thought nodes', () => {
+        const irWithMultipleThoughts: IR = {
+          ...decisionIR,
+          nodes: [
+            ...decisionIR.nodes,
+            { id: 'thought-1', type: 'thought', content: 'First concern' },
+            { id: 'thought-2', type: 'thought', content: 'Second concern' }
+          ],
+          relationships: [
+            ...decisionIR.relationships,
+            {
+              source: decisionIR.nodes.find(n => n.content === 'JWT tokens')!.id,
+              target: 'thought-1',
+              type: 'causes'
+            },
+            {
+              source: decisionIR.nodes.find(n => n.content === 'JWT tokens')!.id,
+              target: 'thought-2',
+              type: 'causes'
+            }
+          ]
+        }
+
+        engine.load(irWithMultipleThoughts)
+        const questionNode = irWithMultipleThoughts.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, {
+          showRejectedReasons: true
+        })
+
+        if (result.format === 'comparison') {
+          const jwtAlt = result.alternatives.find(a => a.content === 'JWT tokens')
+          expect(jwtAlt!.rejection_reasons).toBeDefined()
+          expect(jwtAlt!.rejection_reasons).toHaveLength(2)
+          expect(jwtAlt!.rejection_reasons).toContain('First concern')
+          expect(jwtAlt!.rejection_reasons).toContain('Second concern')
+        }
+      })
+    })
+
+    describe('format: simple', () => {
+      it('should return simple format with correct discriminator', () => {
+        const questionNode = decisionIR.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, { format: 'simple' })
+
+        expect(result.format).toBe('simple')
+      })
+
+      it('should return minimal summary matching spec', () => {
+        const questionNode = decisionIR.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, { format: 'simple' })
+
+        if (result.format === 'simple') {
+          expect(result.question).toBe('authentication strategy for v1 launch')
+          expect(result.options_considered).toHaveLength(2)
+          expect(result.options_considered).toContain('JWT tokens')
+          expect(result.options_considered).toContain('session tokens + Redis')
+          expect(result.chosen).toBe('session tokens + Redis')
+          expect(result.reason).toBe('security > scaling complexity for v1')
+        }
+      })
+
+      it('should handle question with no decision in simple format', () => {
+        const noDecisionIR: IR = {
+          ...decisionIR,
+          states: []
+        }
+
+        engine.load(noDecisionIR)
+        const questionNode = noDecisionIR.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, { format: 'simple' })
+
+        if (result.format === 'simple') {
+          expect(result.chosen).toBeNull()
+          expect(result.reason).toBeNull()
+          expect(result.options_considered).toHaveLength(2)
+        }
+      })
+    })
+
+    describe('format: tree', () => {
+      it('should return tree format with correct discriminator', () => {
+        const questionNode = decisionIR.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, { format: 'tree' })
+
+        expect(result.format).toBe('tree')
+      })
+
+      it('should build hierarchical structure with children', () => {
+        const questionNode = decisionIR.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, { format: 'tree' })
+
+        if (result.format === 'tree') {
+          expect(result.alternatives).toHaveLength(2)
+          expect(result.alternatives[0].children).toBeDefined()
+          expect(Array.isArray(result.alternatives[0].children)).toBe(true)
+
+          // Check that children exist (at least one alternative should have consequences)
+          const hasChildren = result.alternatives.some(alt => alt.children.length > 0)
+          expect(hasChildren).toBe(true)
+        }
+      })
+
+      it('should include rejection reasons in tree format when requested', () => {
+        const irWithThoughts: IR = {
+          ...decisionIR,
+          nodes: [
+            ...decisionIR.nodes,
+            {
+              id: 'thought-1',
+              type: 'thought',
+              content: 'Rejection reason here'
+            }
+          ],
+          relationships: [
+            ...decisionIR.relationships,
+            {
+              source: decisionIR.nodes.find(n => n.content === 'JWT tokens')!.id,
+              target: 'thought-1',
+              type: 'causes'
+            }
+          ]
+        }
+
+        engine.load(irWithThoughts)
+        const questionNode = irWithThoughts.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, {
+          format: 'tree',
+          showRejectedReasons: true
+        })
+
+        if (result.format === 'tree') {
+          const jwtAlt = result.alternatives.find(a => a.content === 'JWT tokens')
+          expect(jwtAlt).toBeDefined()
+          expect(jwtAlt!.chosen).toBe(false)
+          expect(jwtAlt!.rejection_reasons).toBeDefined()
+          expect(jwtAlt!.rejection_reasons).toContain('Rejection reason here')
+        }
+      })
+
+      it('should handle cycle detection in tree format', () => {
+        // Create IR with cycle
+        const cycleNode = { id: 'cycle-1', type: 'statement', content: 'Creates cycle' }
+        const irWithCycle: IR = {
+          ...decisionIR,
+          nodes: [
+            ...decisionIR.nodes,
+            cycleNode
+          ],
+          relationships: [
+            ...decisionIR.relationships,
+            {
+              source: decisionIR.nodes.find(n => n.content === 'JWT tokens')!.id,
+              target: 'cycle-1',
+              type: 'causes'
+            },
+            {
+              source: 'cycle-1',
+              target: decisionIR.nodes.find(n => n.content === 'JWT tokens')!.id,
+              type: 'causes'
+            }
+          ]
+        }
+
+        engine.load(irWithCycle)
+        const questionNode = irWithCycle.nodes.find(n => n.type === 'question')!
+
+        // Should not throw, should detect cycle
+        expect(() => {
+          engine.alternatives(questionNode.id, { format: 'tree' })
+        }).not.toThrow()
+
+        const result = engine.alternatives(questionNode.id, { format: 'tree' })
+        if (result.format === 'tree') {
+          // Should have cycle detection message somewhere in tree
+          const hasCycleDetection = JSON.stringify(result).includes('cycle detected')
+          expect(hasCycleDetection).toBe(true)
+        }
+      })
+    })
+
+    describe('format: comparison', () => {
+      it('should return comparison format with correct discriminator', () => {
+        const questionNode = decisionIR.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, { format: 'comparison' })
+
+        expect(result.format).toBe('comparison')
+      })
+
+      it('should default to comparison format when no format specified', () => {
+        const questionNode = decisionIR.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id)
+
+        expect(result.format).toBe('comparison')
+      })
+
+      it('should have all comparison format fields', () => {
+        const questionNode = decisionIR.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, { format: 'comparison' })
+
+        if (result.format === 'comparison') {
+          expect(result.question).toBeDefined()
+          expect(result.alternatives).toBeDefined()
+          expect(result.decision_summary).toBeDefined()
+          expect(result.decision_summary.chosen).toBeDefined()
+          expect(result.decision_summary.rejected).toBeDefined()
+          expect(result.decision_summary.key_factors).toBeDefined()
+        }
+      })
+    })
+
+    describe('type safety', () => {
+      it('should enforce format checking via discriminated union', () => {
+        const questionNode = decisionIR.nodes.find(n => n.type === 'question')!
+        const result = engine.alternatives(questionNode.id, { format: 'simple' })
+
+        // Type narrowing should work
+        if (result.format === 'simple') {
+          expect(result.question).toBe('authentication strategy for v1 launch')
+          expect(result.chosen).toBeDefined()
+          // TypeScript should NOT allow accessing result.decision_summary here
+          // @ts-expect-error - decision_summary doesn't exist on simple format
+          expect(result.decision_summary).toBeUndefined()
+        }
+      })
+
+      it('should have different return types for each format', () => {
+        const questionNode = decisionIR.nodes.find(n => n.type === 'question')!
+
+        const simpleResult = engine.alternatives(questionNode.id, { format: 'simple' })
+        const treeResult = engine.alternatives(questionNode.id, { format: 'tree' })
+        const comparisonResult = engine.alternatives(questionNode.id, { format: 'comparison' })
+
+        expect(simpleResult.format).toBe('simple')
+        expect(treeResult.format).toBe('tree')
+        expect(comparisonResult.format).toBe('comparison')
+
+        // Each format has different structure
+        expect('options_considered' in simpleResult).toBe(true)
+        expect('decision_summary' in comparisonResult).toBe(true)
+
+        // Tree format has different alternatives structure
+        if (treeResult.format === 'tree') {
+          expect(treeResult.alternatives[0].children).toBeDefined()
+        }
+      })
+    })
   })
 
   // ==========================================================================

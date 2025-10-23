@@ -198,6 +198,7 @@ export interface AlternativeDetail {
   chosen: boolean
   rationale?: string
   decided_on?: string
+  rejection_reasons?: string[]  // Extracted from thought: nodes
   consequences?: Array<{
     id: string
     content: string
@@ -205,7 +206,11 @@ export interface AlternativeDetail {
   tensions?: TensionInfo[]
 }
 
-export interface AlternativesResult {
+// Discriminated union for format-specific alternatives() results
+// Each format has exactly the fields it needs, enforced at compile time
+
+export interface AlternativesResultComparison {
+  format: 'comparison'
   question: {
     id: string
     content: string
@@ -218,6 +223,37 @@ export interface AlternativesResult {
     key_factors: string[]
   }
 }
+
+export interface AlternativesResultSimple {
+  format: 'simple'
+  question: string  // Just string, not object
+  options_considered: string[]
+  chosen: string | null
+  reason: string | null
+}
+
+export interface TreeAlternative {
+  id: string
+  content: string
+  chosen: boolean
+  rejection_reasons?: string[]  // Optional rejection reasoning
+  children: TreeAlternative[]  // Recursive structure
+}
+
+export interface AlternativesResultTree {
+  format: 'tree'
+  question: {
+    id: string
+    content: string
+  }
+  alternatives: TreeAlternative[]
+}
+
+// Discriminated union type - TypeScript enforces format checking
+export type AlternativesResult =
+  | AlternativesResultComparison
+  | AlternativesResultTree
+  | AlternativesResultSimple
 
 // ============================================================================
 // FlowScript Query Engine
@@ -682,11 +718,13 @@ export class FlowScriptQueryEngine {
    * Query 5: Decision reconstruction (alternatives + rationale)
    *
    * Reconstructs decision with all alternatives, showing which was chosen and why.
-   * Returns comparison of all options with decision rationale.
+   * Supports three formats: comparison (default), simple, tree.
    */
   alternatives(questionId: string, options: AlternativesOptions = {}): AlternativesResult {
+    const format = options.format || 'comparison'
     const includeRationale = options.includeRationale !== false
     const includeConsequences = options.includeConsequences || false
+    const showRejectedReasons = options.showRejectedReasons || false
 
     // Verify questionId is a question node
     const questionNode = this.nodeMap.get(questionId)
@@ -701,115 +739,188 @@ export class FlowScriptQueryEngine {
     const altRels = (this.relationshipsFromSource.get(questionId) || [])
       .filter(rel => rel.type === 'alternative')
 
-    // Build alternative details
-    const alternatives: AlternativeDetail[] = []
-    let chosenAlternative: AlternativeDetail | null = null
+    // Format-specific routing
+    switch (format) {
+      case 'simple': {
+        // Simple format: minimal summary (question + options + chosen + reason)
+        const alternatives: Array<{ id: string; content: string; chosen: boolean; rationale?: string }> = []
 
-    for (const altRel of altRels) {
-      const altNode = this.nodeMap.get(altRel.target)
-      if (!altNode) continue
+        for (const altRel of altRels) {
+          const altNode = this.nodeMap.get(altRel.target)
+          if (!altNode) continue
 
-      // Check if this alternative was chosen (has decided state)
-      // Note: decided state might be on a child node that references the alternative
-      let isChosen = false
-      let rationale: string | undefined
-      let decidedOn: string | undefined
+          // Check if chosen
+          let isChosen = false
+          let rationale: string | undefined
 
-      // Check all states for decisions related to this alternative
-      for (const state of this.ir.states || []) {
-        if (state.type === 'decided') {
-          const stateNode = this.nodeMap.get(state.node_id)
-          if (stateNode && stateNode.content === altNode.content) {
-            isChosen = true
-            if (includeRationale && state.fields) {
-              rationale = state.fields.rationale
-              decidedOn = state.fields.on
+          for (const state of this.ir.states || []) {
+            if (state.type === 'decided') {
+              const stateNode = this.nodeMap.get(state.node_id)
+              if (stateNode && stateNode.content === altNode.content) {
+                isChosen = true
+                if (includeRationale && state.fields) {
+                  rationale = state.fields.rationale
+                }
+              }
             }
           }
-        }
-      }
 
-      const detail: AlternativeDetail = {
-        id: altNode.id,
-        content: altNode.content,
-        chosen: isChosen
-      }
-
-      if (isChosen && rationale) {
-        detail.rationale = rationale
-        detail.decided_on = decidedOn
-      }
-
-      // Get consequences (children of alternative)
-      if (includeConsequences) {
-        const consequences = (this.relationshipsFromSource.get(altNode.id) || [])
-          .filter(rel => rel.type === 'causes')
-          .map(rel => {
-            const childNode = this.nodeMap.get(rel.target)
-            return childNode ? {
-              id: childNode.id,
-              content: childNode.content
-            } : null
+          alternatives.push({
+            id: altNode.id,
+            content: altNode.content,
+            chosen: isChosen,
+            rationale
           })
-          .filter(c => c !== null) as Array<{ id: string; content: string }>
+        }
 
-        if (consequences.length > 0) {
-          detail.consequences = consequences
+        const chosenAlt = alternatives.find(a => a.chosen)
+
+        return {
+          format: 'simple',
+          question: questionNode.content,
+          options_considered: alternatives.map(a => a.content),
+          chosen: chosenAlt?.content || null,
+          reason: chosenAlt?.rationale || null
         }
       }
 
-      // Find tensions within this alternative
-      const altTensions = (this.relationshipsFromSource.get(altNode.id) || [])
-        .filter(rel => rel.type === 'tension')
-        .map(rel => {
-          const targetNode = this.nodeMap.get(rel.target)
-          if (!targetNode) return null
-          return {
-            axis: rel.axis_label || 'unlabeled',
-            source: {
-              id: altNode.id,
-              content: altNode.content
-            },
-            target: {
-              id: targetNode.id,
-              content: targetNode.content
+      case 'tree': {
+        // Tree format: hierarchical structure with recursive children
+        const treeAlternatives = altRels.map(altRel =>
+          this.buildAlternativeTree(altRel.target, new Set(), showRejectedReasons)
+        )
+
+        return {
+          format: 'tree',
+          question: {
+            id: questionNode.id,
+            content: questionNode.content
+          },
+          alternatives: treeAlternatives
+        }
+      }
+
+      case 'comparison':
+      default: {
+        // Comparison format: full decision analysis with all details
+        const alternatives: AlternativeDetail[] = []
+        let chosenAlternative: AlternativeDetail | null = null
+
+        for (const altRel of altRels) {
+          const altNode = this.nodeMap.get(altRel.target)
+          if (!altNode) continue
+
+          // Check if this alternative was chosen (has decided state)
+          let isChosen = false
+          let rationale: string | undefined
+          let decidedOn: string | undefined
+
+          // Check all states for decisions related to this alternative
+          for (const state of this.ir.states || []) {
+            if (state.type === 'decided') {
+              const stateNode = this.nodeMap.get(state.node_id)
+              if (stateNode && stateNode.content === altNode.content) {
+                isChosen = true
+                if (includeRationale && state.fields) {
+                  rationale = state.fields.rationale
+                  decidedOn = state.fields.on
+                }
+              }
             }
           }
-        })
-        .filter(t => t !== null) as TensionInfo[]
 
-      if (altTensions.length > 0) {
-        detail.tensions = altTensions
-      }
+          const detail: AlternativeDetail = {
+            id: altNode.id,
+            content: altNode.content,
+            chosen: isChosen
+          }
 
-      alternatives.push(detail)
+          if (isChosen && rationale) {
+            detail.rationale = rationale
+            detail.decided_on = decidedOn
+          }
 
-      if (isChosen) {
-        chosenAlternative = detail
-      }
-    }
+          // Extract rejection reasons from thought nodes (only for rejected alternatives)
+          if (showRejectedReasons && !isChosen) {
+            const reasons = this.extractRejectionReasons(altNode.id)
+            if (reasons.length > 0) {
+              detail.rejection_reasons = reasons
+            }
+          }
 
-    // Build decision summary
-    const rejected = alternatives
-      .filter(alt => !alt.chosen)
-      .map(alt => alt.content)
+          // Get consequences (children of alternative)
+          if (includeConsequences) {
+            const consequences = (this.relationshipsFromSource.get(altNode.id) || [])
+              .filter(rel => rel.type === 'causes')
+              .map(rel => {
+                const childNode = this.nodeMap.get(rel.target)
+                return childNode ? {
+                  id: childNode.id,
+                  content: childNode.content
+                } : null
+              })
+              .filter(c => c !== null) as Array<{ id: string; content: string }>
 
-    const keyFactors: string[] = []
-    if (chosenAlternative?.tensions) {
-      keyFactors.push(...chosenAlternative.tensions.map(t => t.axis))
-    }
+            if (consequences.length > 0) {
+              detail.consequences = consequences
+            }
+          }
 
-    return {
-      question: {
-        id: questionNode.id,
-        content: questionNode.content
-      },
-      alternatives,
-      decision_summary: {
-        chosen: chosenAlternative?.content || null,
-        rationale: chosenAlternative?.rationale || null,
-        rejected,
-        key_factors: Array.from(new Set(keyFactors))
+          // Find tensions within this alternative
+          const altTensions = (this.relationshipsFromSource.get(altNode.id) || [])
+            .filter(rel => rel.type === 'tension')
+            .map(rel => {
+              const targetNode = this.nodeMap.get(rel.target)
+              if (!targetNode) return null
+              return {
+                axis: rel.axis_label || 'unlabeled',
+                source: {
+                  id: altNode.id,
+                  content: altNode.content
+                },
+                target: {
+                  id: targetNode.id,
+                  content: targetNode.content
+                }
+              }
+            })
+            .filter(t => t !== null) as TensionInfo[]
+
+          if (altTensions.length > 0) {
+            detail.tensions = altTensions
+          }
+
+          alternatives.push(detail)
+
+          if (isChosen) {
+            chosenAlternative = detail
+          }
+        }
+
+        // Build decision summary
+        const rejected = alternatives
+          .filter(alt => !alt.chosen)
+          .map(alt => alt.content)
+
+        const keyFactors: string[] = []
+        if (chosenAlternative?.tensions) {
+          keyFactors.push(...chosenAlternative.tensions.map(t => t.axis))
+        }
+
+        return {
+          format: 'comparison',
+          question: {
+            id: questionNode.id,
+            content: questionNode.content
+          },
+          alternatives,
+          decision_summary: {
+            chosen: chosenAlternative?.content || null,
+            rationale: chosenAlternative?.rationale || null,
+            rejected,
+            key_factors: Array.from(new Set(keyFactors))
+          }
+        }
       }
     }
   }
@@ -817,6 +928,93 @@ export class FlowScriptQueryEngine {
   // ==========================================================================
   // Helper Methods
   // ==========================================================================
+
+  /**
+   * Extract rejection reasons from thought: nodes under an alternative
+   *
+   * Convention: thought nodes that are children (via 'causes' relationships)
+   * of a rejected alternative are interpreted as rejection reasoning.
+   *
+   * @param altNodeId - The alternative node ID to extract rejection reasons from
+   * @returns Array of rejection reason strings (thought node contents)
+   */
+  private extractRejectionReasons(altNodeId: string): string[] {
+    const thoughts = (this.relationshipsFromSource.get(altNodeId) || [])
+      .filter(rel => rel.type === 'causes')
+      .map(rel => this.nodeMap.get(rel.target))
+      .filter(node => node !== undefined && node.type === 'thought')
+      .map(node => node!.content)
+
+    return thoughts
+  }
+
+  /**
+   * Build a recursive tree structure for an alternative and its consequence children
+   *
+   * Shows hierarchical structure of consequences (via 'causes' relationships).
+   * Includes cycle detection to handle potential graph cycles.
+   *
+   * @param nodeId - The node ID to start building from
+   * @param visited - Set of already visited node IDs for cycle detection
+   * @param includeRejectionReasons - Whether to include rejection reasons for rejected alternatives
+   * @returns TreeAlternative structure with recursive children
+   */
+  private buildAlternativeTree(
+    nodeId: string,
+    visited: Set<string> = new Set(),
+    includeRejectionReasons: boolean = false
+  ): TreeAlternative {
+    // Cycle detection
+    if (visited.has(nodeId)) {
+      const node = this.nodeMap.get(nodeId)!
+      return {
+        id: node.id,
+        content: node.content + ' [cycle detected]',
+        chosen: false,
+        children: []
+      }
+    }
+
+    visited.add(nodeId)
+    const node = this.nodeMap.get(nodeId)!
+
+    // Check if this node is chosen (has decided state)
+    const isChosen = this.ir.states?.some(
+      s => s.type === 'decided' && s.node_id === nodeId
+    ) || false
+
+    // Build tree node
+    const treeNode: TreeAlternative = {
+      id: node.id,
+      content: node.content,
+      chosen: isChosen,
+      children: []
+    }
+
+    // Add rejection reasons if requested and not chosen
+    if (includeRejectionReasons && !isChosen) {
+      const reasons = this.extractRejectionReasons(nodeId)
+      if (reasons.length > 0) {
+        treeNode.rejection_reasons = reasons
+      }
+    }
+
+    // Recursively build children (only consequence relationships via 'causes')
+    const childRels = (this.relationshipsFromSource.get(nodeId) || [])
+      .filter(rel => rel.type === 'causes')
+
+    for (const rel of childRels) {
+      // Pass copy of visited set to allow multiple paths to same node
+      const childTree = this.buildAlternativeTree(
+        rel.target,
+        new Set(visited),
+        includeRejectionReasons
+      )
+      treeNode.children.push(childTree)
+    }
+
+    return treeNode
+  }
 
   /**
    * Traverse backward through relationships

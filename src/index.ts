@@ -31,6 +31,10 @@ export {
   BlockedResult,
   BlockerDetail,
   AlternativesResult,
+  AlternativesResultComparison,
+  AlternativesResultTree,
+  AlternativesResultSimple,
+  TreeAlternative,
   AlternativeDetail,
   TensionInfo
 } from './query-engine';

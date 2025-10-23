@@ -618,37 +618,226 @@ The engine throws errors for:
 
 ---
 
-## Known Limitations
+## alternatives() Query - Format Options
 
-### Version 1.0 - Not Implemented
+The `alternatives()` query supports three output formats via discriminated union types. Each format returns a different TypeScript type, enforced at compile time for type safety.
 
-The following features are defined in the spec but **not implemented** in v1.0:
+### Format: 'comparison' (default)
 
-#### alternatives() Query Options
+**Purpose:** Full decision analysis with all alternatives, tensions, and decision summary.
 
-**`showRejectedReasons` option:**
-- **Status:** Not implemented
-- **Spec says:** Extract why alternatives weren't chosen
-- **Reality:** Option is accepted but ignored
-- **Reason:** No rejection notes exist in test data to validate implementation
-- **Planned:** v1.1
+**Returns:** `AlternativesResultComparison`
 
-**`format` option for alternatives():**
-- **Status:** Partially implemented
-- **Spec says:** Support 'comparison' | 'tree' | 'simple' formats
-- **Reality:** Only 'comparison' format implemented; 'tree' and 'simple' options accepted but ignored
-- **Current behavior:** Always returns comparison format regardless of format parameter
-- **Planned:** v1.1
+```typescript
+const result = engine.alternatives(questionId, {
+  format: 'comparison',
+  showRejectedReasons: true,
+  includeConsequences: true
+});
 
-### Honest Documentation
+// Type narrowing
+if (result.format === 'comparison') {
+  console.log('Question:', result.question.content);
+  console.log('Chosen:', result.decision_summary.chosen);
+  console.log('Rationale:', result.decision_summary.rationale);
 
-This section exists because **Session 6c overclaimed completeness**. These features were documented as working when they weren't implemented. This is now fixed:
+  // Show rejection reasoning
+  result.alternatives.forEach(alt => {
+    if (!alt.chosen && alt.rejection_reasons) {
+      console.log(`\n${alt.content} rejected because:`);
+      alt.rejection_reasons.forEach(reason => {
+        console.log(`  - ${reason}`);
+      });
+    }
+  });
+}
+```
 
-- ✅ Documentation matches implementation
-- ✅ No hidden "accepted but ignored" options
-- ✅ Users can trust what the docs say
+**Output Structure:**
+- `format`: 'comparison' (discriminator)
+- `question`: { id, content }
+- `alternatives`: AlternativeDetail[]
+  - Each alternative includes: id, content, chosen, rationale?, rejection_reasons?, consequences?, tensions?
+- `decision_summary`: { chosen, rationale, rejected, key_factors }
 
-If you need these features, please open an issue on GitHub.
+### Format: 'simple'
+
+**Purpose:** Minimal summary - just question, options, and chosen answer.
+
+**Returns:** `AlternativesResultSimple`
+
+```typescript
+const result = engine.alternatives(questionId, { format: 'simple' });
+
+if (result.format === 'simple') {
+  console.log(`Question: ${result.question}`);
+  console.log(`Options: ${result.options_considered.join(', ')}`);
+  console.log(`Chosen: ${result.chosen}`);
+  console.log(`Reason: ${result.reason}`);
+}
+```
+
+**Output Structure:**
+- `format`: 'simple' (discriminator)
+- `question`: string (just the question text)
+- `options_considered`: string[]
+- `chosen`: string | null
+- `reason`: string | null
+
+**Example Output:**
+```json
+{
+  "format": "simple",
+  "question": "authentication strategy for v1 launch",
+  "options_considered": ["JWT tokens", "session tokens + Redis"],
+  "chosen": "session tokens + Redis",
+  "reason": "security > scaling complexity for v1"
+}
+```
+
+### Format: 'tree'
+
+**Purpose:** Hierarchical structure showing full consequence trees for each alternative.
+
+**Returns:** `AlternativesResultTree`
+
+```typescript
+const result = engine.alternatives(questionId, {
+  format: 'tree',
+  showRejectedReasons: true
+});
+
+if (result.format === 'tree') {
+  result.alternatives.forEach(alt => {
+    console.log(`\n${alt.content} (chosen: ${alt.chosen})`);
+
+    if (alt.rejection_reasons) {
+      console.log('  Rejected because:');
+      alt.rejection_reasons.forEach(r => console.log(`    - ${r}`));
+    }
+
+    printTree(alt.children, 1);
+  });
+}
+
+function printTree(children: TreeAlternative[], depth: number) {
+  children.forEach(child => {
+    console.log('  '.repeat(depth) + '└─', child.content);
+    printTree(child.children, depth + 1);
+  });
+}
+```
+
+**Output Structure:**
+- `format`: 'tree' (discriminator)
+- `question`: { id, content }
+- `alternatives`: TreeAlternative[]
+  - Recursive structure: id, content, chosen, rejection_reasons?, children[]
+
+**Features:**
+- Recursive tree building showing consequence relationships
+- Cycle detection (prevents infinite loops)
+- Optional rejection reasons at each level
+
+### Type Safety with Discriminated Unions
+
+The discriminated union ensures you **cannot access wrong fields**:
+
+```typescript
+const result = engine.alternatives(questionId);
+
+// ❌ TypeScript error - must check format first
+console.log(result.decision_summary);  // Error!
+
+// ✅ Correct - type narrowing
+if (result.format === 'comparison') {
+  console.log(result.decision_summary);  // OK - TypeScript knows this exists
+}
+
+if (result.format === 'simple') {
+  console.log(result.options_considered);  // OK
+  console.log(result.decision_summary);  // Error - doesn't exist on simple format
+}
+```
+
+**Benefits:**
+- Compile-time type checking catches bugs
+- IDE autocomplete shows only available fields
+- Self-documenting API
+- No "maybe exists" fields
+
+### showRejectedReasons Option
+
+Extract reasoning for why alternatives weren't chosen using FlowScript's `thought:` nodes.
+
+**Convention:** Thought nodes that are children (via `causes` relationships) of rejected alternatives are interpreted as rejection reasoning.
+
+**FlowScript Pattern:**
+```flowscript
+? authentication strategy
+|| JWT tokens
+  thought: Security team raised concerns about revocation during incident response
+  -> stateless architecture
+  -> scales horizontally
+|| session tokens + Redis
+  * [decided(rationale: "security > scaling for v1")] session tokens + Redis
+  -> instant revocation capability
+```
+
+**TypeScript Usage:**
+```typescript
+const result = engine.alternatives(questionId, {
+  format: 'comparison',  // or 'tree'
+  showRejectedReasons: true
+});
+
+if (result.format === 'comparison') {
+  const jwtAlt = result.alternatives.find(a => a.content === 'JWT tokens');
+  if (jwtAlt && jwtAlt.rejection_reasons) {
+    console.log('JWT rejected because:', jwtAlt.rejection_reasons);
+    // ["Security team raised concerns about revocation during incident response"]
+  }
+}
+```
+
+**How it works:**
+1. Query finds rejected alternatives (those without `[decided]` state)
+2. Extracts child `thought:` nodes via `causes` relationships
+3. Returns thought content as rejection reasons
+4. Only added when `showRejectedReasons: true`
+5. Never added to chosen alternative (doesn't make semantic sense)
+
+**Why thought nodes?**
+- `thought:` markers capture reasoning - exactly what rejection reasons are
+- Rejection isn't a lifecycle state - it's just "not chosen" + the reasoning
+- Keeps spec clean: states for lifecycle, thoughts for reasoning
+- No spec changes needed (thought nodes already exist)
+
+### Migration Guide
+
+**Breaking Change in v1.0:** The `alternatives()` query now returns a discriminated union type instead of a single flexible interface.
+
+**Before (old code):**
+```typescript
+const result = engine.alternatives(questionId);
+console.log(result.decision_summary.chosen);  // Worked, but no type safety
+```
+
+**After (new code):**
+```typescript
+const result = engine.alternatives(questionId);
+
+// Must check format before accessing format-specific fields
+if (result.format === 'comparison') {
+  console.log(result.decision_summary.chosen);  // Type-safe ✓
+}
+```
+
+**Why this change?**
+- Prevents runtime errors from accessing non-existent fields
+- Makes format differences explicit
+- TypeScript catches bugs at compile time
+- Honest API - clear what each format provides
 
 ---
 
