@@ -1,0 +1,60 @@
+/**
+ * FlowScript Editor Styles
+ */
+
+.flowscript-editor-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.flowscript-editor {
+  flex: 1;
+  height: 100%;
+  overflow: auto;
+}
+
+.flowscript-editor .cm-editor {
+  height: 100%;
+}
+
+.flowscript-editor .cm-scroller {
+  overflow: auto;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Consolas', monospace;
+}
+
+/* Focus styles */
+.flowscript-editor .cm-focused {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+
+/* Selection */
+.flowscript-editor .cm-selectionBackground {
+  background-color: #dbeafe;
+}
+
+.flowscript-editor.cm-focused .cm-selectionBackground {
+  background-color: #bfdbfe;
+}
+
+/* Scrollbar styling */
+.flowscript-editor .cm-scroller::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.flowscript-editor .cm-scroller::-webkit-scrollbar-track {
+  background: #f9fafb;
+}
+
+.flowscript-editor .cm-scroller::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 6px;
+  border: 2px solid #f9fafb;
+}
+
+.flowscript-editor .cm-scroller::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
