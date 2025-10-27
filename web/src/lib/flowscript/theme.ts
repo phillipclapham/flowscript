@@ -1,113 +1,156 @@
 /**
  * FlowScript Syntax Highlighting Theme
  *
- * Semantic colors for the 21 FlowScript markers.
- * Colors follow cognitive semantics and WCAG AA contrast guidelines.
+ * Uses CSS custom properties for theme support (light/dark modes)
+ * Actual color values set in App.css via data-theme attribute
  */
 
 import type { Extension } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
 /**
- * Semantic color palette for FlowScript markers
- *
- * Design principles:
- * - Readability first (WCAG AA contrast)
- * - Semantic colors (causal = blue, temporal = purple, etc.)
- * - Professional (not garish)
- * - Accessible (distinguishable by non-color-blind users)
- */
-const colors = {
-  // Core Relations
-  causal: "#3b82f6",           // Blue - cause & effect
-  temporal: "#8b5cf6",         // Purple - time sequence
-  reverseCausal: "#0ea5e9",    // Sky blue - reverse flow
-  bidirectional: "#06b6d4",    // Cyan - mutual influence
-  tension: "#f59e0b",          // Amber - conflict/tradeoff
-  axisLabel: "#d97706",        // Dark amber - tension axis
-
-  // Definition Operators
-  equivalent: "#10b981",       // Green - equivalence
-  notEquivalent: "#ef4444",    // Red - distinction
-
-  // State Markers
-  decided: "#22c55e",          // Bright green - committed
-  exploring: "#fbbf24",        // Yellow - investigating
-  blocked: "#dc2626",          // Dark red - blocked
-  parking: "#94a3b8",          // Slate - deferred
-
-  // Insights & Questions
-  thought: "#a855f7",          // Bright purple - insight
-  question: "#f97316",         // Orange - question
-  completed: "#059669",        // Dark green - done
-  alternative: "#64748b",      // Gray - option
-
-  // Commands
-  action: "#0284c7",           // Blue-600 - action
-
-  // Modifiers
-  urgent: "#dc2626",           // Red - urgent
-  positive: "#16a34a",         // Green-600 - positive
-  confident: "#7c3aed",        // Violet-600 - confident
-  uncertain: "#9ca3af",        // Gray-400 - uncertain
-
-  // Structure
-  brace: "#6b7280",            // Gray-500 - structure
-  bracket: "#6b7280",          // Gray-500 - structure
-  scope: "#06b6d4",            // Cyan - scope
-
-  // Comments
-  comment: "#9ca3af",          // Gray-400 - comment
-} as const;
-
-/**
  * Custom styles for FlowScript tokens
- * Applied via CSS classes that match our token types
+ * Uses CSS variables that respond to data-theme attribute
  *
  * Note: We use CSS classes only (not tag-based highlighting)
  * because our tokenizer returns custom class names directly
  */
 const flowScriptStyles = EditorView.theme({
   // Core Relations
-  ".cm-flowscript-causal": { color: colors.causal, fontWeight: "600" },
-  ".cm-flowscript-temporal": { color: colors.temporal, fontWeight: "600" },
-  ".cm-flowscript-reverse-causal": { color: colors.reverseCausal, fontWeight: "600" },
-  ".cm-flowscript-bidirectional": { color: colors.bidirectional, fontWeight: "600" },
-  ".cm-flowscript-tension": { color: colors.tension, fontWeight: "700" },
-  ".cm-flowscript-axis-label": { color: colors.axisLabel, fontStyle: "italic" },
+  ".cm-flowscript-causal": {
+    color: "var(--color-causal)",
+    fontWeight: "600"
+  },
+  ".cm-flowscript-temporal": {
+    color: "var(--color-temporal)",
+    fontWeight: "600"
+  },
+  ".cm-flowscript-reverse-causal": {
+    color: "var(--color-reverse-causal)",
+    fontWeight: "600"
+  },
+  ".cm-flowscript-bidirectional": {
+    color: "var(--color-bidirectional)",
+    fontWeight: "600"
+  },
+  ".cm-flowscript-tension": {
+    color: "var(--color-tension)",
+    fontWeight: "700"
+  },
+  ".cm-flowscript-axis-label": {
+    color: "var(--color-axis-label)",
+    fontStyle: "italic"
+  },
 
   // Definition Operators
-  ".cm-flowscript-equivalent": { color: colors.equivalent, fontWeight: "600" },
-  ".cm-flowscript-not-equivalent": { color: colors.notEquivalent, fontWeight: "600" },
+  ".cm-flowscript-equivalent": {
+    color: "var(--color-equivalent)",
+    fontWeight: "600"
+  },
+  ".cm-flowscript-not-equivalent": {
+    color: "var(--color-not-equivalent)",
+    fontWeight: "600"
+  },
 
   // State Markers
-  ".cm-flowscript-decided": { color: colors.decided, fontWeight: "700", backgroundColor: "rgba(34, 197, 94, 0.1)", padding: "0 4px", borderRadius: "3px" },
-  ".cm-flowscript-exploring": { color: colors.exploring, fontWeight: "700", backgroundColor: "rgba(251, 191, 36, 0.1)", padding: "0 4px", borderRadius: "3px" },
-  ".cm-flowscript-blocked": { color: colors.blocked, fontWeight: "700", backgroundColor: "rgba(220, 38, 38, 0.1)", padding: "0 4px", borderRadius: "3px" },
-  ".cm-flowscript-parking": { color: colors.parking, fontWeight: "700", backgroundColor: "rgba(148, 163, 184, 0.1)", padding: "0 4px", borderRadius: "3px" },
+  ".cm-flowscript-decided": {
+    color: "var(--color-decided)",
+    fontWeight: "700",
+    backgroundColor: "var(--color-decided-bg)",
+    padding: "0 4px",
+    borderRadius: "3px"
+  },
+  ".cm-flowscript-exploring": {
+    color: "var(--color-exploring)",
+    fontWeight: "700",
+    backgroundColor: "var(--color-exploring-bg)",
+    padding: "0 4px",
+    borderRadius: "3px"
+  },
+  ".cm-flowscript-blocked": {
+    color: "var(--color-blocked)",
+    fontWeight: "700",
+    backgroundColor: "var(--color-blocked-bg)",
+    padding: "0 4px",
+    borderRadius: "3px"
+  },
+  ".cm-flowscript-parking": {
+    color: "var(--color-parking)",
+    fontWeight: "700",
+    backgroundColor: "var(--color-parking-bg)",
+    padding: "0 4px",
+    borderRadius: "3px"
+  },
 
   // Insights & Questions
-  ".cm-flowscript-thought": { color: colors.thought, fontWeight: "600" },
-  ".cm-flowscript-question": { color: colors.question, fontWeight: "700", fontSize: "1.1em" },
-  ".cm-flowscript-completed": { color: colors.completed, fontWeight: "700", fontSize: "1.1em" },
-  ".cm-flowscript-alternative": { color: colors.alternative, fontWeight: "600" },
+  ".cm-flowscript-thought": {
+    color: "var(--color-thought)",
+    fontWeight: "600"
+  },
+  ".cm-flowscript-question": {
+    color: "var(--color-question)",
+    fontWeight: "700",
+    fontSize: "1.1em"
+  },
+  ".cm-flowscript-completed": {
+    color: "var(--color-completed)",
+    fontWeight: "700",
+    fontSize: "1.1em"
+  },
+  ".cm-flowscript-alternative": {
+    color: "var(--color-alternative)",
+    fontWeight: "600"
+  },
 
   // Commands
-  ".cm-flowscript-action": { color: colors.action, fontWeight: "600" },
+  ".cm-flowscript-action": {
+    color: "var(--color-action)",
+    fontWeight: "600"
+  },
 
   // Modifiers
-  ".cm-flowscript-urgent": { color: colors.urgent, fontWeight: "700", fontSize: "1.05em" },
-  ".cm-flowscript-positive": { color: colors.positive, fontWeight: "700" },
-  ".cm-flowscript-confident": { color: colors.confident, fontWeight: "600" },
-  ".cm-flowscript-uncertain": { color: colors.uncertain, fontWeight: "500", fontStyle: "italic" },
+  ".cm-flowscript-urgent": {
+    color: "var(--color-urgent)",
+    fontWeight: "700",
+    fontSize: "1.05em"
+  },
+  ".cm-flowscript-positive": {
+    color: "var(--color-positive)",
+    fontWeight: "700"
+  },
+  ".cm-flowscript-confident": {
+    color: "var(--color-confident)",
+    fontWeight: "600"
+  },
+  ".cm-flowscript-uncertain": {
+    color: "var(--color-uncertain)",
+    fontWeight: "500",
+    fontStyle: "italic"
+  },
 
   // Structure
-  ".cm-flowscript-brace": { color: colors.brace, fontWeight: "600" },
-  ".cm-flowscript-bracket": { color: colors.bracket, fontWeight: "600" },
-  ".cm-flowscript-scope": { color: colors.scope, fontWeight: "600", backgroundColor: "rgba(6, 182, 212, 0.1)", padding: "0 4px", borderRadius: "3px" },
+  ".cm-flowscript-brace": {
+    color: "var(--color-brace)",
+    fontWeight: "600"
+  },
+  ".cm-flowscript-bracket": {
+    color: "var(--color-bracket)",
+    fontWeight: "600"
+  },
+  ".cm-flowscript-scope": {
+    color: "var(--color-scope)",
+    fontWeight: "600",
+    backgroundColor: "var(--color-scope-bg)",
+    padding: "0 4px",
+    borderRadius: "3px"
+  },
 
   // Comments
-  ".cm-flowscript-comment": { color: colors.comment, fontStyle: "italic", opacity: "0.7" },
+  ".cm-flowscript-comment": {
+    color: "var(--color-comment)",
+    fontStyle: "italic",
+    opacity: "0.7"
+  },
 
   // General editor styles
   "&.cm-editor": {
@@ -125,29 +168,30 @@ const flowScriptStyles = EditorView.theme({
   },
 
   ".cm-gutters": {
-    backgroundColor: "#f9fafb",
-    borderRight: "1px solid #e5e7eb",
-    color: "#6b7280",
+    backgroundColor: "var(--editor-gutter-bg)",
+    borderRight: "1px solid var(--editor-gutter-border)",
+    color: "var(--text-muted)",
   },
 
   ".cm-activeLineGutter": {
-    backgroundColor: "#f3f4f6",
+    backgroundColor: "var(--editor-active-line-gutter)",
   },
 
   ".cm-activeLine": {
-    backgroundColor: "#f9fafb",
+    backgroundColor: "var(--editor-active-line)",
+    marginRight: "-1px", // Fix: prevent overflow past editor border
   },
 
   ".cm-selectionBackground, ::selection": {
-    backgroundColor: "#dbeafe !important",
+    backgroundColor: "var(--editor-selection) !important",
   },
 
   ".cm-focused .cm-selectionBackground": {
-    backgroundColor: "#bfdbfe !important",
+    backgroundColor: "var(--editor-selection-focused) !important",
   },
 
   ".cm-cursor": {
-    borderLeftColor: "#3b82f6",
+    borderLeftColor: "var(--editor-cursor)",
     borderLeftWidth: "2px",
   },
 });
@@ -159,8 +203,3 @@ const flowScriptStyles = EditorView.theme({
 export function flowScriptTheme(): Extension {
   return flowScriptStyles;
 }
-
-/**
- * Export colors for use in other components
- */
-export { colors as flowScriptColors };

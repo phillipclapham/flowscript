@@ -1,6 +1,6 @@
 /**
  * FlowScript App Styles
- * Session 7a: Professional UI Chrome
+ * Session 7a.5: Theme System with Light/Dark Mode Support
  */
 
 /* Reset and base styles */
@@ -10,15 +10,74 @@
   padding: 0;
 }
 
+/* Light Mode Colors (Default) */
 :root {
-  /* Colors */
-  --color-primary: #3b82f6;
-  --color-primary-dark: #2563eb;
+  /* FlowScript Marker Colors - Core Relations */
+  --color-causal: #3b82f6;
+  --color-temporal: #8b5cf6;
+  --color-reverse-causal: #0ea5e9;
+  --color-bidirectional: #06b6d4;
+  --color-tension: #f59e0b;
+  --color-axis-label: #d97706;
+
+  /* Definition Operators */
+  --color-equivalent: #10b981;
+  --color-not-equivalent: #ef4444;
+
+  /* State Markers */
+  --color-decided: #22c55e;
+  --color-decided-bg: rgba(34, 197, 94, 0.1);
+  --color-exploring: #fbbf24;
+  --color-exploring-bg: rgba(251, 191, 36, 0.1);
+  --color-blocked: #dc2626;
+  --color-blocked-bg: rgba(220, 38, 38, 0.1);
+  --color-parking: #94a3b8;
+  --color-parking-bg: rgba(148, 163, 184, 0.1);
+
+  /* Insights & Questions */
+  --color-thought: #a855f7;
+  --color-question: #f97316;
+  --color-completed: #059669;
+  --color-alternative: #64748b;
+
+  /* Commands */
+  --color-action: #0284c7;
+
+  /* Modifiers */
+  --color-urgent: #dc2626;
+  --color-positive: #16a34a;
+  --color-confident: #7c3aed;
+  --color-uncertain: #6b7280;
+
+  /* Structure */
+  --color-brace: #6b7280;
+  --color-bracket: #6b7280;
+  --color-scope: #06b6d4;
+  --color-scope-bg: rgba(6, 182, 212, 0.1);
+
+  /* Comments */
+  --color-comment: #6b7280;
+
+  /* UI Elements */
   --color-background: #ffffff;
   --color-surface: #f9fafb;
   --color-border: #e5e7eb;
   --color-text: #111827;
-  --color-text-muted: #6b7280;
+  --text-muted: #6b7280;
+
+  /* Editor Specific */
+  --editor-bg: #ffffff;
+  --editor-gutter-bg: #f9fafb;
+  --editor-gutter-border: #e5e7eb;
+  --editor-active-line: #f9fafb;
+  --editor-active-line-gutter: #f3f4f6;
+  --editor-selection: #dbeafe;
+  --editor-selection-focused: #bfdbfe;
+  --editor-cursor: #3b82f6;
+
+  /* Brand */
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
 
   /* Spacing */
   --space-xs: 4px;
@@ -41,6 +100,97 @@
   /* Transitions */
   --transition-fast: 150ms ease-in-out;
   --transition-base: 200ms ease-in-out;
+}
+
+/* Dark Mode Colors */
+[data-theme="dark"] {
+  /* FlowScript Marker Colors - Core Relations */
+  --color-causal: #60a5fa;
+  --color-temporal: #a78bfa;
+  --color-reverse-causal: #38bdf8;
+  --color-bidirectional: #22d3ee;
+  --color-tension: #fbbf24;
+  --color-axis-label: #fbbf24;
+
+  /* Definition Operators */
+  --color-equivalent: #4ade80;
+  --color-not-equivalent: #f87171;
+
+  /* State Markers */
+  --color-decided: #4ade80;
+  --color-decided-bg: rgba(74, 222, 128, 0.15);
+  --color-exploring: #fbbf24;
+  --color-exploring-bg: rgba(251, 191, 36, 0.15);
+  --color-blocked: #f87171;
+  --color-blocked-bg: rgba(248, 113, 113, 0.15);
+  --color-parking: #94a3b8;
+  --color-parking-bg: rgba(148, 163, 184, 0.15);
+
+  /* Insights & Questions */
+  --color-thought: #c084fc;
+  --color-question: #fb923c;
+  --color-completed: #34d399;
+  --color-alternative: #94a3b8;
+
+  /* Commands */
+  --color-action: #38bdf8;
+
+  /* Modifiers */
+  --color-urgent: #f87171;
+  --color-positive: #4ade80;
+  --color-confident: #a78bfa;
+  --color-uncertain: #94a3b8;
+
+  /* Structure */
+  --color-brace: #94a3b8;
+  --color-bracket: #94a3b8;
+  --color-scope: #22d3ee;
+  --color-scope-bg: rgba(34, 211, 238, 0.15);
+
+  /* Comments */
+  --color-comment: #64748b;
+
+  /* UI Elements */
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-border: #334155;
+  --color-text: #f1f5f9;
+  --text-muted: #94a3b8;
+
+  /* Editor Specific */
+  --editor-bg: #1e293b;
+  --editor-gutter-bg: #0f172a;
+  --editor-gutter-border: #334155;
+  --editor-active-line: #334155;
+  --editor-active-line-gutter: #1e293b;
+  --editor-selection: #1e40af;
+  --editor-selection-focused: #1e3a8a;
+  --editor-cursor: #60a5fa;
+
+  /* Brand */
+  --color-primary: #60a5fa;
+  --color-primary-dark: #3b82f6;
+
+  /* Shadows (darker for dark mode) */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+}
+
+/* Smooth theme transitions */
+* {
+  transition: background-color var(--transition-base),
+              color var(--transition-base),
+              border-color var(--transition-base);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 body {
@@ -94,7 +244,7 @@ body {
 
 .tagline {
   font-size: 14px;
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -108,11 +258,48 @@ body {
 .cursor-position {
   font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--color-text-muted);
+  color: var(--text-muted);
   background-color: var(--color-surface);
   padding: var(--space-xs) var(--space-sm);
   border-radius: 4px;
   border: 1px solid var(--color-border);
+}
+
+/* Toggle Button Styles */
+.toggle-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  transition: all var(--transition-fast);
+  min-width: 36px;
+  height: 32px;
+}
+
+.toggle-button:hover {
+  background-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.toggle-button:active {
+  transform: scale(0.95);
+}
+
+.toggle-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.toggle-button-text {
+  margin-left: var(--space-xs);
+  font-size: 12px;
+  font-family: var(--font-sans);
 }
 
 /* Main Content */
@@ -156,7 +343,7 @@ body {
 
 .panel-subtitle {
   font-size: 12px;
-  color: var(--color-text-muted);
+  color: var(--text-muted);
 }
 
 .panel-content {
@@ -187,7 +374,7 @@ body {
   padding: var(--space-sm) var(--space-lg);
   text-align: center;
   font-size: 12px;
-  color: var(--color-text-muted);
+  color: var(--text-muted);
 }
 
 .app-footer p {
@@ -242,15 +429,6 @@ body {
 
   .app-main {
     grid-template-rows: 60vh 40vh;
-  }
-}
-
-/* Accessibility */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
   }
 }
 

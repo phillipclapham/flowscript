@@ -2,12 +2,15 @@
  * FlowScript Web Application
  *
  * Session 7a: Editor Core + Syntax Highlighting
+ * Session 7a.5: Theme System + UX Polish
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Editor } from "./components/Editor";
 import { GraphPreview } from "./components/GraphPreview";
 import { QueryPanel } from "./components/QueryPanel";
+import { ThemeToggle } from "./components/ThemeToggle";
+import { LineWrapToggle } from "./components/LineWrapToggle";
 import "./App.css";
 
 // Example FlowScript content
@@ -60,9 +63,23 @@ action: Build production-ready web app with perfect syntax highlighting
 function App() {
   const [code, setCode] = useState(EXAMPLE_FLOWSCRIPT);
   const [cursorPos, setCursorPos] = useState({ line: 1, col: 0 });
+  const [lineWrapping, setLineWrapping] = useState(() => {
+    // Load from localStorage, default to true
+    const stored = localStorage.getItem("flowscript-line-wrap");
+    return stored !== "false"; // Default true
+  });
+
+  // Persist line wrapping preference
+  useEffect(() => {
+    localStorage.setItem("flowscript-line-wrap", String(lineWrapping));
+  }, [lineWrapping]);
 
   const handleCursorChange = (line: number, col: number) => {
     setCursorPos({ line, col });
+  };
+
+  const toggleLineWrapping = () => {
+    setLineWrapping((prev) => !prev);
   };
 
   return (
@@ -76,6 +93,8 @@ function App() {
           </h1>
           <p className="tagline">AI Memory Infrastructure</p>
           <div className="header-actions">
+            <LineWrapToggle enabled={lineWrapping} onToggle={toggleLineWrapping} />
+            <ThemeToggle />
             <span className="cursor-position">
               Ln {cursorPos.line}, Col {cursorPos.col}
             </span>
@@ -96,6 +115,7 @@ function App() {
               initialValue={code}
               onChange={setCode}
               onCursorChange={handleCursorChange}
+              lineWrapping={lineWrapping}
             />
           </div>
         </div>
@@ -118,7 +138,7 @@ function App() {
       {/* Footer */}
       <footer className="app-footer">
         <p>
-          Session 7a: Editor Core + Syntax Highlighting ✓
+          Session 7a: Editor Core ✓ · Session 7a.5: Theme System + UX Polish ✓
         </p>
         <p className="footer-links">
           <a href="https://github.com/anthropics/flowscript" target="_blank" rel="noopener noreferrer">

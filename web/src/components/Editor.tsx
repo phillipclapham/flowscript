@@ -37,6 +37,11 @@ export interface EditorProps {
   readOnly?: boolean;
 
   /**
+   * Enable line wrapping (default: true)
+   */
+  lineWrapping?: boolean;
+
+  /**
    * Additional CSS class names
    */
   className?: string;
@@ -50,6 +55,7 @@ export function Editor({
   onChange,
   onCursorChange,
   readOnly = false,
+  lineWrapping = true,
   className = "",
 }: EditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
@@ -92,6 +98,9 @@ export function Editor({
 
       // FlowScript theme
       flowScriptTheme(),
+
+      // Line wrapping (if enabled)
+      ...(lineWrapping ? [EditorView.lineWrapping] : []),
 
       // Keymaps
       keymap.of([
@@ -141,7 +150,7 @@ export function Editor({
       viewRef.current = null;
       setIsReady(false);
     };
-  }, []); // Only run once on mount
+  }, [lineWrapping]); // Recreate editor when line wrapping changes
 
   // Update content if initialValue changes after mount
   useEffect(() => {
