@@ -5,8 +5,6 @@
  * Colors follow cognitive semantics and WCAG AA contrast guidelines.
  */
 
-import { HighlightStyle, syntaxHighlighting } from "@codemirror/language";
-import { tags } from "@lezer/highlight";
 import type { Extension } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 
@@ -63,20 +61,11 @@ const colors = {
 } as const;
 
 /**
- * FlowScript highlighting styles
- */
-const flowScriptHighlighting = HighlightStyle.define([
-  // Core Relations
-  { tag: tags.atom, color: colors.causal },
-  { tag: tags.propertyName, color: colors.temporal },
-
-  // We'll use custom classes for FlowScript-specific tokens
-  // These are applied via the tokenizer
-]);
-
-/**
  * Custom styles for FlowScript tokens
  * Applied via CSS classes that match our token types
+ *
+ * Note: We use CSS classes only (not tag-based highlighting)
+ * because our tokenizer returns custom class names directly
  */
 const flowScriptStyles = EditorView.theme({
   // Core Relations
@@ -165,13 +154,10 @@ const flowScriptStyles = EditorView.theme({
 
 /**
  * Complete FlowScript theme extension
- * Includes both highlighting and visual styles
+ * Returns CSS-based styling for FlowScript tokens
  */
 export function flowScriptTheme(): Extension {
-  return [
-    syntaxHighlighting(flowScriptHighlighting),
-    flowScriptStyles,
-  ];
+  return flowScriptStyles;
 }
 
 /**

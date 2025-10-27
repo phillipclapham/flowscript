@@ -278,7 +278,10 @@ export const flowScriptTokenizer: StreamParser<TokenizerState> = {
       return TokenTypes.EQUIVALENT;
     }
 
-    // Regular text - consume until next marker
+    // Regular text - MUST consume at least one character to avoid infinite loop
+    // Save starting position to ensure we advance
+    const startPos = stream.pos;
+
     while (stream.peek()) {
       const next = stream.peek();
 
@@ -289,6 +292,10 @@ export const flowScriptTokenizer: StreamParser<TokenizerState> = {
         next === "✓" || next === "!" || next === "*" || next === "~" ||
         next === "=" || next === "|" || next === "+"
       ) {
+        // If we haven't consumed anything yet, consume this character
+        if (stream.pos === startPos) {
+          stream.next();
+        }
         break;
       }
 
@@ -296,14 +303,27 @@ export const flowScriptTokenizer: StreamParser<TokenizerState> = {
       if (stream.match("<->", false) || stream.match("<-", false) || stream.match("->", false) ||
           stream.match("=>", false) || stream.match("><", false) || stream.match("!=", false) ||
           stream.match("++", false) || stream.match("||", false)) {
+        // If we haven't consumed anything yet, consume this character
+        if (stream.pos === startPos) {
+          stream.next();
+        }
         break;
       }
 
       // Check for keywords
       if (stream.match(/^(thought:|action:)/, false)) {
+        // If we haven't consumed anything yet, consume this character
+        if (stream.pos === startPos) {
+          stream.next();
+        }
         break;
       }
 
+      stream.next();
+    }
+
+    // Safety check: ensure we ALWAYS advance at least one character
+    if (stream.pos === startPos && stream.peek()) {
       stream.next();
     }
 
