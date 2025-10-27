@@ -135,6 +135,26 @@ interface TokenizerState {
 }
 
 /**
+ * Helper: Check if character is whitespace or boundary
+ */
+function isWhitespaceOrBoundary(char: string | undefined): boolean {
+  return !char || /\s/.test(char);
+}
+
+/**
+ * Helper: Check if stream is at line start (only whitespace before current position)
+ */
+function isLineStart(stream: any): boolean {
+  // Check if we're at position 0, or if all characters before us are whitespace
+  for (let i = 0; i < stream.pos; i++) {
+    if (!/\s/.test(stream.string[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
  * FlowScript StreamParser for CodeMirror 6
  */
 export const flowScriptTokenizer: StreamParser<TokenizerState> = {
@@ -237,93 +257,196 @@ export const flowScriptTokenizer: StreamParser<TokenizerState> = {
       return TokenTypes.SCOPE;
     }
 
-    // Multi-character operators (must check before single-character)
+    // Multi-character operators (Tier 2: must have whitespace before AND after)
 
     // Bidirectional: <->
-    if (stream.match("<->", true)) {
-      return TokenTypes.BIDIRECTIONAL;
+    if (stream.match("<->", false)) {
+      const prevChar = stream.string[stream.pos - 1];
+      if (isWhitespaceOrBoundary(prevChar)) {
+        stream.match("<->", true);
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.BIDIRECTIONAL;
+        }
+      }
     }
 
     // Reverse causal: <-
-    if (stream.match("<-", true)) {
-      return TokenTypes.REVERSE_CAUSAL;
+    if (stream.match("<-", false) && !stream.match("<->", false)) {
+      const prevChar = stream.string[stream.pos - 1];
+      if (isWhitespaceOrBoundary(prevChar)) {
+        stream.match("<-", true);
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.REVERSE_CAUSAL;
+        }
+      }
     }
 
     // Temporal: =>
-    if (stream.match("=>", true)) {
-      return TokenTypes.TEMPORAL;
+    if (stream.match("=>", false)) {
+      const prevChar = stream.string[stream.pos - 1];
+      if (isWhitespaceOrBoundary(prevChar)) {
+        stream.match("=>", true);
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.TEMPORAL;
+        }
+      }
     }
 
     // Causal: ->
-    if (stream.match("->", true)) {
-      return TokenTypes.CAUSAL;
+    if (stream.match("->", false)) {
+      const prevChar = stream.string[stream.pos - 1];
+      if (isWhitespaceOrBoundary(prevChar)) {
+        stream.match("->", true);
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.CAUSAL;
+        }
+      }
     }
 
     // Not equivalent: !=
-    if (stream.match("!=", true)) {
-      return TokenTypes.NOT_EQUIVALENT;
+    if (stream.match("!=", false)) {
+      const prevChar = stream.string[stream.pos - 1];
+      if (isWhitespaceOrBoundary(prevChar)) {
+        stream.match("!=", true);
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.NOT_EQUIVALENT;
+        }
+      }
     }
 
     // Tension: ><[axis]
-    if (stream.match("><", true)) {
-      state.inTensionAxis = true;
-      return TokenTypes.TENSION;
+    if (stream.match("><", false)) {
+      const prevChar = stream.string[stream.pos - 1];
+      if (isWhitespaceOrBoundary(prevChar)) {
+        stream.match("><", true);
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          state.inTensionAxis = true;
+          return TokenTypes.TENSION;
+        }
+      }
     }
 
-    // Positive modifier: ++
-    if (stream.match("++", true)) {
-      return TokenTypes.POSITIVE;
+    // Positive modifier: ++ (Tier 1: line-start only)
+    if (stream.match("++", false)) {
+      if (isLineStart(stream)) {
+        stream.match("++", true);
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.POSITIVE;
+        }
+      }
     }
 
-    // Alternative: ||
-    if (stream.match("||", true)) {
-      return TokenTypes.ALTERNATIVE;
+    // Alternative: || (Tier 1: line-start only)
+    if (stream.match("||", false)) {
+      if (isLineStart(stream)) {
+        stream.match("||", true);
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.ALTERNATIVE;
+        }
+      }
     }
 
-    // Keywords with colons
-    if (stream.match("thought:", true)) {
-      return TokenTypes.THOUGHT;
+    // Keywords with colons (Tier 3: must have whitespace before OR be at line start)
+    if (stream.match("thought:", false)) {
+      const prevChar = stream.string[stream.pos - 1];
+      if (isWhitespaceOrBoundary(prevChar) || isLineStart(stream)) {
+        stream.match("thought:", true);
+        return TokenTypes.THOUGHT;
+      }
     }
-    if (stream.match("action:", true)) {
-      return TokenTypes.ACTION;
+    if (stream.match("action:", false)) {
+      const prevChar = stream.string[stream.pos - 1];
+      if (isWhitespaceOrBoundary(prevChar) || isLineStart(stream)) {
+        stream.match("action:", true);
+        return TokenTypes.ACTION;
+      }
     }
 
     // Single-character markers
 
-    // Question: ?
+    // Question: ? (Tier 1: line-start only)
     if (ch === "?") {
+      if (isLineStart(stream)) {
+        stream.next();
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.QUESTION;
+        }
+      }
+      // Not at line start or no whitespace after - treat as regular text
       stream.next();
-      return TokenTypes.QUESTION;
+      return null;
     }
 
-    // Completed: ✓
+    // Completed: ✓ (Tier 4: flexible, can appear anywhere)
     if (ch === "✓") {
       stream.next();
       return TokenTypes.COMPLETED;
     }
 
-    // Urgent: !
+    // Urgent: ! (Tier 1: line-start only)
     if (ch === "!") {
+      if (isLineStart(stream)) {
+        stream.next();
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.URGENT;
+        }
+      }
+      // Not at line start or no whitespace after - treat as regular text
       stream.next();
-      return TokenTypes.URGENT;
+      return null;
     }
 
-    // Confident: *
+    // Confident: * (Tier 1: line-start only)
     if (ch === "*") {
+      if (isLineStart(stream)) {
+        stream.next();
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.CONFIDENT;
+        }
+      }
+      // Not at line start or no whitespace after - treat as regular text
       stream.next();
-      return TokenTypes.CONFIDENT;
+      return null;
     }
 
-    // Uncertain: ~
+    // Uncertain: ~ (Tier 1: line-start only)
     if (ch === "~") {
+      if (isLineStart(stream)) {
+        stream.next();
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.UNCERTAIN;
+        }
+      }
+      // Not at line start or no whitespace after - treat as regular text
       stream.next();
-      return TokenTypes.UNCERTAIN;
+      return null;
     }
 
-    // Equivalent: =
+    // Equivalent: = (Tier 2: whitespace-bounded)
     if (ch === "=") {
+      const prevChar = stream.string[stream.pos - 1];
+      if (isWhitespaceOrBoundary(prevChar)) {
+        stream.next();
+        const nextChar = stream.peek();
+        if (isWhitespaceOrBoundary(nextChar)) {
+          return TokenTypes.EQUIVALENT;
+        }
+      }
+      // No whitespace boundary - treat as regular text
       stream.next();
-      return TokenTypes.EQUIVALENT;
+      return null;
     }
 
     // Regular text - MUST consume at least one character to avoid infinite loop
