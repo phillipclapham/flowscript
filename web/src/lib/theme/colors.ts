@@ -138,7 +138,7 @@ export const darkColors = {
   activeLineGutter: "#1e293b", // Slate-800
   selection: "#1e40af",        // Blue-800 (dark blue for selection)
   selectionFocused: "#1e3a8a", // Blue-900 (darker when focused)
-  cursor: "#60a5fa",           // Blue-400
+  cursor: "#ffffff",           // White (maximum visibility in dark mode)
 } as const;
 
 export type ThemeName = "light" | "dark";

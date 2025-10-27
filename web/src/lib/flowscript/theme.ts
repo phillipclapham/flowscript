@@ -180,7 +180,7 @@ export function createLightTheme(): Extension {
 
     ".cm-activeLine": {
       backgroundColor: lightColors.activeLine,
-      marginRight: "-1px", // Fix: prevent overflow past editor border
+      marginRight: "-13px", // Fix: compensate for 12px padding + 1px flush alignment
     },
 
     ".cm-selectionBackground, ::selection": {
@@ -367,7 +367,7 @@ export function createDarkTheme(): Extension {
 
     ".cm-activeLine": {
       backgroundColor: darkColors.activeLine,
-      marginRight: "-1px", // Fix: prevent overflow past editor border
+      marginRight: "-13px", // Fix: compensate for 12px padding + 1px flush alignment
     },
 
     ".cm-selectionBackground, ::selection": {
