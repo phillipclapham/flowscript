@@ -162,6 +162,7 @@ export function createLightTheme(): Extension {
     ".cm-content": {
       lineHeight: "1.7",
       padding: "8px 0",
+      caretColor: lightColors.cursor,
     },
 
     ".cm-line": {
@@ -349,6 +350,7 @@ export function createDarkTheme(): Extension {
     ".cm-content": {
       lineHeight: "1.7",
       padding: "8px 0",
+      caretColor: darkColors.cursor,
     },
 
     ".cm-line": {
