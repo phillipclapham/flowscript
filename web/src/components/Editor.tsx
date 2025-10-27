@@ -12,7 +12,7 @@ import { searchKeymap, highlightSelectionMatches } from "@codemirror/search";
 import { autocompletion, completionKeymap, closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { bracketMatching, foldGutter, indentOnInput } from "@codemirror/language";
 import { flowScriptLanguage } from "../lib/flowscript/language";
-import { flowScriptTheme } from "../lib/flowscript/theme";
+import { createLightTheme, createDarkTheme } from "../lib/flowscript/theme";
 import "../styles/Editor.css";
 
 export interface EditorProps {
@@ -42,6 +42,11 @@ export interface EditorProps {
   lineWrapping?: boolean;
 
   /**
+   * Theme (light or dark)
+   */
+  theme?: "light" | "dark";
+
+  /**
    * Additional CSS class names
    */
   className?: string;
@@ -56,6 +61,7 @@ export function Editor({
   onCursorChange,
   readOnly = false,
   lineWrapping = true,
+  theme = "light",
   className = "",
 }: EditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
@@ -96,8 +102,8 @@ export function Editor({
       // FlowScript language support
       flowScriptLanguage(),
 
-      // FlowScript theme
-      flowScriptTheme(),
+      // FlowScript theme (light or dark)
+      theme === "dark" ? createDarkTheme() : createLightTheme(),
 
       // Line wrapping (if enabled)
       ...(lineWrapping ? [EditorView.lineWrapping] : []),
@@ -150,7 +156,7 @@ export function Editor({
       viewRef.current = null;
       setIsReady(false);
     };
-  }, [lineWrapping]); // Recreate editor when line wrapping changes
+  }, [lineWrapping, theme]); // Recreate editor when line wrapping or theme changes
 
   // Update content if initialValue changes after mount
   useEffect(() => {

@@ -11,6 +11,7 @@ import { GraphPreview } from "./components/GraphPreview";
 import { QueryPanel } from "./components/QueryPanel";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { LineWrapToggle } from "./components/LineWrapToggle";
+import { useTheme } from "./lib/theme/useTheme";
 import "./App.css";
 
 // Example FlowScript content
@@ -63,6 +64,7 @@ action: Build production-ready web app with perfect syntax highlighting
 function App() {
   const [code, setCode] = useState(EXAMPLE_FLOWSCRIPT);
   const [cursorPos, setCursorPos] = useState({ line: 1, col: 0 });
+  const { theme } = useTheme();
   const [lineWrapping, setLineWrapping] = useState(() => {
     // Load from localStorage, default to true
     const stored = localStorage.getItem("flowscript-line-wrap");
@@ -116,6 +118,7 @@ function App() {
               onChange={setCode}
               onCursorChange={handleCursorChange}
               lineWrapping={lineWrapping}
+              theme={theme}
             />
           </div>
         </div>
