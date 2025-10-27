@@ -1,0 +1,97 @@
+/**
+ * Graph Preview Styles
+ * Session 7b: Graph visualization
+ */
+
+.graph-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background-color: var(--bg-primary);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.graph-svg {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-primary);
+}
+
+.graph-node {
+  transition: opacity 0.2s ease, stroke-width 0.2s ease;
+}
+
+.graph-node:hover {
+  opacity: 0.8;
+  stroke-width: 3 !important;
+}
+
+.graph-edge {
+  transition: stroke-width 0.2s ease, opacity 0.2s ease;
+}
+
+.graph-edge:hover {
+  stroke-width: 3 !important;
+  opacity: 0.8;
+}
+
+.graph-label {
+  user-select: none;
+  font-family: var(--font-mono);
+}
+
+.graph-stats {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  pointer-events: none;
+}
+
+.graph-error,
+.graph-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+  padding: 24px;
+  text-align: center;
+  color: var(--text-secondary);
+  background-color: var(--bg-primary);
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+}
+
+.graph-error h3,
+.graph-empty h3 {
+  margin: 0 0 12px 0;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.graph-error p,
+.graph-empty p {
+  margin: 0;
+  font-size: 14px;
+  max-width: 400px;
+}
+
+.graph-error {
+  color: var(--color-error);
+}
+
+.graph-error h3 {
+  color: var(--color-error);
+}
