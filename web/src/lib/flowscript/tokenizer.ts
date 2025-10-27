@@ -26,6 +26,54 @@
  */
 
 import type { StreamParser } from "@codemirror/language";
+import { Tag } from "@lezer/highlight";
+
+/**
+ * Custom Lezer tags for FlowScript syntax highlighting
+ * Each of the 21 markers gets its own unique tag
+ */
+export const flowScriptTags = {
+  // Core Relations
+  causal: Tag.define(),
+  temporal: Tag.define(),
+  reverseCausal: Tag.define(),
+  bidirectional: Tag.define(),
+  tension: Tag.define(),
+  axisLabel: Tag.define(),
+
+  // Definition Operators
+  equivalent: Tag.define(),
+  notEquivalent: Tag.define(),
+
+  // State Markers
+  decided: Tag.define(),
+  exploring: Tag.define(),
+  blocked: Tag.define(),
+  parking: Tag.define(),
+
+  // Insights & Questions
+  thought: Tag.define(),
+  question: Tag.define(),
+  completed: Tag.define(),
+  alternative: Tag.define(),
+
+  // Commands
+  action: Tag.define(),
+
+  // Modifiers
+  urgent: Tag.define(),
+  positive: Tag.define(),
+  confident: Tag.define(),
+  uncertain: Tag.define(),
+
+  // Structure
+  brace: Tag.define(),
+  bracket: Tag.define(),
+  scope: Tag.define(),
+
+  // Comments
+  comment: Tag.define(),
+};
 
 export interface FlowScriptToken {
   type: string;

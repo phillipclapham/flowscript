@@ -99,10 +99,10 @@ export function Editor({
       // Autocompletion
       autocompletion(),
 
-      // FlowScript language support
-      flowScriptLanguage(),
+      // FlowScript language support with syntax highlighting
+      ...flowScriptLanguage(theme === "dark"),
 
-      // FlowScript theme (light or dark)
+      // FlowScript theme (editor chrome only - gutters, active line, etc.)
       theme === "dark" ? createDarkTheme() : createLightTheme(),
 
       // Line wrapping (if enabled)

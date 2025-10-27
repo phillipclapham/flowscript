@@ -3,6 +3,8 @@
  *
  * Creates light and dark themes with actual color values
  * (CodeMirror's EditorView.theme() doesn't work with CSS variables)
+ *
+ * Uses .flowscript-* CSS classes applied by our custom ViewPlugin
  */
 
 import type { Extension } from "@codemirror/state";
@@ -16,64 +18,64 @@ import { lightColors, darkColors } from "../theme/colors";
 export function createLightTheme(): Extension {
   return EditorView.theme({
     // Core Relations
-    ".cm-flowscript-causal": {
+    ".flowscript-causal": {
       color: lightColors.causal,
       fontWeight: "600"
     },
-    ".cm-flowscript-temporal": {
+    ".flowscript-temporal": {
       color: lightColors.temporal,
       fontWeight: "600"
     },
-    ".cm-flowscript-reverse-causal": {
+    ".flowscript-reverse-causal": {
       color: lightColors.reverseCausal,
       fontWeight: "600"
     },
-    ".cm-flowscript-bidirectional": {
+    ".flowscript-bidirectional": {
       color: lightColors.bidirectional,
       fontWeight: "600"
     },
-    ".cm-flowscript-tension": {
+    ".flowscript-tension": {
       color: lightColors.tension,
       fontWeight: "700"
     },
-    ".cm-flowscript-axis-label": {
+    ".flowscript-axis-label": {
       color: lightColors.axisLabel,
       fontStyle: "italic"
     },
 
     // Definition Operators
-    ".cm-flowscript-equivalent": {
+    ".flowscript-equivalent": {
       color: lightColors.equivalent,
       fontWeight: "600"
     },
-    ".cm-flowscript-not-equivalent": {
+    ".flowscript-not-equivalent": {
       color: lightColors.notEquivalent,
       fontWeight: "600"
     },
 
     // State Markers
-    ".cm-flowscript-decided": {
+    ".flowscript-decided": {
       color: lightColors.decided,
       fontWeight: "700",
       backgroundColor: lightColors.decidedBg,
       padding: "0 4px",
       borderRadius: "3px"
     },
-    ".cm-flowscript-exploring": {
+    ".flowscript-exploring": {
       color: lightColors.exploring,
       fontWeight: "700",
       backgroundColor: lightColors.exploringBg,
       padding: "0 4px",
       borderRadius: "3px"
     },
-    ".cm-flowscript-blocked": {
+    ".flowscript-blocked": {
       color: lightColors.blocked,
       fontWeight: "700",
       backgroundColor: lightColors.blockedBg,
       padding: "0 4px",
       borderRadius: "3px"
     },
-    ".cm-flowscript-parking": {
+    ".flowscript-parking": {
       color: lightColors.parking,
       fontWeight: "700",
       backgroundColor: lightColors.parkingBg,
@@ -82,61 +84,61 @@ export function createLightTheme(): Extension {
     },
 
     // Insights & Questions
-    ".cm-flowscript-thought": {
+    ".flowscript-thought": {
       color: lightColors.thought,
       fontWeight: "600"
     },
-    ".cm-flowscript-question": {
+    ".flowscript-question": {
       color: lightColors.question,
       fontWeight: "700",
       fontSize: "1.1em"
     },
-    ".cm-flowscript-completed": {
+    ".flowscript-completed": {
       color: lightColors.completed,
       fontWeight: "700",
       fontSize: "1.1em"
     },
-    ".cm-flowscript-alternative": {
+    ".flowscript-alternative": {
       color: lightColors.alternative,
       fontWeight: "600"
     },
 
     // Commands
-    ".cm-flowscript-action": {
+    ".flowscript-action": {
       color: lightColors.action,
       fontWeight: "600"
     },
 
     // Modifiers
-    ".cm-flowscript-urgent": {
+    ".flowscript-urgent": {
       color: lightColors.urgent,
       fontWeight: "700",
       fontSize: "1.05em"
     },
-    ".cm-flowscript-positive": {
+    ".flowscript-positive": {
       color: lightColors.positive,
       fontWeight: "700"
     },
-    ".cm-flowscript-confident": {
+    ".flowscript-confident": {
       color: lightColors.confident,
       fontWeight: "600"
     },
-    ".cm-flowscript-uncertain": {
+    ".flowscript-uncertain": {
       color: lightColors.uncertain,
       fontWeight: "500",
       fontStyle: "italic"
     },
 
     // Structure
-    ".cm-flowscript-brace": {
+    ".flowscript-brace": {
       color: lightColors.brace,
       fontWeight: "600"
     },
-    ".cm-flowscript-bracket": {
+    ".flowscript-bracket": {
       color: lightColors.bracket,
       fontWeight: "600"
     },
-    ".cm-flowscript-scope": {
+    ".flowscript-scope": {
       color: lightColors.scope,
       fontWeight: "600",
       backgroundColor: lightColors.scopeBg,
@@ -145,7 +147,7 @@ export function createLightTheme(): Extension {
     },
 
     // Comments
-    ".cm-flowscript-comment": {
+    ".flowscript-comment": {
       color: lightColors.comment,
       fontStyle: "italic",
       opacity: "0.7"
@@ -203,64 +205,64 @@ export function createLightTheme(): Extension {
 export function createDarkTheme(): Extension {
   return EditorView.theme({
     // Core Relations
-    ".cm-flowscript-causal": {
+    ".flowscript-causal": {
       color: darkColors.causal,
       fontWeight: "600"
     },
-    ".cm-flowscript-temporal": {
+    ".flowscript-temporal": {
       color: darkColors.temporal,
       fontWeight: "600"
     },
-    ".cm-flowscript-reverse-causal": {
+    ".flowscript-reverse-causal": {
       color: darkColors.reverseCausal,
       fontWeight: "600"
     },
-    ".cm-flowscript-bidirectional": {
+    ".flowscript-bidirectional": {
       color: darkColors.bidirectional,
       fontWeight: "600"
     },
-    ".cm-flowscript-tension": {
+    ".flowscript-tension": {
       color: darkColors.tension,
       fontWeight: "700"
     },
-    ".cm-flowscript-axis-label": {
+    ".flowscript-axis-label": {
       color: darkColors.axisLabel,
       fontStyle: "italic"
     },
 
     // Definition Operators
-    ".cm-flowscript-equivalent": {
+    ".flowscript-equivalent": {
       color: darkColors.equivalent,
       fontWeight: "600"
     },
-    ".cm-flowscript-not-equivalent": {
+    ".flowscript-not-equivalent": {
       color: darkColors.notEquivalent,
       fontWeight: "600"
     },
 
     // State Markers
-    ".cm-flowscript-decided": {
+    ".flowscript-decided": {
       color: darkColors.decided,
       fontWeight: "700",
       backgroundColor: darkColors.decidedBg,
       padding: "0 4px",
       borderRadius: "3px"
     },
-    ".cm-flowscript-exploring": {
+    ".flowscript-exploring": {
       color: darkColors.exploring,
       fontWeight: "700",
       backgroundColor: darkColors.exploringBg,
       padding: "0 4px",
       borderRadius: "3px"
     },
-    ".cm-flowscript-blocked": {
+    ".flowscript-blocked": {
       color: darkColors.blocked,
       fontWeight: "700",
       backgroundColor: darkColors.blockedBg,
       padding: "0 4px",
       borderRadius: "3px"
     },
-    ".cm-flowscript-parking": {
+    ".flowscript-parking": {
       color: darkColors.parking,
       fontWeight: "700",
       backgroundColor: darkColors.parkingBg,
@@ -269,61 +271,61 @@ export function createDarkTheme(): Extension {
     },
 
     // Insights & Questions
-    ".cm-flowscript-thought": {
+    ".flowscript-thought": {
       color: darkColors.thought,
       fontWeight: "600"
     },
-    ".cm-flowscript-question": {
+    ".flowscript-question": {
       color: darkColors.question,
       fontWeight: "700",
       fontSize: "1.1em"
     },
-    ".cm-flowscript-completed": {
+    ".flowscript-completed": {
       color: darkColors.completed,
       fontWeight: "700",
       fontSize: "1.1em"
     },
-    ".cm-flowscript-alternative": {
+    ".flowscript-alternative": {
       color: darkColors.alternative,
       fontWeight: "600"
     },
 
     // Commands
-    ".cm-flowscript-action": {
+    ".flowscript-action": {
       color: darkColors.action,
       fontWeight: "600"
     },
 
     // Modifiers
-    ".cm-flowscript-urgent": {
+    ".flowscript-urgent": {
       color: darkColors.urgent,
       fontWeight: "700",
       fontSize: "1.05em"
     },
-    ".cm-flowscript-positive": {
+    ".flowscript-positive": {
       color: darkColors.positive,
       fontWeight: "700"
     },
-    ".cm-flowscript-confident": {
+    ".flowscript-confident": {
       color: darkColors.confident,
       fontWeight: "600"
     },
-    ".cm-flowscript-uncertain": {
+    ".flowscript-uncertain": {
       color: darkColors.uncertain,
       fontWeight: "500",
       fontStyle: "italic"
     },
 
     // Structure
-    ".cm-flowscript-brace": {
+    ".flowscript-brace": {
       color: darkColors.brace,
       fontWeight: "600"
     },
-    ".cm-flowscript-bracket": {
+    ".flowscript-bracket": {
       color: darkColors.bracket,
       fontWeight: "600"
     },
-    ".cm-flowscript-scope": {
+    ".flowscript-scope": {
       color: darkColors.scope,
       fontWeight: "600",
       backgroundColor: darkColors.scopeBg,
@@ -332,7 +334,7 @@ export function createDarkTheme(): Extension {
     },
 
     // Comments
-    ".cm-flowscript-comment": {
+    ".flowscript-comment": {
       color: darkColors.comment,
       fontStyle: "italic",
       opacity: "0.7"
