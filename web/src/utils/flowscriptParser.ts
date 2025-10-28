@@ -95,6 +95,17 @@ export function parseFlowScript(input: string): { data?: GraphData; error?: Pars
           nodes.push(node);
           nodeIdMap.set(lineNumber, node.id);
         }
+        return;
+      }
+
+      // Fallback: treat any remaining non-empty line as implicit thought node
+      // This catches root nodes and unmarked lines (e.g., "quantum computing viability for cryptography")
+      if (!nodeIdMap.has(lineNumber) && trimmed && !trimmed.startsWith('#')) {
+        const node = extractNode(trimmed, lineNumber, 'thought');
+        if (node) {
+          nodes.push(node);
+          nodeIdMap.set(lineNumber, node.id);
+        }
       }
     });
 

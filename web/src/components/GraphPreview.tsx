@@ -77,10 +77,10 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
         d3
           .forceLink<GraphNode, GraphEdge>(graphData.edges)
           .id((d) => d.id)
-          .distance(100)
+          .distance(60) // Reduced from 100 for tighter clusters
       )
-      .force('charge', d3.forceManyBody().strength(-300))
-      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('charge', d3.forceManyBody().strength(-150)) // Reduced from -300 for less repulsion
+      .force('center', d3.forceCenter(width / 2, height / 2).strength(0.05)) // Stronger pull to center
       .force('collision', d3.forceCollide().radius(40));
 
     // Create edges
@@ -170,12 +170,50 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
     // Zoom behavior
     const zoom = d3
       .zoom<SVGSVGElement, unknown>()
-      .scaleExtent([0.5, 3])
+      .scaleExtent([0.1, 4])
       .on('zoom', (event) => {
         g.attr('transform', event.transform);
       });
 
     svg.call(zoom as any);
+
+    // Fit to view: wait for simulation to settle, then zoom to fit all nodes
+    simulation.on('end', () => {
+      // Calculate bounding box of all nodes
+      let minX = Infinity;
+      let maxX = -Infinity;
+      let minY = Infinity;
+      let maxY = -Infinity;
+
+      graphData.nodes.forEach((d) => {
+        if (d.x !== undefined && d.y !== undefined) {
+          minX = Math.min(minX, d.x);
+          maxX = Math.max(maxX, d.x);
+          minY = Math.min(minY, d.y);
+          maxY = Math.max(maxY, d.y);
+        }
+      });
+
+      // Add padding
+      const padding = 60;
+      minX -= padding;
+      maxX += padding;
+      minY -= padding;
+      maxY += padding;
+
+      // Calculate scale to fit
+      const graphWidth = maxX - minX;
+      const graphHeight = maxY - minY;
+      const scale = Math.min(width / graphWidth, height / graphHeight, 1.5);
+
+      // Calculate translation to center
+      const translateX = width / 2 - (minX + graphWidth / 2) * scale;
+      const translateY = height / 2 - (minY + graphHeight / 2) * scale;
+
+      // Apply transform
+      const transform = d3.zoomIdentity.translate(translateX, translateY).scale(scale);
+      svg.transition().duration(750).call(zoom.transform as any, transform);
+    });
 
     // Cleanup
     return () => {

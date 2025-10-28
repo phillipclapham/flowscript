@@ -182,6 +182,7 @@ export function createLightTheme(): Extension {
     ".cm-activeLine": {
       backgroundColor: lightColors.activeLine,
       marginRight: "-13px", // Fix: compensate for 12px padding + 1px flush alignment
+      overflow: "hidden", // Prevent overflow when no scrollbar present
     },
 
     ".cm-selectionBackground, ::selection": {
@@ -370,6 +371,7 @@ export function createDarkTheme(): Extension {
     ".cm-activeLine": {
       backgroundColor: darkColors.activeLine,
       marginRight: "-13px", // Fix: compensate for 12px padding + 1px flush alignment
+      overflow: "hidden", // Prevent overflow when no scrollbar present
     },
 
     ".cm-selectionBackground, ::selection": {
