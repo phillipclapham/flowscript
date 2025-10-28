@@ -163,6 +163,7 @@ export function createLightTheme(): Extension {
       lineHeight: "1.7",
       padding: "8px 0",
       caretColor: lightColors.cursor,
+      overflowX: "clip", // Prevent horizontal overflow from active line negative margin
     },
 
     ".cm-line": {
@@ -352,6 +353,7 @@ export function createDarkTheme(): Extension {
       lineHeight: "1.7",
       padding: "8px 0",
       caretColor: darkColors.cursor,
+      overflowX: "clip", // Prevent horizontal overflow from active line negative margin
     },
 
     ".cm-line": {
