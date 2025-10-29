@@ -6,8 +6,9 @@
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { parseFlowScript } from '../utils/flowscriptParser';
-import type { GraphData, GraphNode, GraphEdge } from '../types/graph';
+import type { GraphData, GraphNode } from '../types/graph';
 import { useTheme } from '../lib/theme/useTheme';
+import { applyLayout, type LayoutType } from '../utils/graphLayouts';
 import './GraphPreview.css';
 
 export interface GraphPreviewProps {
@@ -20,6 +21,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
   const containerRef = useRef<HTMLDivElement>(null);
   const [graphData, setGraphData] = useState<GraphData | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
+  const [layoutType, setLayoutType] = useState<LayoutType>('force');
   const { theme } = useTheme();
 
   // Parse FlowScript code
@@ -54,13 +56,15 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
 
     const g = svg.append('g');
 
-    // Define arrow markers for edges
-    svg
-      .append('defs')
+    // Define arrow markers for different edge types
+    const defs = svg.append('defs');
+
+    // Solid arrow (causal, default)
+    defs
       .append('marker')
-      .attr('id', `arrowhead-${theme}`)
+      .attr('id', `arrow-solid-${theme}`)
       .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 20)
+      .attr('refX', 25)
       .attr('refY', 0)
       .attr('markerWidth', 6)
       .attr('markerHeight', 6)
@@ -69,42 +73,60 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
       .attr('d', 'M0,-5L10,0L0,5')
       .attr('fill', theme === 'dark' ? '#4b5563' : '#9ca3af');
 
-    // Create force simulation
-    const simulation = d3
-      .forceSimulation<GraphNode>(graphData.nodes)
-      .force(
-        'link',
-        d3
-          .forceLink<GraphNode, GraphEdge>(graphData.edges)
-          .id((d) => d.id)
-          .distance(60) // Reduced from 100 for tighter clusters
-      )
-      .force('charge', d3.forceManyBody().strength(-150)) // Reduced from -300 for less repulsion
-      .force('center', d3.forceCenter(width / 2, height / 2).strength(0.05)) // Stronger pull to center
-      .force('collision', d3.forceCollide().radius(40));
+    // Dashed arrow (temporal)
+    defs
+      .append('marker')
+      .attr('id', `arrow-dashed-${theme}`)
+      .attr('viewBox', '0 -5 10 10')
+      .attr('refX', 25)
+      .attr('refY', 0)
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('orient', 'auto')
+      .append('path')
+      .attr('d', 'M0,-5L10,0L0,5')
+      .attr('fill', theme === 'dark' ? '#6b7280' : '#9ca3af');
 
-    // Create edges
+    // Double arrow (bidirectional)
+    defs
+      .append('marker')
+      .attr('id', `arrow-double-${theme}`)
+      .attr('viewBox', '0 -5 10 10')
+      .attr('refX', 25)
+      .attr('refY', 0)
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('orient', 'auto')
+      .append('path')
+      .attr('d', 'M0,-5L10,0L0,5')
+      .attr('fill', theme === 'dark' ? '#60a5fa' : '#3b82f6');
+
+    // Apply layout algorithm
+    const simulation = applyLayout(layoutType, graphData.nodes, graphData.edges, {
+      width,
+      height,
+    });
+
+    // Create edges with enhanced styling
     const link = g
       .append('g')
       .selectAll('line')
       .data(graphData.edges)
       .join('line')
       .attr('class', 'graph-edge')
-      .attr('stroke', theme === 'dark' ? '#4b5563' : '#9ca3af')
-      .attr('stroke-width', 2)
-      .attr('marker-end', `url(#arrowhead-${theme})`);
+      .attr('stroke', (d) => getEdgeColor(d.type, theme))
+      .attr('stroke-width', (d) => (d.type === 'bidirectional' ? 2.5 : 2))
+      .attr('stroke-dasharray', (d) => getEdgeStrokeDash(d.type))
+      .attr('marker-end', (d) => `url(#${getEdgeMarker(d.type, theme)})`)
+      .attr('opacity', 0.7);
 
-    // Create nodes
-    const node = g
+    // Create node groups for complex shapes
+    const nodeGroup = g
       .append('g')
-      .selectAll('circle')
+      .selectAll('g')
       .data(graphData.nodes)
-      .join('circle')
-      .attr('class', 'graph-node')
-      .attr('r', 12)
-      .attr('fill', (d) => getNodeColor(d.type, theme))
-      .attr('stroke', theme === 'dark' ? '#1f2937' : '#ffffff')
-      .attr('stroke-width', 2)
+      .join('g')
+      .attr('class', 'graph-node-group')
       .style('cursor', 'pointer')
       .on('click', (_event, d) => {
         if (onNodeClick) {
@@ -118,6 +140,68 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
           .on('drag', dragged)
           .on('end', dragended) as any
       );
+
+    // Create nodes with different shapes based on type
+    nodeGroup.each(function (d) {
+      const group = d3.select(this);
+      const shape = getNodeShape(d.type);
+      const color = getNodeColor(d.type, theme);
+      const strokeColor = d.state?.blocked
+        ? '#ef4444' // red for blocked
+        : theme === 'dark'
+        ? '#1f2937'
+        : '#ffffff';
+      const strokeWidth = d.state?.blocked || d.state?.decided ? 3 : 2;
+
+      if (shape === 'circle') {
+        group
+          .append('circle')
+          .attr('r', 12)
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth);
+      } else if (shape === 'diamond') {
+        group
+          .append('path')
+          .attr('d', 'M 0,-15 L 15,0 L 0,15 L -15,0 Z')
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth);
+      } else if (shape === 'rect') {
+        group
+          .append('rect')
+          .attr('x', -12)
+          .attr('y', -12)
+          .attr('width', 24)
+          .attr('height', 24)
+          .attr('rx', 3)
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth);
+      } else if (shape === 'hexagon') {
+        group
+          .append('path')
+          .attr(
+            'd',
+            'M 0,-14 L 12,-7 L 12,7 L 0,14 L -12,7 L -12,-7 Z'
+          )
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth);
+      }
+
+      // Add state indicator for decided nodes
+      if (d.state?.decided) {
+        group
+          .append('circle')
+          .attr('cx', 8)
+          .attr('cy', -8)
+          .attr('r', 4)
+          .attr('fill', '#10b981')
+          .attr('stroke', theme === 'dark' ? '#1f2937' : '#ffffff')
+          .attr('stroke-width', 1);
+      }
+    });
 
     // Add node labels
     const labels = g
@@ -134,7 +218,16 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
       .text((d) => truncate(d.content, 20));
 
     // Add tooltips
-    node.append('title').text((d) => `${d.type}: ${d.content}\nLine ${d.lineNumber}`);
+    nodeGroup.append('title').text((d) => {
+      let tooltip = `${d.type}: ${d.content}\nLine ${d.lineNumber}`;
+      if (d.state?.blocked) {
+        tooltip += `\n🚫 Blocked: ${d.state.blocked.reason}`;
+      }
+      if (d.state?.decided) {
+        tooltip += `\n✓ Decided: ${d.state.decided.rationale}`;
+      }
+      return tooltip;
+    });
 
     // Update positions on simulation tick
     simulation.on('tick', () => {
@@ -144,7 +237,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
         .attr('x2', (d: any) => d.target.x)
         .attr('y2', (d: any) => d.target.y);
 
-      node.attr('cx', (d) => d.x!).attr('cy', (d) => d.y!);
+      nodeGroup.attr('transform', (d) => `translate(${d.x},${d.y})`);
 
       labels.attr('x', (d) => d.x!).attr('y', (d) => d.y!);
     });
@@ -219,7 +312,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
     return () => {
       simulation.stop();
     };
-  }, [graphData, theme, onNodeClick]);
+  }, [graphData, theme, layoutType, onNodeClick]);
 
   // Show error state
   if (parseError) {
@@ -243,6 +336,19 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
 
   return (
     <div ref={containerRef} className="graph-preview">
+      <div className="graph-controls">
+        <label htmlFor="layout-select">Layout:</label>
+        <select
+          id="layout-select"
+          value={layoutType}
+          onChange={(e) => setLayoutType(e.target.value as LayoutType)}
+          className="layout-select"
+        >
+          <option value="force">Force (Organic)</option>
+          <option value="hierarchical">Hierarchical (Tree)</option>
+          <option value="dag">DAG (Left-to-Right)</option>
+        </select>
+      </div>
       <svg ref={svgRef} className="graph-svg" />
       <div className="graph-stats">
         <span>{graphData.nodes.length} nodes</span>
@@ -288,6 +394,86 @@ function getNodeColor(type: string, theme: 'light' | 'dark'): string {
   };
 
   return colors[theme][type as keyof typeof colors.light] || colors[theme].thought;
+}
+
+/**
+ * Get node shape based on type
+ */
+function getNodeShape(type: string): 'circle' | 'diamond' | 'rect' | 'hexagon' {
+  const shapes: Record<string, 'circle' | 'diamond' | 'rect' | 'hexagon'> = {
+    question: 'circle',
+    decision: 'diamond',
+    thought: 'circle',
+    tension: 'hexagon',
+    action: 'rect',
+    milestone: 'diamond',
+    reference: 'rect',
+    important: 'circle',
+    note: 'circle',
+    check: 'circle',
+    wip: 'circle',
+    placeholder: 'circle',
+  };
+  return shapes[type] || 'circle';
+}
+
+/**
+ * Get edge color based on type and theme
+ */
+function getEdgeColor(type: string, theme: 'light' | 'dark'): string {
+  const colors = {
+    light: {
+      causal: '#9ca3af',
+      temporal: '#9ca3af',
+      bidirectional: '#3b82f6',
+      definition: '#6b7280',
+      feedback: '#f59e0b',
+      alternative: '#8b5cf6',
+      indirection: '#6b7280',
+    },
+    dark: {
+      causal: '#4b5563',
+      temporal: '#4b5563',
+      bidirectional: '#60a5fa',
+      definition: '#6b7280',
+      feedback: '#fbbf24',
+      alternative: '#a78bfa',
+      indirection: '#6b7280',
+    },
+  };
+  return colors[theme][type as keyof typeof colors.light] || colors[theme].causal;
+}
+
+/**
+ * Get edge stroke dash pattern based on type
+ */
+function getEdgeStrokeDash(type: string): string {
+  const patterns: Record<string, string> = {
+    causal: '0',
+    temporal: '5,5',
+    bidirectional: '0',
+    definition: '0',
+    feedback: '3,3',
+    alternative: '5,5',
+    indirection: '2,2',
+  };
+  return patterns[type] || '0';
+}
+
+/**
+ * Get edge marker based on type and theme
+ */
+function getEdgeMarker(type: string, theme: 'light' | 'dark'): string {
+  const markers: Record<string, string> = {
+    causal: `arrow-solid-${theme}`,
+    temporal: `arrow-dashed-${theme}`,
+    bidirectional: `arrow-double-${theme}`,
+    definition: `arrow-solid-${theme}`,
+    feedback: `arrow-solid-${theme}`,
+    alternative: `arrow-dashed-${theme}`,
+    indirection: `arrow-dashed-${theme}`,
+  };
+  return markers[type] || `arrow-solid-${theme}`;
 }
 
 /**

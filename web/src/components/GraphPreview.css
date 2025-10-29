@@ -95,3 +95,53 @@
 .graph-error h3 {
   color: var(--color-error);
 }
+
+.graph-controls {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-secondary);
+  padding: 8px 12px;
+  border-radius: 6px;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.graph-controls label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.layout-select {
+  font-size: 13px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  transition: border-color 0.2s ease;
+}
+
+.layout-select:hover {
+  border-color: var(--text-secondary);
+}
+
+.layout-select:focus {
+  outline: none;
+  border-color: var(--text-primary);
+}
+
+.graph-node-group {
+  transition: opacity 0.2s ease;
+}
+
+.graph-node-group:hover {
+  opacity: 0.9;
+}
