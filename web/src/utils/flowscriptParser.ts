@@ -11,6 +11,7 @@ import type { GraphData, GraphNode, GraphEdge, NodeType, EdgeType, ParseError } 
 // Marker patterns for node types
 const NODE_PATTERNS: Array<[RegExp, NodeType]> = [
   [/^\?/, 'question'],
+  [/^\|\|/, 'decision'], // Alternative syntax
   [/^action:/, 'action'],
   [/^thought:/, 'thought'],
   [/^\*/, 'milestone'],
@@ -80,22 +81,6 @@ export function parseFlowScript(input: string): { data?: GraphData; error?: Pars
           nodes.push(node);
           nodeIdMap.set(lineNumber, node.id);
         }
-      }
-
-      // Alternative syntax (||)
-      if (trimmed.startsWith('||')) {
-        const content = trimmed.slice(2).trim();
-        if (content) {
-          const node: GraphNode = {
-            id: `node-${lineNumber}`,
-            type: 'decision',
-            content,
-            lineNumber,
-          };
-          nodes.push(node);
-          nodeIdMap.set(lineNumber, node.id);
-        }
-        return;
       }
 
       // Fallback: treat any remaining non-empty line as implicit thought node
@@ -171,6 +156,7 @@ function extractNode(line: string, lineNumber: number, type: NodeType): GraphNod
 
   // Remove marker prefix
   content = content.replace(/^[?*!~✓…@]/, '').trim();
+  content = content.replace(/^\|\|/, '').trim(); // Alternative syntax
   content = content.replace(/^(action|thought):/, '').trim();
 
   // Extract state markers (simplified)
