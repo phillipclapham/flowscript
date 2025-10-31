@@ -7,19 +7,22 @@
  */
 
 import type { GraphData, GraphNode, GraphEdge, NodeType, EdgeType, ParseError } from '../types/graph';
+import { getNodeVisualization, getEdgeVisualization } from '../types/graph';
 
 // Marker patterns for node types
+// NOTE: This lightweight parser will be replaced in Phase 3 (Session 7b.2.5.2)
+// Mapping old invented types → IR-native types
 const NODE_PATTERNS: Array<[RegExp, NodeType]> = [
   [/^\?/, 'question'],
-  [/^\|\|/, 'decision'], // Alternative syntax
+  [/^\|\|/, 'alternative'], // Alternative syntax (was 'decision')
   [/^action:/, 'action'],
   [/^thought:/, 'thought'],
-  [/^\*/, 'milestone'],
-  [/^!/, 'important'],
-  [/^~/, 'note'],
-  [/^✓/, 'check'],
-  [/^…/, 'wip'],
-  [/^@/, 'reference'],
+  [/^\*/, 'insight'],      // Milestone → insight (emphasis)
+  [/^!/, 'action'],        // Important → action (urgent)
+  [/^~/, 'thought'],       // Note → thought
+  [/^✓/, 'completion'],    // Check → completion
+  [/^…/, 'exploring'],     // WIP → exploring
+  [/^@/, 'thought'],       // Reference → thought
 ];
 
 // Relationship patterns
@@ -27,10 +30,10 @@ const EDGE_PATTERNS: Array<[RegExp, EdgeType]> = [
   [/->/, 'causal'],
   [/=>/, 'temporal'],
   [/<->/, 'bidirectional'],
-  [/::/, 'definition'],
-  [/⟲/, 'feedback'],
-  [/></, 'alternative'],
-  [/\.\.\.>/, 'indirection'],
+  [/::/, 'equivalent'],    // Definition → equivalent (was 'definition')
+  [/⟲/, 'bidirectional'],  // Feedback → bidirectional (was 'feedback')
+  [/></, 'tension'],       // Tension (was 'alternative')
+  [/\.\.\.>/, 'causal'],   // Indirection → causal (was 'indirection')
 ];
 
 /**
@@ -125,6 +128,7 @@ export function parseFlowScript(input: string): { data?: GraphData; error?: Pars
                 source: parentId,
                 target: childId,
                 type: 'causal',
+                visualization: getEdgeVisualization('causal'),
               });
             }
             break;
@@ -202,6 +206,7 @@ function extractNode(line: string, lineNumber: number, type: NodeType): GraphNod
     content,
     lineNumber,
     state,
+    visualization: getNodeVisualization(type),
   };
 }
 
@@ -247,6 +252,7 @@ function extractEdge(
       type: 'thought',
       content,
       lineNumber,
+      visualization: getNodeVisualization('thought'),
     };
     nodes.push(targetNode);
     nodeIdMap.set(lineNumber, targetId);
@@ -256,6 +262,7 @@ function extractEdge(
     source: sourceId,
     target: existingNode ? existingNode.id : targetId,
     type,
+    visualization: getEdgeVisualization(type),
   };
 }
 
