@@ -5,7 +5,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { parseFlowScript } from '../utils/flowscriptParser';
+import { parseFlowScript } from '../utils/fullFlowScriptParser';
+import { irToGraphData } from '../utils/irToGraphData';
 import type { GraphData, GraphNode } from '../types/graph';
 import { useTheme } from '../lib/theme/useTheme';
 import { applyLayout, type LayoutType } from '../utils/graphLayouts';
@@ -29,11 +30,21 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
     const result = parseFlowScript(flowScriptCode);
 
     if (result.error) {
+      console.error('[GraphPreview] Parse error:', result.error);
       setParseError(result.error.message);
       setGraphData(null);
-    } else if (result.data) {
+    } else if (result.ir) {
       setParseError(null);
-      setGraphData(result.data);
+      // Transform IR to GraphData (zero semantic loss)
+      console.log('[GraphPreview] Parse successful! IR:', result.ir);
+      const graphData = irToGraphData(result.ir);
+      console.log('[GraphPreview] GraphData transformed:', {
+        nodes: graphData.nodes.length,
+        edges: graphData.edges.length,
+        nodeTypes: [...new Set(graphData.nodes.map(n => n.type))],
+        edgeTypes: [...new Set(graphData.edges.map(e => e.type))],
+      });
+      setGraphData(graphData);
     }
   }, [flowScriptCode]);
 
