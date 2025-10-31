@@ -560,15 +560,43 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
       return node;
     },
 
-    Question(_marker, content) {
-      const node = createNode(state, 'question', content.sourceString.trim(), state.currentModifiers, this);
-      state.nodes.push(node);
+    Question(_marker, _space, content) {
+      // Parse content (can be Block or text)
+      const contentResult = content.toIR();
+
+      // Create question node
+      let node;
+      if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
+        // Content is a block - use the block node directly as question content
+        node = contentResult.node;
+        node.type = 'question';  // Change type from 'block' to 'question'
+      } else {
+        // Content is text
+        const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
+        node = createNode(state, 'question', text, state.currentModifiers, this);
+        state.nodes.push(node);
+      }
+
       return node;
     },
 
-    Completion(_marker, content) {
-      const node = createNode(state, 'completion', content.sourceString.trim(), state.currentModifiers, this);
-      state.nodes.push(node);
+    Completion(_marker, _space, content) {
+      // Parse content (can be Block or text)
+      const contentResult = content.toIR();
+
+      // Create completion node
+      let node;
+      if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
+        // Content is a block - use the block node directly as completion content
+        node = contentResult.node;
+        node.type = 'completion';  // Change type from 'block' to 'completion'
+      } else {
+        // Content is text
+        const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
+        node = createNode(state, 'completion', text, state.currentModifiers, this);
+        state.nodes.push(node);
+      }
+
       return node;
     },
 
@@ -627,9 +655,23 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
     },
 
     // Alternative
-    Alternative(_marker, content) {
-      const node = createNode(state, 'alternative', content.sourceString.trim(), state.currentModifiers, this);
-      state.nodes.push(node);
+    Alternative(_marker, _space, content) {
+      // Parse content (can be Block or text)
+      const contentResult = content.toIR();
+
+      // Create alternative node
+      let node;
+      if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
+        // Content is a block - use the block node directly as alternative content
+        node = contentResult.node;
+        node.type = 'alternative';  // Change type from 'block' to 'alternative'
+      } else {
+        // Content is text
+        const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
+        node = createNode(state, 'alternative', text, state.currentModifiers, this);
+        state.nodes.push(node);
+      }
+
       return { type: 'alternative', node };
     },
 

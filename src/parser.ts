@@ -603,15 +603,43 @@ export class Parser {
         return node;
       },
 
-      Question(_marker, content) {
-        const node = self.createNode('question', content.sourceString.trim(), self.currentModifiers, this);
-        self.nodes.push(node);
+      Question(_marker, _space, content) {
+        // Parse content (can be Block or text)
+        const contentResult = content.toIR();
+
+        // Create question node
+        let node;
+        if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
+          // Content is a block - use the block node directly as question content
+          node = contentResult.node;
+          node.type = 'question';  // Change type from 'block' to 'question'
+        } else {
+          // Content is text
+          const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
+          node = self.createNode('question', text, self.currentModifiers, this);
+          self.nodes.push(node);
+        }
+
         return node;
       },
 
-      Completion(_marker, content) {
-        const node = self.createNode('completion', content.sourceString.trim(), self.currentModifiers, this);
-        self.nodes.push(node);
+      Completion(_marker, _space, content) {
+        // Parse content (can be Block or text)
+        const contentResult = content.toIR();
+
+        // Create completion node
+        let node;
+        if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
+          // Content is a block - use the block node directly as completion content
+          node = contentResult.node;
+          node.type = 'completion';  // Change type from 'block' to 'completion'
+        } else {
+          // Content is text
+          const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
+          node = self.createNode('completion', text, self.currentModifiers, this);
+          self.nodes.push(node);
+        }
+
         return node;
       },
 
@@ -690,9 +718,23 @@ export class Parser {
       },
 
       // Alternative
-      Alternative(_marker, content) {
-        const node = self.createNode('alternative', content.sourceString.trim(), self.currentModifiers, this);
-        self.nodes.push(node);
+      Alternative(_marker, _space, content) {
+        // Parse content (can be Block or text)
+        const contentResult = content.toIR();
+
+        // Create alternative node
+        let node;
+        if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
+          // Content is a block - use the block node directly as alternative content
+          node = contentResult.node;
+          node.type = 'alternative';  // Change type from 'block' to 'alternative'
+        } else {
+          // Content is text
+          const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
+          node = self.createNode('alternative', text, self.currentModifiers, this);
+          self.nodes.push(node);
+        }
+
         return { type: 'alternative', node };
       },
 

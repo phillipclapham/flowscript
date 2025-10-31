@@ -233,20 +233,37 @@ field          = identifier ":" string
 ### Insights and Questions
 
 ```ebnf
-insight        = "thought:" content
-question       = "?" content
-completion     = "✓" content
-command        = "action:" content
+insight        = "thought:" (block | content)
+question       = "?" (block | content)
+completion     = "✓" (block | content)
+command        = "action:" (block | content)
 
 content        = <text until newline or marker>
+block          = "{" block_content "}"
 ```
+
+**Topological Completeness:** All content markers support both flat text and hierarchical blocks, enabling consistent nesting and composability.
 
 **Examples:**
 ```
+# Flat text (simple)
 thought: FlowScript enables dimensional expansion
 ? Should we refactor now or ship first?
 ✓ Tests passing
 action: commit and push to git
+
+# Hierarchical blocks (with reasoning/evidence)
+? Should we prioritize speed or quality?
+  -> Speed enables iteration
+  -> Quality enables trust
+
+✓ Parser integration complete
+  -> Zero TypeScript errors
+  -> All tests passing
+
+thought: Infrastructure thinking
+  -> Fix root causes
+  -> Not symptoms
 ```
 
 ### Relationships
@@ -281,10 +298,10 @@ A ><[axis] B        # A and B in tension along axis
 ### Alternatives
 
 ```ebnf
-alternative    = "||" content
+alternative    = "||" (block | content)
 ```
 
-**Semantics:** Marks mutually exclusive option under consideration.
+**Semantics:** Marks mutually exclusive option under consideration. Supports hierarchical reasoning like other content markers.
 
 **Examples:**
 ```
@@ -297,6 +314,14 @@ alternative    = "||" content
      -> operational complexity
 
 [decided(rationale: "security critical", on: "2025-10-15")] session + Redis
+
+# Alternatives can have nested structure
+|| Use IR-native architecture
+  -> Benefits
+     -> Zero semantic loss
+     -> Future-proof
+  -> Trade-offs
+     -> Higher initial complexity
 ```
 
 ### Definitions

@@ -86,11 +86,15 @@ FlowScript {
   thoughtText = (~("\n" | "}" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
   actionText = (~("\n" | "}" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
 
-  Question = "?" (~("\n" | "}") any)*
-  Completion = "✓" (~("\n" | "}") any)*
+  Question = "?" space* (Block | questionText)
+  questionText = (~("\n" | "}") any)*
+
+  Completion = "✓" space* (Block | completionText)
+  completionText = (~("\n" | "}") any)*
 
   // Alternatives
-  Alternative = "||" (~("\n" | "}") any)*
+  Alternative = "||" space* (Block | alternativeText)
+  alternativeText = (~("\n" | "}") any)*
 
   // Lexical elements
   string = "\"" stringChar* "\""
