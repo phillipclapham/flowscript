@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Parser Test</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h2 {
+      color: #333;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 10px;
+    }
+    pre {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      overflow: auto;
+    }
+    .success {
+      color: #22c55e;
+      font-weight: bold;
+    }
+    .error {
+      color: #ef4444;
+      font-weight: bold;
+    }
+    .warning {
+      color: #f59e0b;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 FlowScript Parser Test</h1>
+
+  <h2>Test 1: Simple Relationship</h2>
+  <div id="test1"></div>
+
+  <h2>Test 2: Question with Alternatives</h2>
+  <div id="test2"></div>
+
+  <h2>Test 3: State Markers</h2>
+  <div id="test3"></div>
+
+  <h2>Test 4: Nested Relationships</h2>
+  <div id="test4"></div>
+
+  <script type="module">
+    import { parseFlowScript } from './src/utils/fullFlowScriptParser.ts';
+    import { irToGraphData, verifyTransformation, logTransformationStats } from './src/utils/irToGraphData.ts';
+
+    function runTest(testId, name, flowscript) {
+      const container = document.getElementById(testId);
+
+      console.group(`Test: ${name}`);
+      console.log('Input:', flowscript);
+
+      const result = parseFlowScript(flowscript, `test-${testId}.fs`);
+
+      if (result.error) {
+        container.innerHTML = `
+          <p class="error">❌ Parse Error: ${result.error.message}</p>
+          <pre>${flowscript}</pre>
+        `;
+        console.error('Parse failed:', result.error);
+        console.groupEnd();
+        return;
+      }
+
+      const ir = result.ir;
+      console.log('IR:', ir);
+
+      const graphData = irToGraphData(ir);
+      console.log('GraphData:', graphData);
+
+      const verification = verifyTransformation(ir, graphData);
+      console.log('Verification:', verification);
+
+      logTransformationStats(ir, graphData);
+
+      let status = verification.passed
+        ? `<p class="success">✅ PASSED</p>`
+        : `<p class="error">❌ FAILED</p>`;
+
+      if (verification.warnings.length > 0) {
+        status += `<p class="warning">⚠️ Warnings: ${verification.warnings.join(', ')}</p>`;
+      }
+
+      container.innerHTML = `
+        ${status}
+        <p><strong>Input:</strong></p>
+        <pre>${flowscript}</pre>
+        <p><strong>Results:</strong></p>
+        <pre>Nodes: ${graphData.nodes.length} (types: ${[...new Set(graphData.nodes.map(n => n.type))].join(', ')})
+Edges: ${graphData.edges.length} (types: ${[...new Set(graphData.edges.map(e => e.type))].join(', ')})
+States: ${ir.states.length}
+Verification: ${verification.passed ? 'PASSED' : 'FAILED'}</pre>
+      `;
+
+      console.groupEnd();
+    }
+
+    // Run tests
+    runTest('test1', 'Simple Relationship', 'A -> B -> C');
+
+    runTest('test2', 'Question with Alternatives', `? Should we use React or Vue?
+|| React - better ecosystem
+|| Vue - simpler learning curve`);
+
+    runTest('test3', 'State Markers', `[decided(rationale: "Best option", on: "2025-10-31")]
+Ship the feature
+
+[blocked(reason: "Waiting for review", since: "2025-10-30")]
+Deploy to production`);
+
+    runTest('test4', 'Nested Relationships', `{A <- B} -> C`);
+  </script>
+</body>
+</html>
