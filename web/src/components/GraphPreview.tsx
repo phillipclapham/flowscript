@@ -7,7 +7,8 @@ import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { parseFlowScript } from '../utils/fullFlowScriptParser';
 import { irToGraphData } from '../utils/irToGraphData';
-import type { GraphData, GraphNode } from '../types/graph';
+import type { GraphData, GraphNode, NodeType, EdgeType, NodeShape } from '../types/graph';
+import { NODE_SHAPES, NODE_COLORS, EDGE_STYLES } from '../types/graph';
 import { useTheme } from '../lib/theme/useTheme';
 import { applyLayout, type LayoutType } from '../utils/graphLayouts';
 import './GraphPreview.css';
@@ -112,24 +113,98 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
       .attr('d', 'M0,-5L10,0L0,5')
       .attr('fill', theme === 'dark' ? '#60a5fa' : '#3b82f6');
 
+    // Better arrow (alternative_better - green)
+    defs
+      .append('marker')
+      .attr('id', `arrow-better-${theme}`)
+      .attr('viewBox', '0 -5 10 10')
+      .attr('refX', 25)
+      .attr('refY', 0)
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('orient', 'auto')
+      .append('path')
+      .attr('d', 'M0,-5L10,0L0,5')
+      .attr('fill', '#10b981'); // Green for better alternative
+
+    // Worse arrow (alternative_worse - red)
+    defs
+      .append('marker')
+      .attr('id', `arrow-worse-${theme}`)
+      .attr('viewBox', '0 -5 10 10')
+      .attr('refX', 25)
+      .attr('refY', 0)
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('orient', 'auto')
+      .append('path')
+      .attr('d', 'M0,-5L10,0L0,5')
+      .attr('fill', '#ef4444'); // Red for worse alternative
+
     // Apply layout algorithm
     const simulation = applyLayout(layoutType, graphData.nodes, graphData.edges, {
       width,
       height,
     });
 
-    // Create edges with enhanced styling
-    const link = g
+    // Create edges with enhanced styling (handles all 10 edge types)
+    const linkGroup = g.append('g').attr('class', 'graph-edges');
+
+    graphData.edges.forEach((edge) => {
+      const edgeStyle = EDGE_STYLES[edge.type];
+      const color = getEdgeColor(edge.type);
+
+      // For double lines (equivalent, different), render two parallel lines
+      if (edgeStyle.style === 'double') {
+        const offset = 2; // Pixels apart
+        // First line
+        linkGroup
+          .append('line')
+          .datum(edge)
+          .attr('class', 'graph-edge')
+          .attr('stroke', color)
+          .attr('stroke-width', 1.5)
+          .attr('marker-end', `url(#${getEdgeMarker(edge.type, theme)})`)
+          .attr('opacity', 0.7)
+          .attr('data-offset', offset);
+        // Second line (parallel)
+        linkGroup
+          .append('line')
+          .datum(edge)
+          .attr('class', 'graph-edge')
+          .attr('stroke', color)
+          .attr('stroke-width', 1.5)
+          .attr('opacity', 0.7)
+          .attr('data-offset', -offset);
+      } else {
+        // Regular single line (solid, dashed, dotted, wavy)
+        linkGroup
+          .append('line')
+          .datum(edge)
+          .attr('class', 'graph-edge')
+          .attr('stroke', color)
+          .attr('stroke-width', edge.type === 'bidirectional' ? 2.5 : 2)
+          .attr('stroke-dasharray', getEdgeStrokeDash(edge.type))
+          .attr('marker-end', `url(#${getEdgeMarker(edge.type, theme)})`)
+          .attr('opacity', 0.7);
+      }
+    });
+
+    // Add labels for tension edges (axis labels)
+    const edgeLabels = g
       .append('g')
-      .selectAll('line')
-      .data(graphData.edges)
-      .join('line')
-      .attr('class', 'graph-edge')
-      .attr('stroke', (d) => getEdgeColor(d.type, theme))
-      .attr('stroke-width', (d) => (d.type === 'bidirectional' ? 2.5 : 2))
-      .attr('stroke-dasharray', (d) => getEdgeStrokeDash(d.type))
-      .attr('marker-end', (d) => `url(#${getEdgeMarker(d.type, theme)})`)
-      .attr('opacity', 0.7);
+      .attr('class', 'edge-labels')
+      .selectAll('text')
+      .data(graphData.edges.filter((e) => e.type === 'tension'))
+      .join('text')
+      .attr('class', 'edge-label')
+      .attr('font-size', '9px')
+      .attr('fill', theme === 'dark' ? '#fbbf24' : '#f59e0b')
+      .attr('text-anchor', 'middle')
+      .attr('pointer-events', 'none')
+      .text((d) => d.label || 'tension');
+
+    const link = linkGroup.selectAll('line');
 
     // Create node groups for complex shapes
     const nodeGroup = g
@@ -152,7 +227,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
           .on('end', dragended) as any
       );
 
-    // Create nodes with different shapes based on type
+    // Create nodes with different shapes based on type (all 12 IR types)
     nodeGroup.each(function (d) {
       const group = d3.select(this);
       const shape = getNodeShape(d.type);
@@ -164,7 +239,9 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
         : '#ffffff';
       const strokeWidth = d.state?.blocked || d.state?.decided ? 3 : 2;
 
+      // Render shape based on type
       if (shape === 'circle') {
+        // thought nodes - basic circle
         group
           .append('circle')
           .attr('r', 12)
@@ -172,6 +249,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth);
       } else if (shape === 'diamond') {
+        // question nodes - diamond shape
         group
           .append('path')
           .attr('d', 'M 0,-15 L 15,0 L 0,15 L -15,0 Z')
@@ -179,6 +257,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth);
       } else if (shape === 'rect') {
+        // action nodes - rectangle with small border radius
         group
           .append('rect')
           .attr('x', -12)
@@ -190,15 +269,128 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth);
       } else if (shape === 'hexagon') {
+        // decision nodes - hexagon
         group
           .append('path')
-          .attr(
-            'd',
-            'M 0,-14 L 12,-7 L 12,7 L 0,14 L -12,7 L -12,-7 Z'
-          )
+          .attr('d', 'M 0,-14 L 12,-7 L 12,7 L 0,14 L -12,7 L -12,-7 Z')
           .attr('fill', color)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth);
+      } else if (shape === 'rounded-rect') {
+        // statement nodes - rounded rectangle (larger border radius)
+        group
+          .append('rect')
+          .attr('x', -14)
+          .attr('y', -10)
+          .attr('width', 28)
+          .attr('height', 20)
+          .attr('rx', 6)
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth);
+      } else if (shape === 'triangle') {
+        // alternative nodes - triangle
+        group
+          .append('path')
+          .attr('d', 'M 0,-13 L 11,10 L -11,10 Z')
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth);
+      } else if (shape === 'rounded-square') {
+        // parking nodes - rounded square
+        group
+          .append('rect')
+          .attr('x', -12)
+          .attr('y', -12)
+          .attr('width', 24)
+          .attr('height', 24)
+          .attr('rx', 6)
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth);
+      } else if (shape === 'dashed-circle') {
+        // exploring nodes - circle with dashed border
+        group
+          .append('circle')
+          .attr('r', 12)
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth)
+          .attr('stroke-dasharray', '3,2');
+      } else if (shape === 'octagon') {
+        // blocker nodes - octagon (stop sign)
+        const angle = Math.PI / 4; // 45 degrees
+        const r = 13;
+        const points = Array.from({ length: 8 }, (_, i) => {
+          const a = angle * i - Math.PI / 2;
+          return `${r * Math.cos(a)},${r * Math.sin(a)}`;
+        }).join(' L ');
+        group
+          .append('path')
+          .attr('d', `M ${points} Z`)
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth);
+      } else if (shape === 'star') {
+        // insight nodes - 5-point star
+        const outerR = 14;
+        const innerR = 6;
+        const points = Array.from({ length: 10 }, (_, i) => {
+          const angle = (Math.PI / 5) * i - Math.PI / 2;
+          const r = i % 2 === 0 ? outerR : innerR;
+          return `${r * Math.cos(angle)},${r * Math.sin(angle)}`;
+        }).join(' L ');
+        group
+          .append('path')
+          .attr('d', `M ${points} Z`)
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth);
+      } else if (shape === 'circle-check') {
+        // completion nodes - circle with checkmark
+        group
+          .append('circle')
+          .attr('r', 12)
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth);
+        // Add checkmark
+        group
+          .append('path')
+          .attr('d', 'M -5,0 L -2,5 L 6,-5')
+          .attr('fill', 'none')
+          .attr('stroke', theme === 'dark' ? '#1f2937' : '#ffffff')
+          .attr('stroke-width', 2)
+          .attr('stroke-linecap', 'round')
+          .attr('stroke-linejoin', 'round');
+      } else if (shape === 'cluster') {
+        // block nodes - larger container with dashed border
+        const size = 40; // Larger than regular nodes
+        group
+          .append('rect')
+          .attr('x', -size/2)
+          .attr('y', -size/2)
+          .attr('width', size)
+          .attr('height', size)
+          .attr('rx', 8)
+          .attr('fill', color)
+          .attr('stroke', strokeColor)
+          .attr('stroke-width', strokeWidth)
+          .attr('stroke-dasharray', '5,3');
+        // Add child count label
+        const childCount = d.children?.length || 0;
+        if (childCount > 0) {
+          group
+            .append('text')
+            .attr('y', 0)
+            .attr('dy', '0.35em')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '10px')
+            .attr('font-weight', 'bold')
+            .attr('fill', theme === 'dark' ? '#1f2937' : '#ffffff')
+            .style('pointer-events', 'none')
+            .text(`${childCount}`);
+        }
       }
 
       // Add state indicator for decided nodes
@@ -242,11 +434,38 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
 
     // Update positions on simulation tick
     simulation.on('tick', () => {
-      link
-        .attr('x1', (d: any) => d.source.x)
-        .attr('y1', (d: any) => d.source.y)
-        .attr('x2', (d: any) => d.target.x)
-        .attr('y2', (d: any) => d.target.y);
+      // Update edge positions (handles both single and double lines)
+      link.each(function (d: any) {
+        const line = d3.select(this);
+        const offset = parseFloat(line.attr('data-offset') || '0');
+
+        if (offset !== 0) {
+          // Calculate perpendicular offset for parallel lines
+          const dx = d.target.x - d.source.x;
+          const dy = d.target.y - d.source.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const offsetX = offset * (-dy / dist);
+          const offsetY = offset * (dx / dist);
+
+          line
+            .attr('x1', d.source.x + offsetX)
+            .attr('y1', d.source.y + offsetY)
+            .attr('x2', d.target.x + offsetX)
+            .attr('y2', d.target.y + offsetY);
+        } else {
+          // Regular single line
+          line
+            .attr('x1', d.source.x)
+            .attr('y1', d.source.y)
+            .attr('x2', d.target.x)
+            .attr('y2', d.target.y);
+        }
+      });
+
+      // Update tension edge labels (midpoint of edge)
+      edgeLabels
+        .attr('x', (d: any) => (d.source.x + d.target.x) / 2)
+        .attr('y', (d: any) => (d.source.y + d.target.y) / 2 - 5);
 
       nodeGroup.attr('transform', (d) => `translate(${d.x},${d.y})`);
 
@@ -370,121 +589,58 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
 }
 
 /**
- * Get node color based on type and theme
+ * Get node color based on IR-native node type and theme.
+ * Uses NODE_COLORS palette from graph.ts for semantic consistency.
  */
-function getNodeColor(type: string, theme: 'light' | 'dark'): string {
-  const colors = {
-    light: {
-      question: '#3b82f6',
-      decision: '#10b981',
-      thought: '#6b7280',
-      tension: '#f59e0b',
-      action: '#8b5cf6',
-      milestone: '#ec4899',
-      reference: '#06b6d4',
-      important: '#ef4444',
-      note: '#84cc16',
-      check: '#10b981',
-      wip: '#f59e0b',
-      placeholder: '#9ca3af',
-    },
-    dark: {
-      question: '#60a5fa',
-      decision: '#34d399',
-      thought: '#9ca3af',
-      tension: '#fbbf24',
-      action: '#a78bfa',
-      milestone: '#f472b6',
-      reference: '#22d3ee',
-      important: '#f87171',
-      note: '#a3e635',
-      check: '#34d399',
-      wip: '#fbbf24',
-      placeholder: '#6b7280',
-    },
-  };
-
-  return colors[theme][type as keyof typeof colors.light] || colors[theme].thought;
+function getNodeColor(type: NodeType, theme: 'light' | 'dark'): string {
+  return NODE_COLORS[type][theme];
 }
 
 /**
- * Get node shape based on type
+ * Get node shape based on IR-native node type.
+ * Uses NODE_SHAPES mapping from graph.ts for zero semantic loss.
  */
-function getNodeShape(type: string): 'circle' | 'diamond' | 'rect' | 'hexagon' {
-  const shapes: Record<string, 'circle' | 'diamond' | 'rect' | 'hexagon'> = {
-    question: 'circle',
-    decision: 'diamond',
-    thought: 'circle',
-    tension: 'hexagon',
-    action: 'rect',
-    milestone: 'diamond',
-    reference: 'rect',
-    important: 'circle',
-    note: 'circle',
-    check: 'circle',
-    wip: 'circle',
-    placeholder: 'circle',
-  };
-  return shapes[type] || 'circle';
+function getNodeShape(type: NodeType): NodeShape {
+  return NODE_SHAPES[type];
 }
 
 /**
- * Get edge color based on type and theme
+ * Get edge color based on IR-native edge type.
+ * Uses EDGE_STYLES from graph.ts for consistent visualization.
  */
-function getEdgeColor(type: string, theme: 'light' | 'dark'): string {
-  const colors = {
-    light: {
-      causal: '#9ca3af',
-      temporal: '#9ca3af',
-      bidirectional: '#3b82f6',
-      definition: '#6b7280',
-      feedback: '#f59e0b',
-      alternative: '#8b5cf6',
-      indirection: '#6b7280',
-    },
-    dark: {
-      causal: '#4b5563',
-      temporal: '#4b5563',
-      bidirectional: '#60a5fa',
-      definition: '#6b7280',
-      feedback: '#fbbf24',
-      alternative: '#a78bfa',
-      indirection: '#6b7280',
-    },
-  };
-  return colors[theme][type as keyof typeof colors.light] || colors[theme].causal;
+function getEdgeColor(type: EdgeType): string {
+  return EDGE_STYLES[type].color;
 }
 
 /**
- * Get edge stroke dash pattern based on type
+ * Get edge stroke dash pattern based on IR-native edge type.
+ * Maps edge styles to SVG stroke-dasharray values.
  */
-function getEdgeStrokeDash(type: string): string {
+function getEdgeStrokeDash(type: EdgeType): string {
+  const style = EDGE_STYLES[type].style;
   const patterns: Record<string, string> = {
-    causal: '0',
-    temporal: '5,5',
-    bidirectional: '0',
-    definition: '0',
-    feedback: '3,3',
-    alternative: '5,5',
-    indirection: '2,2',
+    solid: '0',
+    dashed: '5,5',
+    dotted: '2,2',
+    wavy: '0',      // Wavy uses path transformation, not dash
+    double: '0',    // Double renders as two lines
   };
-  return patterns[type] || '0';
+  return patterns[style] || '0';
 }
 
 /**
- * Get edge marker based on type and theme
+ * Get edge marker based on IR-native edge type.
+ * Returns marker ID for SVG marker-end attribute.
  */
-function getEdgeMarker(type: string, theme: 'light' | 'dark'): string {
-  const markers: Record<string, string> = {
-    causal: `arrow-solid-${theme}`,
-    temporal: `arrow-dashed-${theme}`,
-    bidirectional: `arrow-double-${theme}`,
-    definition: `arrow-solid-${theme}`,
-    feedback: `arrow-solid-${theme}`,
-    alternative: `arrow-dashed-${theme}`,
-    indirection: `arrow-dashed-${theme}`,
+function getEdgeMarker(type: EdgeType, theme: 'light' | 'dark'): string {
+  const marker = EDGE_STYLES[type].marker;
+  const markerMap: Record<string, string> = {
+    arrow: `arrow-solid-${theme}`,
+    'double-arrow': `arrow-double-${theme}`,
+    better: `arrow-better-${theme}`,
+    worse: `arrow-worse-${theme}`,
   };
-  return markers[type] || `arrow-solid-${theme}`;
+  return markerMap[marker] || `arrow-solid-${theme}`;
 }
 
 /**
