@@ -706,7 +706,7 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
       return line.toIR();
     },
 
-    BlockContent(firstLine, separators, blockLines, _optionalSeparator) {
+    BlockContent(firstLine, _separators, blockLines, _optionalSeparator) {
       // Process first line
       firstLine.toIR();
 
