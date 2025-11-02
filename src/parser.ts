@@ -549,47 +549,81 @@ export class Parser {
         return insight.toIR();
       },
 
-      Thought(_marker, _space, content, relPairs) {
-        // Parse content (can be Block or text)
-        const contentResult = content.toIR();
+      Thought(_marker, _space, text, block, relPairs, _newline) {
+        // Handle three cases: text+block, just block, or just text
+        const hasText = text.sourceString.trim().length > 0;
+        const hasBlock = block.sourceString.trim().length > 0;
 
-        // Create thought node
         let node;
-        if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
-          // Content is a block - use the block node directly as thought content
-          node = contentResult.node;
-          node.type = 'thought';  // Change type from 'block' to 'thought'
+        if (hasBlock) {
+          // Has a block (with or without text)
+          const blockResult = block.toIR();
+          if (blockResult && blockResult.node) {
+            node = blockResult.node;
+            node.type = 'thought';
+
+            // If there's also text, set it as the content
+            if (hasText) {
+              node.content = text.sourceString.trim();
+            }
+          } else {
+            // Block parsing failed, fall back to text-only
+            const textContent = hasText ? text.sourceString.trim() : '';
+            node = self.createNode('thought', textContent, self.currentModifiers, this);
+            self.nodes.push(node);
+          }
+        } else if (hasText) {
+          // Just text, no block
+          const textContent = text.sourceString.trim();
+          node = self.createNode('thought', textContent, self.currentModifiers, this);
+          self.nodes.push(node);
         } else {
-          // Content is text
-          const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
-          node = self.createNode('thought', text, self.currentModifiers, this);
+          // Neither text nor block - create empty thought
+          node = self.createNode('thought', '', self.currentModifiers, this);
           self.nodes.push(node);
         }
 
         // If relationship pairs present, process them using existing RelOpNodePair logic
         if (relPairs.children.length > 0) {
           self.currentSourceNode = node;
-          relPairs.toIR(); // Reuses existing relationship chain logic
+          relPairs.toIR();
           self.currentSourceNode = null;
         }
 
         return node;
       },
 
-      Action(_marker, _space, content, relPairs) {
-        // Parse content (can be Block or text)
-        const contentResult = content.toIR();
+      Action(_marker, _space, text, block, relPairs, _newline) {
+        // Handle three cases: text+block, just block, or just text
+        const hasText = text.sourceString.trim().length > 0;
+        const hasBlock = block.sourceString.trim().length > 0;
 
-        // Create action node
         let node;
-        if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
-          // Content is a block - use the block node directly as action content
-          node = contentResult.node;
-          node.type = 'action';  // Change type from 'block' to 'action'
+        if (hasBlock) {
+          // Has a block (with or without text)
+          const blockResult = block.toIR();
+          if (blockResult && blockResult.node) {
+            node = blockResult.node;
+            node.type = 'action';
+
+            // If there's also text, set it as the content
+            if (hasText) {
+              node.content = text.sourceString.trim();
+            }
+          } else {
+            // Block parsing failed, fall back to text-only
+            const textContent = hasText ? text.sourceString.trim() : '';
+            node = self.createNode('action', textContent, self.currentModifiers, this);
+            self.nodes.push(node);
+          }
+        } else if (hasText) {
+          // Just text, no block
+          const textContent = text.sourceString.trim();
+          node = self.createNode('action', textContent, self.currentModifiers, this);
+          self.nodes.push(node);
         } else {
-          // Content is text
-          const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
-          node = self.createNode('action', text, self.currentModifiers, this);
+          // Neither text nor block - create empty action
+          node = self.createNode('action', '', self.currentModifiers, this);
           self.nodes.push(node);
         }
 
@@ -603,40 +637,74 @@ export class Parser {
         return node;
       },
 
-      Question(_marker, _space, content) {
-        // Parse content (can be Block or text)
-        const contentResult = content.toIR();
+      Question(_marker, _space, text, block, _newline) {
+        // Handle three cases: text+block, just block, or just text
+        const hasText = text.sourceString.trim().length > 0;
+        const hasBlock = block.sourceString.trim().length > 0;
 
-        // Create question node
         let node;
-        if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
-          // Content is a block - use the block node directly as question content
-          node = contentResult.node;
-          node.type = 'question';  // Change type from 'block' to 'question'
+        if (hasBlock) {
+          // Has a block (with or without text)
+          const blockResult = block.toIR();
+          if (blockResult && blockResult.node) {
+            node = blockResult.node;
+            node.type = 'question';
+
+            // If there's also text, set it as the content
+            if (hasText) {
+              node.content = text.sourceString.trim();
+            }
+          } else {
+            // Block parsing failed, fall back to text-only
+            const textContent = hasText ? text.sourceString.trim() : '';
+            node = self.createNode('question', textContent, self.currentModifiers, this);
+            self.nodes.push(node);
+          }
+        } else if (hasText) {
+          // Just text, no block
+          const textContent = text.sourceString.trim();
+          node = self.createNode('question', textContent, self.currentModifiers, this);
+          self.nodes.push(node);
         } else {
-          // Content is text
-          const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
-          node = self.createNode('question', text, self.currentModifiers, this);
+          // Neither text nor block - create empty question
+          node = self.createNode('question', '', self.currentModifiers, this);
           self.nodes.push(node);
         }
 
         return node;
       },
 
-      Completion(_marker, _space, content) {
-        // Parse content (can be Block or text)
-        const contentResult = content.toIR();
+      Completion(_marker, _space, text, block, _newline) {
+        // Handle three cases: text+block, just block, or just text
+        const hasText = text.sourceString.trim().length > 0;
+        const hasBlock = block.sourceString.trim().length > 0;
 
-        // Create completion node
         let node;
-        if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
-          // Content is a block - use the block node directly as completion content
-          node = contentResult.node;
-          node.type = 'completion';  // Change type from 'block' to 'completion'
+        if (hasBlock) {
+          // Has a block (with or without text)
+          const blockResult = block.toIR();
+          if (blockResult && blockResult.node) {
+            node = blockResult.node;
+            node.type = 'completion';
+
+            // If there's also text, set it as the content
+            if (hasText) {
+              node.content = text.sourceString.trim();
+            }
+          } else {
+            // Block parsing failed, fall back to text-only
+            const textContent = hasText ? text.sourceString.trim() : '';
+            node = self.createNode('completion', textContent, self.currentModifiers, this);
+            self.nodes.push(node);
+          }
+        } else if (hasText) {
+          // Just text, no block
+          const textContent = text.sourceString.trim();
+          node = self.createNode('completion', textContent, self.currentModifiers, this);
+          self.nodes.push(node);
         } else {
-          // Content is text
-          const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
-          node = self.createNode('completion', text, self.currentModifiers, this);
+          // Neither text nor block - create empty completion
+          node = self.createNode('completion', '', self.currentModifiers, this);
           self.nodes.push(node);
         }
 
@@ -644,7 +712,7 @@ export class Parser {
       },
 
       // Block (thought blocks)
-      Block(_lbrace, _ws1, blockLines, _ws2, _rbrace) {
+      Block(_lbrace, _ws1, blockContent, _ws2, _rbrace) {
         // Save state for nested blocks
         const savedStartIndex = self.blockStartNodeIndex;
         const savedPrimaryNode = self.blockPrimaryNode;
@@ -664,8 +732,11 @@ export class Parser {
         // If no parent exists, set to null (standalone blocks will use first child as fallback)
         self.blockPrimaryNode = nodesBefore > 0 ? self.nodes[nodesBefore - 1] : null;
 
-        // Parse block lines (recursively processes all nested elements)
-        blockLines.toIR();
+        // Parse block content (handles separators between lines)
+        // blockContent is optional (empty blocks have no content)
+        if (blockContent.sourceString.trim()) {
+          blockContent.toIR();
+        }
 
         // Collect ALL nodes created since block started
         const allNewNodes = self.nodes.slice(nodesBefore);
@@ -713,25 +784,83 @@ export class Parser {
         return { type: 'block', node: blockNode };
       },
 
-      BlockLine(_ws1, line, _ws2) {
+      BlockLine(_ws, line) {
         return line.toIR();
       },
 
-      // Alternative
-      Alternative(_marker, _space, content) {
-        // Parse content (can be Block or text)
-        const contentResult = content.toIR();
+      BlockContent(firstLine, separators, blockLines, _optionalSeparator) {
+        // Process first line
+        firstLine.toIR();
 
-        // Create alternative node
+        // Process remaining lines
+        // The iteration (separator BlockLine)* gets split into two arrays
+        const blockLinesList = blockLines.children || [];
+        for (const line of blockLinesList) {
+          line.toIR();
+        }
+      },
+
+      separator(_sep) {
+        // Separators are just delimiters - no IR needed
+      },
+
+      ws(_whitespace) {
+        // Whitespace is just formatting - no IR needed
+      },
+
+      BlockElement(modifiers, content) {
+        // Same as Element but for blocks
+        const mods = modifiers.children.map((m: any) => m.sourceString);
+        self.currentModifiers = mods;
+        return content.toIR();
+      },
+
+      BlockContent_inner(content) {
+        // Just pass through to the actual content type
+        return content.toIR();
+      },
+
+      BlockStatement(text) {
+        // Same as Statement but without trailing newline
+        const content = text.sourceString.trim();
+        const node = self.createNode('statement', content, self.currentModifiers, text);
+        self.nodes.push(node);
+        self.currentModifiers = [];
+        return node;
+      },
+
+      // Alternative
+      Alternative(_marker, _space, text, block, _newline) {
+        // Handle three cases: text+block, just block, or just text
+        const hasText = text.sourceString.trim().length > 0;
+        const hasBlock = block.sourceString.trim().length > 0;
+
         let node;
-        if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
-          // Content is a block - use the block node directly as alternative content
-          node = contentResult.node;
-          node.type = 'alternative';  // Change type from 'block' to 'alternative'
+        if (hasBlock) {
+          // Has a block (with or without text)
+          const blockResult = block.toIR();
+          if (blockResult && blockResult.node) {
+            node = blockResult.node;
+            node.type = 'alternative';
+
+            // If there's also text, set it as the content
+            if (hasText) {
+              node.content = text.sourceString.trim();
+            }
+          } else {
+            // Block parsing failed, fall back to text-only
+            const textContent = hasText ? text.sourceString.trim() : '';
+            node = self.createNode('alternative', textContent, self.currentModifiers, this);
+            self.nodes.push(node);
+          }
+        } else if (hasText) {
+          // Just text, no block
+          const textContent = text.sourceString.trim();
+          node = self.createNode('alternative', textContent, self.currentModifiers, this);
+          self.nodes.push(node);
         } else {
-          // Content is text
-          const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
-          node = self.createNode('alternative', text, self.currentModifiers, this);
+          // Neither text nor block - create empty alternative
+          node = self.createNode('alternative', '', self.currentModifiers, this);
           self.nodes.push(node);
         }
 

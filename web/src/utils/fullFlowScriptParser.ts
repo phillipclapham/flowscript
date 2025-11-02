@@ -516,16 +516,30 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
       return insight.toIR();
     },
 
-    Thought(_marker, _space, content, relPairs) {
-      const contentResult = content.toIR();
+    Thought(_marker, _space, text, block, relPairs, _newline) {
+      const hasText = text.sourceString.trim().length > 0;
+      const hasBlock = block.sourceString.trim().length > 0;
 
       let node;
-      if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
-        node = contentResult.node;
-        node.type = 'thought';
+      if (hasBlock) {
+        const blockResult = block.toIR();
+        if (blockResult && blockResult.node) {
+          node = blockResult.node;
+          node.type = 'thought';
+          if (hasText) {
+            node.content = text.sourceString.trim();
+          }
+        } else {
+          const textContent = hasText ? text.sourceString.trim() : '';
+          node = createNode(state, 'thought', textContent, state.currentModifiers, this);
+          state.nodes.push(node);
+        }
+      } else if (hasText) {
+        const textContent = text.sourceString.trim();
+        node = createNode(state, 'thought', textContent, state.currentModifiers, this);
+        state.nodes.push(node);
       } else {
-        const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
-        node = createNode(state, 'thought', text, state.currentModifiers, this);
+        node = createNode(state, 'thought', '', state.currentModifiers, this);
         state.nodes.push(node);
       }
 
@@ -538,16 +552,30 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
       return node;
     },
 
-    Action(_marker, _space, content, relPairs) {
-      const contentResult = content.toIR();
+    Action(_marker, _space, text, block, relPairs, _newline) {
+      const hasText = text.sourceString.trim().length > 0;
+      const hasBlock = block.sourceString.trim().length > 0;
 
       let node;
-      if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
-        node = contentResult.node;
-        node.type = 'action';
+      if (hasBlock) {
+        const blockResult = block.toIR();
+        if (blockResult && blockResult.node) {
+          node = blockResult.node;
+          node.type = 'action';
+          if (hasText) {
+            node.content = text.sourceString.trim();
+          }
+        } else {
+          const textContent = hasText ? text.sourceString.trim() : '';
+          node = createNode(state, 'action', textContent, state.currentModifiers, this);
+          state.nodes.push(node);
+        }
+      } else if (hasText) {
+        const textContent = text.sourceString.trim();
+        node = createNode(state, 'action', textContent, state.currentModifiers, this);
+        state.nodes.push(node);
       } else {
-        const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
-        node = createNode(state, 'action', text, state.currentModifiers, this);
+        node = createNode(state, 'action', '', state.currentModifiers, this);
         state.nodes.push(node);
       }
 
@@ -560,40 +588,60 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
       return node;
     },
 
-    Question(_marker, _space, content) {
-      // Parse content (can be Block or text)
-      const contentResult = content.toIR();
+    Question(_marker, _space, text, block, _newline) {
+      const hasText = text.sourceString.trim().length > 0;
+      const hasBlock = block.sourceString.trim().length > 0;
 
-      // Create question node
       let node;
-      if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
-        // Content is a block - use the block node directly as question content
-        node = contentResult.node;
-        node.type = 'question';  // Change type from 'block' to 'question'
+      if (hasBlock) {
+        const blockResult = block.toIR();
+        if (blockResult && blockResult.node) {
+          node = blockResult.node;
+          node.type = 'question';
+          if (hasText) {
+            node.content = text.sourceString.trim();
+          }
+        } else {
+          const textContent = hasText ? text.sourceString.trim() : '';
+          node = createNode(state, 'question', textContent, state.currentModifiers, this);
+          state.nodes.push(node);
+        }
+      } else if (hasText) {
+        const textContent = text.sourceString.trim();
+        node = createNode(state, 'question', textContent, state.currentModifiers, this);
+        state.nodes.push(node);
       } else {
-        // Content is text
-        const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
-        node = createNode(state, 'question', text, state.currentModifiers, this);
+        node = createNode(state, 'question', '', state.currentModifiers, this);
         state.nodes.push(node);
       }
 
       return node;
     },
 
-    Completion(_marker, _space, content) {
-      // Parse content (can be Block or text)
-      const contentResult = content.toIR();
+    Completion(_marker, _space, text, block, _newline) {
+      const hasText = text.sourceString.trim().length > 0;
+      const hasBlock = block.sourceString.trim().length > 0;
 
-      // Create completion node
       let node;
-      if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
-        // Content is a block - use the block node directly as completion content
-        node = contentResult.node;
-        node.type = 'completion';  // Change type from 'block' to 'completion'
+      if (hasBlock) {
+        const blockResult = block.toIR();
+        if (blockResult && blockResult.node) {
+          node = blockResult.node;
+          node.type = 'completion';
+          if (hasText) {
+            node.content = text.sourceString.trim();
+          }
+        } else {
+          const textContent = hasText ? text.sourceString.trim() : '';
+          node = createNode(state, 'completion', textContent, state.currentModifiers, this);
+          state.nodes.push(node);
+        }
+      } else if (hasText) {
+        const textContent = text.sourceString.trim();
+        node = createNode(state, 'completion', textContent, state.currentModifiers, this);
+        state.nodes.push(node);
       } else {
-        // Content is text
-        const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
-        node = createNode(state, 'completion', text, state.currentModifiers, this);
+        node = createNode(state, 'completion', '', state.currentModifiers, this);
         state.nodes.push(node);
       }
 
@@ -601,7 +649,7 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
     },
 
     // Block (thought blocks)
-    Block(_lbrace, _ws1, blockLines, _ws2, _rbrace) {
+    Block(_lbrace, _ws1, blockContent, _ws2, _rbrace) {
       const savedStartIndex = state.blockStartNodeIndex;
       const savedPrimaryNode = state.blockPrimaryNode;
 
@@ -612,7 +660,11 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
       state.blockStartNodeIndex = nodesBefore;
       state.blockPrimaryNode = nodesBefore > 0 ? state.nodes[nodesBefore - 1] : null;
 
-      blockLines.toIR();
+      // Parse block content (handles separators between lines)
+      // blockContent is optional (empty blocks have no content)
+      if (blockContent.sourceString.trim()) {
+        blockContent.toIR();
+      }
 
       const allNewNodes = state.nodes.slice(nodesBefore);
       const nestedBlocks = allNewNodes.filter(n => n.type === 'block');
@@ -650,25 +702,76 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
       return { type: 'block', node: blockNode };
     },
 
-    BlockLine(_ws1, line, _ws2) {
+    BlockLine(_ws, line) {
       return line.toIR();
     },
 
-    // Alternative
-    Alternative(_marker, _space, content) {
-      // Parse content (can be Block or text)
-      const contentResult = content.toIR();
+    BlockContent(firstLine, separators, blockLines, _optionalSeparator) {
+      // Process first line
+      firstLine.toIR();
 
-      // Create alternative node
+      // Process remaining lines
+      // The iteration (separator BlockLine)* gets split into two arrays
+      const blockLinesList = blockLines.children || [];
+      for (const line of blockLinesList) {
+        line.toIR();
+      }
+    },
+
+    separator(_sep) {
+      // Separators are just delimiters - no IR needed
+    },
+
+    ws(_whitespace) {
+      // Whitespace is just formatting - no IR needed
+    },
+
+    BlockElement(modifiers, content) {
+      // Same as Element but for blocks
+      const mods = modifiers.children.map((m: any) => m.sourceString);
+      state.currentModifiers = mods;
+      return content.toIR();
+    },
+
+    BlockContent_inner(content) {
+      // Just pass through to the actual content type
+      return content.toIR();
+    },
+
+    BlockStatement(text) {
+      // Same as Statement but without trailing newline
+      const content = text.sourceString.trim();
+      const node = createNode(state, 'statement', content, state.currentModifiers, text);
+      state.nodes.push(node);
+      state.currentModifiers = [];
+      return node;
+    },
+
+    // Alternative
+    Alternative(_marker, _space, text, block, _newline) {
+      const hasText = text.sourceString.trim().length > 0;
+      const hasBlock = block.sourceString.trim().length > 0;
+
       let node;
-      if (contentResult && typeof contentResult === 'object' && contentResult.type === 'block') {
-        // Content is a block - use the block node directly as alternative content
-        node = contentResult.node;
-        node.type = 'alternative';  // Change type from 'block' to 'alternative'
+      if (hasBlock) {
+        const blockResult = block.toIR();
+        if (blockResult && blockResult.node) {
+          node = blockResult.node;
+          node.type = 'alternative';
+          if (hasText) {
+            node.content = text.sourceString.trim();
+          }
+        } else {
+          const textContent = hasText ? text.sourceString.trim() : '';
+          node = createNode(state, 'alternative', textContent, state.currentModifiers, this);
+          state.nodes.push(node);
+        }
+      } else if (hasText) {
+        const textContent = text.sourceString.trim();
+        node = createNode(state, 'alternative', textContent, state.currentModifiers, this);
+        state.nodes.push(node);
       } else {
-        // Content is text
-        const text = typeof contentResult === 'string' ? contentResult : content.sourceString.trim();
-        node = createNode(state, 'alternative', text, state.currentModifiers, this);
+        node = createNode(state, 'alternative', '', state.currentModifiers, this);
         state.nodes.push(node);
       }
 

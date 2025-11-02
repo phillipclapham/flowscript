@@ -10,8 +10,14 @@ FlowScript {
   Statement = ~Modifier (~("\n" | "{" | "}") any)+ "\n"?
 
   // Blocks (thought blocks / atomic processing units)
-  Block = "{" (space | "\n")* BlockLine* (space | "\n")* "}"
-  BlockLine = (space | "\n")* (ContinuationRel | RelationshipExpression | Element) (space | "\n")*
+  Block = "{" ws BlockContent? ws "}"
+  BlockContent = BlockLine (separator? BlockLine)* separator?
+  BlockLine = ws (ContinuationRel | RelationshipExpression | BlockElement)
+  BlockElement = Modifier* BlockContent_inner
+  BlockContent_inner = State | Insight | Question | Completion | Alternative | Block | BlockStatement
+  BlockStatement = ~Modifier (~("\n" | "{" | "}" | ";") any)+
+  separator = (space | "\n" | ";")+
+  ws = (space | "\n")*
 
   // Relationship Expressions (must come before Statement in Line)
   RelationshipExpression = RelNode RelOpNodePair+
@@ -21,7 +27,7 @@ FlowScript {
   // Continuation Relationship (only valid inside blocks)
   ContinuationRel = RelOp space* RelNode
 
-  NodeText = ~insightPrefix (~("<->" | "->" | "<-" | "=>" | "><[" | "><" | "\n" | "{" | "}") any)+
+  NodeText = ~insightPrefix (~("<->" | "->" | "<-" | "=>" | "><[" | "><" | "\n" | "{" | "}" | ";") any)+
   insightPrefix = "thought:" | "action:"
 
   RelOp = bidirectional | reverseCausal | causal | temporal | tensionWithAxis | tensionWithoutAxis
@@ -79,22 +85,24 @@ FlowScript {
   Insight = Thought | Action
 
   // Insights can have optional relationship chains, or blocks
-  Thought = "thought:" space* (Block | thoughtText) RelOpNodePair*
-  Action = "action:" space* (Block | actionText) RelOpNodePair*
+  // Supports: text+block, just block, or just text
+  Thought = "thought:" space* thoughtText? Block? RelOpNodePair* "\n"?
+  Action = "action:" space* actionText? Block? RelOpNodePair* "\n"?
 
   // Content excludes relationship operators and block delimiters (they're in RelOpNodePair)
-  thoughtText = (~("\n" | "}" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
-  actionText = (~("\n" | "}" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
+  // For text+block pattern, exclude { as well
+  thoughtText = (~("\n" | "}" | "{" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
+  actionText = (~("\n" | "}" | "{" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
 
-  Question = "?" space* (Block | questionText)
-  questionText = (~("\n" | "}") any)*
+  Question = "?" space* questionText? Block? "\n"?
+  questionText = (~("\n" | "}" | "{") any)+
 
-  Completion = "✓" space* (Block | completionText)
-  completionText = (~("\n" | "}") any)*
+  Completion = "✓" space* completionText? Block? "\n"?
+  completionText = (~("\n" | "}" | "{") any)+
 
   // Alternatives
-  Alternative = "||" space* (Block | alternativeText)
-  alternativeText = (~("\n" | "}") any)*
+  Alternative = "||" space* alternativeText? Block? "\n"?
+  alternativeText = (~("\n" | "}" | "{") any)+
 
   // Lexical elements
   string = "\"" stringChar* "\""
