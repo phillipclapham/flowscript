@@ -362,6 +362,84 @@ thought: {
 }
 ```
 
+### Horizontal Syntax (Semicolons)
+
+**Inline blocks:** FlowScript supports horizontal/inline syntax using semicolons (`;`) as separators instead of newlines.
+
+**Syntax:**
+```ebnf
+separator = ";" | "\n" | adjacent
+```
+
+**Both styles produce identical IR** (zero semantic difference).
+
+**Examples:**
+```flowscript
+# Vertical syntax (newline separators)
+{
+  -> impl one
+  -> impl two
+  -> impl three
+}
+
+# Horizontal syntax (semicolon separators)
+{-> impl one; -> impl two; -> impl three}
+
+# Mixed (both valid)
+{
+  -> impl one; -> impl two
+  -> impl three
+}
+
+# Text + block patterns
+thought: main insight {-> impl one; -> impl two}
+? authentication {|| JWT; || sessions}
+action: refactor {-> extract; -> test; -> deploy}
+
+# Nested horizontal blocks
+{outer {inner one; inner two}}
+thought: parent {-> child {-> grandchild}}
+
+# Complex horizontal patterns
+? decision {
+  || option A {-> pro one; -> pro two}
+  || option B {-> different approach}
+}
+```
+
+**Separators are flexible:**
+- Semicolon: `{a; b}`
+- Newline: `{a\nb}`
+- Adjacent blocks: `{outer {inner}}` (no separator needed)
+- Trailing semicolons allowed: `{a; b;}`
+- Multiple semicolons collapsed: `{a;; b}` → `{a; b}`
+
+**When to use:**
+- **Vertical:** Multi-line, complex hierarchies, readability
+- **Horizontal:** Compact, simple sequences, inline notes
+
+**IR equivalence:**
+```flowscript
+# These three produce IDENTICAL IR:
+
+1. Vertical:
+{
+  A -> B
+  B -> C
+}
+
+2. Horizontal:
+{A -> B; B -> C}
+
+3. Mixed:
+{A -> B
+ B -> C}
+```
+
+**Known limitation:** Modifiers with text+block patterns
+Pattern `! thought: text {block}` has issues - modifier placement unclear.
+Workaround: Use either `! thought: text` OR `thought: text {block}` (not both).
+
 ---
 
 ## Operator Precedence

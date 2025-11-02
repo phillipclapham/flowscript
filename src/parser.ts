@@ -556,11 +556,28 @@ export class Parser {
 
         let node;
         if (hasBlock) {
+          // Save modifiers before block parsing (block will clear them)
+          const savedModifiers = [...self.currentModifiers];
+
           // Has a block (with or without text)
-          const blockResult = block.toIR();
+          // block.toIR() returns an array because Block? is optional (iteration node)
+          const blockResultArray = block.toIR();
+          const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+            ? blockResultArray[0]
+            : null;
+
           if (blockResult && blockResult.node) {
             node = blockResult.node;
             node.type = 'thought';
+
+            // Move modifiers from block's ext to root level
+            if (savedModifiers.length > 0) {
+              node.modifiers = savedModifiers;
+              // Remove from ext (block had them there)
+              if (node.ext?.modifiers) {
+                delete node.ext.modifiers;
+              }
+            }
 
             // If there's also text, set it as the content
             if (hasText) {
@@ -600,11 +617,28 @@ export class Parser {
 
         let node;
         if (hasBlock) {
+          // Save modifiers before block parsing (block will clear them)
+          const savedModifiers = [...self.currentModifiers];
+
           // Has a block (with or without text)
-          const blockResult = block.toIR();
+          // block.toIR() returns an array because Block? is optional (iteration node)
+          const blockResultArray = block.toIR();
+          const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+            ? blockResultArray[0]
+            : null;
+
           if (blockResult && blockResult.node) {
             node = blockResult.node;
             node.type = 'action';
+
+            // Move modifiers from block's ext to root level
+            if (savedModifiers.length > 0) {
+              node.modifiers = savedModifiers;
+              // Remove from ext (block had them there)
+              if (node.ext?.modifiers) {
+                delete node.ext.modifiers;
+              }
+            }
 
             // If there's also text, set it as the content
             if (hasText) {
@@ -644,11 +678,28 @@ export class Parser {
 
         let node;
         if (hasBlock) {
+          // Save modifiers before block parsing (block will clear them)
+          const savedModifiers = [...self.currentModifiers];
+
           // Has a block (with or without text)
-          const blockResult = block.toIR();
+          // block.toIR() returns an array because Block? is optional (iteration node)
+          const blockResultArray = block.toIR();
+          const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+            ? blockResultArray[0]
+            : null;
+
           if (blockResult && blockResult.node) {
             node = blockResult.node;
             node.type = 'question';
+
+            // Move modifiers from block's ext to root level
+            if (savedModifiers.length > 0) {
+              node.modifiers = savedModifiers;
+              // Remove from ext (block had them there)
+              if (node.ext?.modifiers) {
+                delete node.ext.modifiers;
+              }
+            }
 
             // If there's also text, set it as the content
             if (hasText) {
@@ -681,11 +732,28 @@ export class Parser {
 
         let node;
         if (hasBlock) {
+          // Save modifiers before block parsing (block will clear them)
+          const savedModifiers = [...self.currentModifiers];
+
           // Has a block (with or without text)
-          const blockResult = block.toIR();
+          // block.toIR() returns an array because Block? is optional (iteration node)
+          const blockResultArray = block.toIR();
+          const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+            ? blockResultArray[0]
+            : null;
+
           if (blockResult && blockResult.node) {
             node = blockResult.node;
             node.type = 'completion';
+
+            // Move modifiers from block's ext to root level
+            if (savedModifiers.length > 0) {
+              node.modifiers = savedModifiers;
+              // Remove from ext (block had them there)
+              if (node.ext?.modifiers) {
+                delete node.ext.modifiers;
+              }
+            }
 
             // If there's also text, set it as the content
             if (hasText) {
@@ -837,11 +905,28 @@ export class Parser {
 
         let node;
         if (hasBlock) {
+          // Save modifiers before block parsing (block will clear them)
+          const savedModifiers = [...self.currentModifiers];
+
           // Has a block (with or without text)
-          const blockResult = block.toIR();
+          // block.toIR() returns an array because Block? is optional (iteration node)
+          const blockResultArray = block.toIR();
+          const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+            ? blockResultArray[0]
+            : null;
+
           if (blockResult && blockResult.node) {
             node = blockResult.node;
             node.type = 'alternative';
+
+            // Move modifiers from block's ext to root level
+            if (savedModifiers.length > 0) {
+              node.modifiers = savedModifiers;
+              // Remove from ext (block had them there)
+              if (node.ext?.modifiers) {
+                delete node.ext.modifiers;
+              }
+            }
 
             // If there's also text, set it as the content
             if (hasText) {

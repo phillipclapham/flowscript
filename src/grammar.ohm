@@ -91,18 +91,19 @@ FlowScript {
 
   // Content excludes relationship operators and block delimiters (they're in RelOpNodePair)
   // For text+block pattern, exclude { as well
-  thoughtText = (~("\n" | "}" | "{" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
-  actionText = (~("\n" | "}" | "{" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
+  // Exclude ; to allow semicolons as separators in horizontal syntax
+  thoughtText = (~("\n" | "}" | "{" | ";" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
+  actionText = (~("\n" | "}" | "{" | ";" | "->" | "<-" | "<=>" | "=>" | "><[" | "><") any)+
 
   Question = "?" space* questionText? Block? "\n"?
-  questionText = (~("\n" | "}" | "{") any)+
+  questionText = (~("\n" | "}" | "{" | ";") any)+
 
   Completion = "✓" space* completionText? Block? "\n"?
-  completionText = (~("\n" | "}" | "{") any)+
+  completionText = (~("\n" | "}" | "{" | ";") any)+
 
   // Alternatives
   Alternative = "||" space* alternativeText? Block? "\n"?
-  alternativeText = (~("\n" | "}" | "{") any)+
+  alternativeText = (~("\n" | "}" | "{" | ";") any)+
 
   // Lexical elements
   string = "\"" stringChar* "\""
