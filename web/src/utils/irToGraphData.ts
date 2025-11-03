@@ -20,9 +20,55 @@
  * - Total: O(n+s+r) - linear time complexity
  */
 
-import type { IR, State } from '../../../src/types';
+import type { IR, State, Node } from '../../../src/types';
 import type { GraphData, GraphNode, GraphEdge, NodeType, EdgeType } from '../types/graph';
 import { getNodeVisualization, getEdgeVisualization } from '../types/graph';
+
+// ============================================================================
+// Block Hierarchy Handling
+// ============================================================================
+
+/**
+ * Build set of child node IDs from all blocks.
+ *
+ * These nodes should not appear as top-level graph nodes - they're hidden
+ * inside their parent blocks until expanded.
+ *
+ * @param nodes - IR nodes array
+ * @returns Set of child node IDs
+ */
+function buildChildNodeSet(nodes: Node[]): Set<string> {
+  const childIds = new Set<string>();
+
+  for (const node of nodes) {
+    if (node.type === 'block' && node.ext?.children) {
+      // ext.children is an array of full Node objects
+      const children = node.ext.children as Node[];
+      for (const child of children) {
+        childIds.add(child.id);
+      }
+    }
+  }
+
+  return childIds;
+}
+
+/**
+ * Extract child node IDs from a node's ext.children.
+ *
+ * Block nodes store their children in ext.children as full Node objects.
+ * We need to extract just the IDs for the GraphNode.children array.
+ *
+ * @param node - IR node
+ * @returns Array of child node IDs, or undefined
+ */
+function extractChildrenIds(node: Node): string[] | undefined {
+  if (node.type === 'block' && node.ext?.children) {
+    const children = node.ext.children as Node[];
+    return children.map(child => child.id);
+  }
+  return node.children; // Fallback to direct children array (if present)
+}
 
 /**
  * Transform IR to GraphData with ZERO semantic loss.
@@ -45,29 +91,43 @@ export function irToGraphData(ir: IR): GraphData {
   // Step 1: Build state lookup for O(1) joins
   const statesByNodeId = buildStateLookup(ir.states);
 
-  // Step 2: Transform nodes (zero loss, all 12 types preserved)
-  const nodes: GraphNode[] = ir.nodes.map(node => {
-    const graphNode: GraphNode = {
-      id: node.id, // Keep content hash
-      type: mapNodeType(node.type), // Direct 1:1 mapping
-      content: node.content,
-      lineNumber: node.provenance.line_number,
-      visualization: getNodeVisualization(mapNodeType(node.type)),
-      state: transformState(statesByNodeId.get(node.id)),
-      children: node.children, // Preserve hierarchical structure
-    };
+  // Step 2: Build set of child node IDs (nodes that belong inside blocks)
+  // These nodes should not appear as top-level graph nodes
+  const childNodeIds = buildChildNodeSet(ir.nodes);
 
-    return graphNode;
-  });
+  // Step 3: Transform nodes (zero loss, all 12 types preserved)
+  // FILTER OUT nodes that are children of blocks (they're hidden inside parent)
+  const nodes: GraphNode[] = ir.nodes
+    .filter(node => !childNodeIds.has(node.id)) // Hide child nodes
+    .map(node => {
+      const graphNode: GraphNode = {
+        id: node.id, // Keep content hash
+        type: mapNodeType(node.type), // Direct 1:1 mapping
+        content: node.content,
+        lineNumber: node.provenance.line_number,
+        visualization: getNodeVisualization(mapNodeType(node.type)),
+        state: transformState(statesByNodeId.get(node.id)),
+        children: extractChildrenIds(node), // Extract from ext.children if present
+      };
 
-  // Step 3: Transform relationships (zero loss, all 10 types preserved)
-  const edges: GraphEdge[] = ir.relationships.map(rel => ({
-    source: rel.source, // Node ID (hash)
-    target: rel.target, // Node ID (hash)
-    type: mapEdgeType(rel.type), // Direct 1:1 mapping
-    label: rel.axis_label || undefined, // Preserve tension axes
-    visualization: getEdgeVisualization(mapEdgeType(rel.type)),
-  }));
+      return graphNode;
+    });
+
+  // Step 4: Transform relationships (zero loss, all 10 types preserved)
+  // FILTER OUT edges where either endpoint is a hidden child node
+  const edges: GraphEdge[] = ir.relationships
+    .filter(rel => {
+      // Keep edge ONLY if BOTH endpoints are NOT hidden children
+      // This filters out: child->child edges AND parent->child edges
+      return !childNodeIds.has(rel.source) && !childNodeIds.has(rel.target);
+    })
+    .map(rel => ({
+      source: rel.source, // Node ID (hash)
+      target: rel.target, // Node ID (hash)
+      type: mapEdgeType(rel.type), // Direct 1:1 mapping
+      label: rel.axis_label || undefined, // Preserve tension axes
+      visualization: getEdgeVisualization(mapEdgeType(rel.type)),
+    }));
 
   return { nodes, edges };
 }
