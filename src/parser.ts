@@ -582,6 +582,12 @@ export class Parser {
             // If there's also text, set it as the content
             if (hasText) {
               node.content = text.sourceString.trim();
+            } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
+              // No text provided - use first child's content as the thought content
+              const firstChild = node.ext.children[0];
+              if (firstChild && firstChild.content) {
+                node.content = firstChild.content;
+              }
             }
           } else {
             // Block parsing failed, fall back to text-only
@@ -643,6 +649,12 @@ export class Parser {
             // If there's also text, set it as the content
             if (hasText) {
               node.content = text.sourceString.trim();
+            } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
+              // No text provided - use first child's content as the action content
+              const firstChild = node.ext.children[0];
+              if (firstChild && firstChild.content) {
+                node.content = firstChild.content;
+              }
             }
           } else {
             // Block parsing failed, fall back to text-only
@@ -704,6 +716,12 @@ export class Parser {
             // If there's also text, set it as the content
             if (hasText) {
               node.content = text.sourceString.trim();
+            } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
+              // No text provided - use first child's content as the question content
+              const firstChild = node.ext.children[0];
+              if (firstChild && firstChild.content) {
+                node.content = firstChild.content;
+              }
             }
           } else {
             // Block parsing failed, fall back to text-only
@@ -758,6 +776,12 @@ export class Parser {
             // If there's also text, set it as the content
             if (hasText) {
               node.content = text.sourceString.trim();
+            } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
+              // No text provided - use first child's content as the completion content
+              const firstChild = node.ext.children[0];
+              if (firstChild && firstChild.content) {
+                node.content = firstChild.content;
+              }
             }
           } else {
             // Block parsing failed, fall back to text-only
@@ -931,6 +955,12 @@ export class Parser {
             // If there's also text, set it as the content
             if (hasText) {
               node.content = text.sourceString.trim();
+            } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
+              // No text provided - use first child's content as the alternative content
+              const firstChild = node.ext.children[0];
+              if (firstChild && firstChild.content) {
+                node.content = firstChild.content;
+              }
             }
           } else {
             // Block parsing failed, fall back to text-only
@@ -1045,6 +1075,23 @@ export class Parser {
    * 2. Any node followed by a block inherits that block's children
    */
   private populateChildrenArrays(): void {
+    // Track redundant blocks (blocks whose children were assigned to a parent)
+    const redundantBlockIds = new Set<string>();
+
+    // Build set of block IDs that are referenced in relationships
+    // These blocks should NOT be removed even if their children are attached to a parent
+    const blocksInRelationships = new Set<string>();
+    for (const rel of this.relationships) {
+      const sourceNode = this.nodes.find(n => n.id === rel.source);
+      const targetNode = this.nodes.find(n => n.id === rel.target);
+      if (sourceNode?.type === 'block') {
+        blocksInRelationships.add(sourceNode.id);
+      }
+      if (targetNode?.type === 'block') {
+        blocksInRelationships.add(targetNode.id);
+      }
+    }
+
     // Step 1: Questions have children = their alternatives (from relationships)
     for (const rel of this.relationships) {
       if (rel.type === 'alternative') {
@@ -1102,9 +1149,26 @@ export class Parser {
         if (!parentNode.children) {
           parentNode.children = [];
         }
-        // Append to existing children (e.g., question might already have alternatives)
-        parentNode.children.push(...directChildren);
+        // Append to existing children, but avoid duplicates
+        // (e.g., question might already have alternatives from relationships)
+        for (const childId of directChildren) {
+          if (!parentNode.children.includes(childId)) {
+            parentNode.children.push(childId);
+          }
+        }
+
+        // Mark this block as redundant ONLY if it's not referenced in relationships
+        if (!blocksInRelationships.has(blockNode.id)) {
+          redundantBlockIds.add(blockNode.id);
+        }
       }
+    }
+
+    // Step 3: Remove redundant blocks from nodes array
+    // These blocks served their purpose (grouping indented content) but are no longer needed
+    // Blocks that are referenced in relationships are kept (e.g., "main -> {block}")
+    if (redundantBlockIds.size > 0) {
+      this.nodes = this.nodes.filter(n => !redundantBlockIds.has(n.id));
     }
   }
 

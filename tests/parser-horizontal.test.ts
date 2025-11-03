@@ -164,7 +164,8 @@ describe('Parser - Horizontal Syntax', () => {
 
       const thoughtNode = ir.nodes.find(n => n.type === 'thought');
       expect(thoughtNode).toBeDefined();
-      expect(thoughtNode?.content).toBe(''); // No text, just block
+      // When marker+block has no text, use first child's content
+      expect(thoughtNode?.content).toBe('impl one');
 
       // Thought reuses the block (no separate block node)
       expect(thoughtNode?.ext?.children).toHaveLength(2);
@@ -463,9 +464,9 @@ describe('Parser - Horizontal Syntax', () => {
       const alternatives = ir.nodes.filter(n => n.type === 'alternative');
       expect(alternatives).toHaveLength(2);
 
-      // Each alternative should have a block with children
-      const blocks = ir.nodes.filter(n => n.type === 'block');
-      expect(blocks.length).toBeGreaterThan(0);
+      // Each alternative should have children attached (blocks are removed after children attached)
+      const altsWithChildren = alternatives.filter(a => a.ext?.children && Array.isArray(a.ext.children) && a.ext.children.length > 0);
+      expect(altsWithChildren.length).toBeGreaterThan(0);
     });
 
     it('parses thought with inline causal chain', () => {
