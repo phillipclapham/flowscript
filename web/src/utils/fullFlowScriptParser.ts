@@ -528,6 +528,12 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
           node.type = 'thought';
           if (hasText) {
             node.content = text.sourceString.trim();
+          } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
+            // No text provided - use first child's content as the thought content
+            const firstChild = node.ext.children[0];
+            if (firstChild && firstChild.content) {
+              node.content = firstChild.content;
+            }
           }
         } else {
           const textContent = hasText ? text.sourceString.trim() : '';
@@ -564,6 +570,12 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
           node.type = 'action';
           if (hasText) {
             node.content = text.sourceString.trim();
+          } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
+            // No text provided - use first child's content as the action content
+            const firstChild = node.ext.children[0];
+            if (firstChild && firstChild.content) {
+              node.content = firstChild.content;
+            }
           }
         } else {
           const textContent = hasText ? text.sourceString.trim() : '';
@@ -600,6 +612,12 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
           node.type = 'question';
           if (hasText) {
             node.content = text.sourceString.trim();
+          } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
+            // No text provided - use first child's content as the question content
+            const firstChild = node.ext.children[0];
+            if (firstChild && firstChild.content) {
+              node.content = firstChild.content;
+            }
           }
         } else {
           const textContent = hasText ? text.sourceString.trim() : '';
@@ -630,6 +648,12 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
           node.type = 'completion';
           if (hasText) {
             node.content = text.sourceString.trim();
+          } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
+            // No text provided - use first child's content as the completion content
+            const firstChild = node.ext.children[0];
+            if (firstChild && firstChild.content) {
+              node.content = firstChild.content;
+            }
           }
         } else {
           const textContent = hasText ? text.sourceString.trim() : '';
@@ -760,6 +784,12 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
           node.type = 'alternative';
           if (hasText) {
             node.content = text.sourceString.trim();
+          } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
+            // No text provided - use first child's content as the alternative content
+            const firstChild = node.ext.children[0];
+            if (firstChild && firstChild.content) {
+              node.content = firstChild.content;
+            }
           }
         } else {
           const textContent = hasText ? text.sourceString.trim() : '';
@@ -924,6 +954,23 @@ function linkQuestionsToAlternatives(state: ParserState): void {
  * Children represent syntactic nesting (who is indented under whom).
  */
 function populateChildrenArrays(state: ParserState): void {
+  // Track redundant blocks (blocks whose children were assigned to a parent)
+  const redundantBlockIds = new Set<string>();
+
+  // Build set of block IDs that are referenced in relationships
+  // These blocks should NOT be removed even if their children are attached to a parent
+  const blocksInRelationships = new Set<string>();
+  for (const rel of state.relationships) {
+    const sourceNode = state.nodes.find(n => n.id === rel.source);
+    const targetNode = state.nodes.find(n => n.id === rel.target);
+    if (sourceNode?.type === 'block') {
+      blocksInRelationships.add(sourceNode.id);
+    }
+    if (targetNode?.type === 'block') {
+      blocksInRelationships.add(targetNode.id);
+    }
+  }
+
   // Step 1: Questions get children from alternative relationships
   for (const rel of state.relationships) {
     if (rel.type === 'alternative') {
@@ -974,7 +1021,25 @@ function populateChildrenArrays(state: ParserState): void {
       if (!parentNode.children) {
         parentNode.children = [];
       }
-      parentNode.children.push(...directChildren);
+      // Append to existing children, but avoid duplicates
+      // (e.g., question might already have alternatives from relationships)
+      for (const childId of directChildren) {
+        if (!parentNode.children.includes(childId)) {
+          parentNode.children.push(childId);
+        }
+      }
+
+      // Mark this block as redundant ONLY if it's not referenced in relationships
+      if (!blocksInRelationships.has(blockNode.id)) {
+        redundantBlockIds.add(blockNode.id);
+      }
     }
+  }
+
+  // Step 3: Remove redundant blocks from nodes array
+  // These blocks served their purpose (grouping indented content) but are no longer needed
+  // Blocks that are referenced in relationships are kept (e.g., "main -> {block}")
+  if (redundantBlockIds.size > 0) {
+    state.nodes = state.nodes.filter(n => !redundantBlockIds.has(n.id));
   }
 }
