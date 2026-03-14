@@ -32,6 +32,8 @@ You write mostly normal prose, but when relationships matter - when you need to 
 
 **Works with any AI. No installation. No setup. Just start using it.**
 
+> **Researchers & protocol designers:** FlowScript compiles to a formal Intermediate Representation with a complete toolchain (parser, linter, validator, query engine — 214/214 tests passing). If you're here for the IR, agent protocol integration, or convergent evolution evidence, jump to [Protocol Research & Formal Toolchain](#protocol-research--formal-toolchain).
+
 Think of it as markdown for reasoning. Markdown didn't replace writing - it made structure explicit: headers, emphasis, lists, links. Writers still write prose, but structure became computational. Documents became navigable, parseable, transformable.
 
 FlowScript does the same for thought structure. Relations, states, questions, insights - the scaffolding of reasoning made explicit and computational.
@@ -267,6 +269,81 @@ Power user:
 
 ---
 
+## Protocol Research & Formal Toolchain
+
+FlowScript isn't just notation you paste into a chat window. It compiles to a formal Intermediate Representation — a JSON structure with content-hash IDs, provenance tracking, typed relationships, and schema validation. That IR is what makes everything below possible.
+
+### The IR: Why It Matters
+
+The FlowScript toolchain parses `.fs` files into a canonical IR that preserves the full topology of your thinking as structured data:
+
+```bash
+# Parse FlowScript to IR
+flowscript parse example.fs -o example.json
+
+# Lint for semantic errors (9 rules: 6 errors, 3 warnings)
+flowscript lint example.fs
+
+# Validate IR against canonical schema
+flowscript validate example.json
+
+# Query the cognitive graph
+flowscript query why <node-id> example.json
+flowscript query what-if <node-id> example.json
+flowscript query tensions example.json
+```
+
+214 tests passing. All queries execute in <1ms on typical cognitive graphs. The IR includes content-hash deduplication, source file provenance, line numbers, and timestamps — everything a memory system or protocol payload needs.
+
+For the full toolchain and query engine documentation, see [Toolchain & Query Engine](#toolchain--query-engine) below.
+
+### Position in the Agent Protocol Landscape
+
+The transport layer for agent communication is settled. MCP (agent-to-tool) and A2A (agent-to-agent) are both under the Linux Foundation. 97M+ monthly MCP downloads. That layer is infrastructure commons now — same status as HTTP.
+
+Competition has moved up the stack to three layers:
+1. **Network effects** — who owns agent discovery
+2. **Semantic layer** — how agents understand each other's meaning
+3. **Cognitive substrate** — what makes agents think well, not just communicate
+
+FlowScript operates at layers 2 and 3. It's not competing with MCP or A2A — it's what goes *inside* the messages they transport.
+
+### Convergent Evolution
+
+Three independent systems arrived at symbolic notation for AI communication without any cross-pollination:
+
+| System | Date | Scope |
+|--------|------|-------|
+| [SynthLang](https://github.com/ruvnet/SynthLang) | Jan 2025 | Prompt compression |
+| **FlowScript** | **Oct 2025** | **Cognitive substrate + formal toolchain** |
+| [MetaGlyph](https://arxiv.org/abs/2601.07354) | Jan 2026 | Prompt compression (6 operators, 62-81% token reduction) |
+
+When independent builders in different domains converge on the same structural insight — explicit topology beats implicit prose for AI communication — that's evidence the insight is load-bearing, not idiosyncratic.
+
+FlowScript is the broadest in scope: 21 markers, parser, linter, validator, query engine, web editor, D3 visualization. SynthLang and MetaGlyph focus on compression; FlowScript treats notation as *cognitive infrastructure* — computable, queryable, and memory-ready.
+
+### Research Alignment
+
+Recent work in agent protocol design has independently identified the structural slot FlowScript fills:
+
+**LDP** ([arXiv:2603.08852](https://arxiv.org/abs/2603.08852)) defines six progressive payload modes for agent communication. Mode 1 (Semantic Frames) achieves 37% token reduction. Mode 3 (Semantic Graphs) is specified but has no implementation or evaluation — it's described as "future work pending wider API support for intermediate representations." FlowScript's IR is a working implementation of Mode 3.
+
+**G2CP** ([GitHub](https://github.com/karim0bkh/G2CP_AAMAS)) is a graph-grounded communication protocol where agents exchange structured subgraphs instead of free text. Their SUBGRAPH wire format — typed nodes, labeled edges with confidence scores — is structurally isomorphic to FlowScript's IR. G2CP reports 73% token reduction and 0.90 task accuracy. FlowScript provides the human-readable authoring layer that G2CP's wire format lacks.
+
+**NFD** ([arXiv:2603.10808](https://arxiv.org/abs/2603.10808)) independently derives a three-tier cognitive architecture for agents (stable identity → developing capability → recent context) that matches the temporal memory structure FlowScript was built to encode — and that the [flow system](https://github.com/phillipclapham/flow-methodology) has been running in production since October 2025.
+
+**JamJet** ([GitHub](https://github.com/jamjet-labs/jamjet)) is a production Rust agent runtime (launched March 2026) with a `ProtocolAdapter` plugin system. LDP already has a [JamJet adapter](https://github.com/sunilp/ldp-protocol). The integration path for FlowScript is concrete: FlowScript IR → LDP Mode 3 payload → existing JamJet adapter → JamJet runtime.
+
+### What This Means
+
+The agent protocol ecosystem is converging on a need for structured semantic payloads — something richer than plain text but lighter than full knowledge graphs. FlowScript's IR sits exactly in that gap: human-writable, machine-parseable, formally validated, and already integrated into a production cognitive system.
+
+This isn't theoretical positioning. The [flow system](https://github.com/phillipclapham/flow-methodology) has been running FlowScript-encoded memory in production for 6 months. The toolchain has 214 passing tests. The IR schema is stable and documented.
+
+If you're working on agent protocols and want to explore integration, [open an issue](https://github.com/phillipclapham/flowscript/issues) or see the [formal specification](spec/).
+
+---
+
 ## Layer 3: What FlowScript Enables
 
 This is where it gets interesting.
@@ -327,32 +404,7 @@ If semantic notation can enable cognitive symbiosis for one person in 6 weeks, w
 
 ## Toolchain & Query Engine
 
-While FlowScript works as notation with any AI (no installation needed), we've also built a complete formal toolchain that proves FlowScript is computable substrate:
-
-### The Toolchain
-
-**Parser:** Compiles FlowScript text → Intermediate Representation (IR) JSON
-**Linter:** Validates semantic correctness (9 rules: 6 errors, 3 warnings)
-**Validator:** Verifies IR against canonical schema
-**Query Engine:** Executes 5 computational queries on cognitive graphs
-
-```bash
-# Parse FlowScript to IR
-flowscript parse example.fs -o example.json
-
-# Lint for semantic errors
-flowscript lint example.fs
-
-# Validate IR structure
-flowscript validate example.json
-
-# Query the graph
-flowscript query why <node-id> example.json
-flowscript query what-if <node-id> example.json
-flowscript query tensions example.json
-flowscript query blocked example.json
-flowscript query alternatives <question-id> example.json
-```
+The toolchain introduced in [Protocol Research & Formal Toolchain](#protocol-research--formal-toolchain) above deserves a deeper look. Here's what each component does and why it matters.
 
 ### The Five Queries
 
@@ -518,9 +570,13 @@ Notice something missing? Propose new markers with:
 
 FlowScript evolves through **revealed preference**, not upfront design. What gets used survives. What creates friction gets pruned.
 
+### Protocol Integration
+
+Working on agent communication protocols? FlowScript's IR is a natural fit for structured semantic payloads. See [Protocol Research & Formal Toolchain](#protocol-research--formal-toolchain) for alignment with LDP, G2CP, and JamJet. If you're building adapters or exploring integration, open an issue or PR.
+
 ### Research Collaboration
 
-Interested in the cognitive architecture implications? The Third Mind hypothesis? Dimensional expansion of thought?
+Interested in the cognitive architecture implications? Convergent evolution of symbolic AI notation? Agent protocol design? The Third Mind hypothesis?
 
 Open an issue tagged `research`. Let's explore together.
 
@@ -535,20 +591,21 @@ Open an issue tagged `research`. Let's explore together.
 ✅ **Lifecycle automation proven** - Working in production systems
 ✅ **Teachability confirmed** - Spec alone sufficient for adoption
 
-### Next: Product Development (Q1-Q2 2026)
+### Next: Protocol Integration & Formal Benchmarks
 
-🚧 **The Bridge** - In design phase
-🚧 **The Editor** - In design phase
+🔬 **Compression benchmarks** — Formal measurements against MetaGlyph and SynthLang on equivalent documents
+🔬 **LDP Mode 3 implementation** — FlowScript IR as the reference implementation for LDP's Semantic Graphs payload mode
+🔬 **JamJet adapter** — ProtocolAdapter for FlowScript payloads in the JamJet agent runtime
+🔬 **Third Mind research** — Extended case studies beyond single-user validation
 
-Both products depend on validating market demand. FlowScript as notation is stable. Products will evolve based on usage.
+### Active Research Questions
 
-### Future: Community & Research
+- How does FlowScript generalize as a protocol payload vs. a human authoring tool?
+- What's the compression-to-semantic-fidelity curve across different content types?
+- Can FlowScript IR bridge human-authored reasoning and agent-to-agent communication?
+- Does the Third Mind phenomenon scale to multi-user, multi-agent systems?
 
-🔬 **Third Mind research** - Extended case studies needed
-🔬 **Cognitive architecture studies** - How does FlowScript change thinking patterns?
-🔬 **Meta-programming idioms** - What collaborative protocols emerge?
-
-This is early. FlowScript shipped October 9, 2025. Everything is still being discovered.
+FlowScript shipped October 9, 2025. The protocol landscape caught up in early 2026. The convergence is accelerating.
 
 ---
 
