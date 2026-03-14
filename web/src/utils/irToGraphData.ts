@@ -29,28 +29,31 @@ import { getNodeVisualization, getEdgeVisualization } from '../types/graph';
 // ============================================================================
 
 /**
- * Build set of child node IDs from all blocks.
+ * Build set of duplicate node IDs to skip.
  *
- * These nodes should not appear as top-level graph nodes - they're hidden
- * inside their parent blocks until expanded.
+ * The parser creates duplicate statement nodes inside ext.children
+ * that have the same content as their parent block/question node.
+ * These duplicates clutter the graph — remove them.
  *
  * @param nodes - IR nodes array
- * @returns Set of child node IDs
+ * @returns Set of duplicate node IDs to skip
  */
-function buildChildNodeSet(nodes: Node[]): Set<string> {
-  const childIds = new Set<string>();
+function buildDuplicateSet(nodes: Node[]): Set<string> {
+  const duplicateIds = new Set<string>();
 
   for (const node of nodes) {
-    if (node.type === 'block' && node.ext?.children) {
-      // ext.children is an array of full Node objects
+    if (node.ext?.children) {
       const children = node.ext.children as Node[];
       for (const child of children) {
-        childIds.add(child.id);
+        // If a child has the exact same content as the parent, it's a duplicate
+        if (child.content === node.content) {
+          duplicateIds.add(child.id);
+        }
       }
     }
   }
 
-  return childIds;
+  return duplicateIds;
 }
 
 /**
@@ -91,14 +94,14 @@ export function irToGraphData(ir: IR): GraphData {
   // Step 1: Build state lookup for O(1) joins
   const statesByNodeId = buildStateLookup(ir.states);
 
-  // Step 2: Build set of child node IDs (nodes that belong inside blocks)
-  // These nodes should not appear as top-level graph nodes
-  const childNodeIds = buildChildNodeSet(ir.nodes);
+  // Step 2: Deduplicate nodes — parser creates duplicate statement nodes
+  // inside block ext.children with the same content as the parent.
+  // Build a set of IDs to skip (children that duplicate their parent's content).
+  const duplicateIds = buildDuplicateSet(ir.nodes);
 
-  // Step 3: Transform nodes (zero loss, all 12 types preserved)
-  // FILTER OUT nodes that are children of blocks (they're hidden inside parent)
+  // Step 3: Transform ALL nodes (no hiding — show full graph structure)
   const nodes: GraphNode[] = ir.nodes
-    .filter(node => !childNodeIds.has(node.id)) // Hide child nodes
+    .filter(node => !duplicateIds.has(node.id)) // Skip duplicate content nodes only
     .map(node => {
       const graphNode: GraphNode = {
         id: node.id, // Keep content hash
@@ -108,18 +111,30 @@ export function irToGraphData(ir: IR): GraphData {
         visualization: getNodeVisualization(mapNodeType(node.type)),
         state: transformState(statesByNodeId.get(node.id)),
         children: extractChildrenIds(node), // Extract from ext.children if present
+        parentId: undefined, // Will be set below
       };
 
       return graphNode;
     });
 
-  // Step 4: Transform relationships (zero loss, all 10 types preserved)
-  // FILTER OUT edges where either endpoint is a hidden child node
+  // Step 3b: Mark parent relationships for visual grouping
+  const nodeIdSet = new Set(nodes.map(n => n.id));
+  for (const node of ir.nodes) {
+    if (node.children && node.children.length > 0) {
+      for (const childId of node.children) {
+        const childNode = nodes.find(n => n.id === childId);
+        if (childNode) {
+          childNode.parentId = node.id;
+        }
+      }
+    }
+  }
+
+  // Step 4: Transform ALL relationships (no filtering — show full structure)
   const edges: GraphEdge[] = ir.relationships
     .filter(rel => {
-      // Keep edge ONLY if BOTH endpoints are NOT hidden children
-      // This filters out: child->child edges AND parent->child edges
-      return !childNodeIds.has(rel.source) && !childNodeIds.has(rel.target);
+      // Only filter edges that reference deduplicated (removed) nodes
+      return !duplicateIds.has(rel.source) && !duplicateIds.has(rel.target);
     })
     .map(rel => ({
       source: rel.source, // Node ID (hash)

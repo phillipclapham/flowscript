@@ -165,8 +165,9 @@ export interface GraphNode {
     };
   };
 
-  // Hierarchical structure (for block nodes)
+  // Hierarchical structure
   children?: string[];  // Array of child node IDs
+  parentId?: string;    // Parent node ID (for visual grouping)
 
   // D3 simulation fields (added during rendering)
   x?: number;

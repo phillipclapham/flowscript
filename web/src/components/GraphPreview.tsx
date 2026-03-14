@@ -76,7 +76,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
       .append('marker')
       .attr('id', `arrow-solid-${theme}`)
       .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 25)
+      .attr('refX', 32)
       .attr('refY', 0)
       .attr('markerWidth', 6)
       .attr('markerHeight', 6)
@@ -90,7 +90,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
       .append('marker')
       .attr('id', `arrow-dashed-${theme}`)
       .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 25)
+      .attr('refX', 32)
       .attr('refY', 0)
       .attr('markerWidth', 6)
       .attr('markerHeight', 6)
@@ -104,7 +104,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
       .append('marker')
       .attr('id', `arrow-double-${theme}`)
       .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 25)
+      .attr('refX', 32)
       .attr('refY', 0)
       .attr('markerWidth', 6)
       .attr('markerHeight', 6)
@@ -118,7 +118,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
       .append('marker')
       .attr('id', `arrow-better-${theme}`)
       .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 25)
+      .attr('refX', 32)
       .attr('refY', 0)
       .attr('markerWidth', 6)
       .attr('markerHeight', 6)
@@ -132,7 +132,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
       .append('marker')
       .attr('id', `arrow-worse-${theme}`)
       .attr('viewBox', '0 -5 10 10')
-      .attr('refX', 25)
+      .attr('refX', 32)
       .attr('refY', 0)
       .attr('markerWidth', 6)
       .attr('markerHeight', 6)
@@ -240,19 +240,22 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
       const strokeWidth = d.state?.blocked || d.state?.decided ? 3 : 2;
 
       // Render shape based on type
+      const r = 18; // Base node radius
+
       if (shape === 'circle') {
         // thought nodes - basic circle
         group
           .append('circle')
-          .attr('r', 12)
+          .attr('r', r)
           .attr('fill', color)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth);
       } else if (shape === 'diamond') {
         // question nodes - diamond shape
+        const s = r + 3;
         group
           .append('path')
-          .attr('d', 'M 0,-15 L 15,0 L 0,15 L -15,0 Z')
+          .attr('d', `M 0,-${s} L ${s},0 L 0,${s} L -${s},0 Z`)
           .attr('fill', color)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth);
@@ -260,39 +263,41 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
         // action nodes - rectangle with small border radius
         group
           .append('rect')
-          .attr('x', -12)
-          .attr('y', -12)
-          .attr('width', 24)
-          .attr('height', 24)
+          .attr('x', -r)
+          .attr('y', -r)
+          .attr('width', r * 2)
+          .attr('height', r * 2)
           .attr('rx', 3)
           .attr('fill', color)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth);
       } else if (shape === 'hexagon') {
         // decision nodes - hexagon
+        const s = r + 2;
         group
           .append('path')
-          .attr('d', 'M 0,-14 L 12,-7 L 12,7 L 0,14 L -12,7 L -12,-7 Z')
+          .attr('d', `M 0,-${s} L ${s * 0.866},-${s * 0.5} L ${s * 0.866},${s * 0.5} L 0,${s} L -${s * 0.866},${s * 0.5} L -${s * 0.866},-${s * 0.5} Z`)
           .attr('fill', color)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth);
       } else if (shape === 'rounded-rect') {
-        // statement nodes - rounded rectangle (larger border radius)
+        // statement nodes - rounded rectangle
         group
           .append('rect')
-          .attr('x', -14)
-          .attr('y', -10)
-          .attr('width', 28)
-          .attr('height', 20)
-          .attr('rx', 6)
+          .attr('x', -r - 2)
+          .attr('y', -(r - 4))
+          .attr('width', (r + 2) * 2)
+          .attr('height', (r - 4) * 2)
+          .attr('rx', 8)
           .attr('fill', color)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth);
       } else if (shape === 'triangle') {
         // alternative nodes - triangle
+        const s = r + 2;
         group
           .append('path')
-          .attr('d', 'M 0,-13 L 11,10 L -11,10 Z')
+          .attr('d', `M 0,-${s} L ${s * 0.866},${s * 0.5} L -${s * 0.866},${s * 0.5} Z`)
           .attr('fill', color)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth);
@@ -300,10 +305,10 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
         // parking nodes - rounded square
         group
           .append('rect')
-          .attr('x', -12)
-          .attr('y', -12)
-          .attr('width', 24)
-          .attr('height', 24)
+          .attr('x', -r)
+          .attr('y', -r)
+          .attr('width', r * 2)
+          .attr('height', r * 2)
           .attr('rx', 6)
           .attr('fill', color)
           .attr('stroke', strokeColor)
@@ -312,15 +317,14 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
         // exploring nodes - circle with dashed border
         group
           .append('circle')
-          .attr('r', 12)
+          .attr('r', r)
           .attr('fill', color)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth)
-          .attr('stroke-dasharray', '3,2');
+          .attr('stroke-dasharray', '4,3');
       } else if (shape === 'octagon') {
         // blocker nodes - octagon (stop sign)
-        const angle = Math.PI / 4; // 45 degrees
-        const r = 13;
+        const angle = Math.PI / 4;
         const points = Array.from({ length: 8 }, (_, i) => {
           const a = angle * i - Math.PI / 2;
           return `${r * Math.cos(a)},${r * Math.sin(a)}`;
@@ -333,12 +337,12 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
           .attr('stroke-width', strokeWidth);
       } else if (shape === 'star') {
         // insight nodes - 5-point star
-        const outerR = 14;
-        const innerR = 6;
+        const outerR = r + 2;
+        const innerR = r * 0.4;
         const points = Array.from({ length: 10 }, (_, i) => {
           const angle = (Math.PI / 5) * i - Math.PI / 2;
-          const r = i % 2 === 0 ? outerR : innerR;
-          return `${r * Math.cos(angle)},${r * Math.sin(angle)}`;
+          const sr = i % 2 === 0 ? outerR : innerR;
+          return `${sr * Math.cos(angle)},${sr * Math.sin(angle)}`;
         }).join(' L ');
         group
           .append('path')
@@ -350,33 +354,34 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
         // completion nodes - circle with checkmark
         group
           .append('circle')
-          .attr('r', 12)
+          .attr('r', r)
           .attr('fill', color)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth);
         // Add checkmark
         group
           .append('path')
-          .attr('d', 'M -5,0 L -2,5 L 6,-5')
+          .attr('d', `M -${r * 0.35},0 L -${r * 0.1},${r * 0.35} L ${r * 0.4},-${r * 0.35}`)
           .attr('fill', 'none')
           .attr('stroke', theme === 'dark' ? '#1f2937' : '#ffffff')
-          .attr('stroke-width', 2)
+          .attr('stroke-width', 2.5)
           .attr('stroke-linecap', 'round')
           .attr('stroke-linejoin', 'round');
       } else if (shape === 'cluster') {
         // block nodes - larger container with dashed border
-        const size = 40; // Larger than regular nodes
+        const size = 50;
         group
           .append('rect')
           .attr('x', -size/2)
           .attr('y', -size/2)
           .attr('width', size)
           .attr('height', size)
-          .attr('rx', 8)
+          .attr('rx', 10)
           .attr('fill', color)
           .attr('stroke', strokeColor)
           .attr('stroke-width', strokeWidth)
-          .attr('stroke-dasharray', '5,3');
+          .attr('stroke-dasharray', '5,3')
+          .attr('opacity', 0.7);
         // Add child count label
         const childCount = d.children?.length || 0;
         if (childCount > 0) {
@@ -385,7 +390,7 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
             .attr('y', 0)
             .attr('dy', '0.35em')
             .attr('text-anchor', 'middle')
-            .attr('font-size', '10px')
+            .attr('font-size', '12px')
             .attr('font-weight', 'bold')
             .attr('fill', theme === 'dark' ? '#1f2937' : '#ffffff')
             .style('pointer-events', 'none')
@@ -414,11 +419,12 @@ export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps)
       .join('text')
       .attr('class', 'graph-label')
       .attr('text-anchor', 'middle')
-      .attr('dy', 30)
-      .attr('fill', theme === 'dark' ? '#9ca3af' : '#6b7280')
-      .attr('font-size', '11px')
+      .attr('dy', 35)
+      .attr('fill', theme === 'dark' ? '#d1d5db' : '#374151')
+      .attr('font-size', '12px')
+      .attr('font-weight', '500')
       .style('pointer-events', 'none')
-      .text((d) => truncate(d.content, 20));
+      .text((d) => truncate(d.content, 35));
 
     // Add tooltips
     nodeGroup.append('title').text((d) => {

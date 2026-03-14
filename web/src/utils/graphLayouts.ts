@@ -29,11 +29,11 @@ export function applyForceLayout(
       d3
         .forceLink<GraphNode, GraphEdge>(edges)
         .id((d) => d.id)
-        .distance(60)
+        .distance(120)
     )
-    .force('charge', d3.forceManyBody().strength(-150))
+    .force('charge', d3.forceManyBody().strength(-350))
     .force('center', d3.forceCenter(config.width / 2, config.height / 2).strength(0.05))
-    .force('collision', d3.forceCollide().radius(40));
+    .force('collision', d3.forceCollide().radius(60));
 
   return simulation;
 }
