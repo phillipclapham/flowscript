@@ -1,7 +1,7 @@
 {
   "name": "flowscript",
   "version": "1.0.0",
-  "description": "Computable substrate for human-AI cognitive partnership - Parser and linter for FlowScript",
+  "description": "Decision intelligence for AI agents. Typed semantic queries over structured reasoning.",
   "main": "dist/index.js",
   "bin": {
     "flowscript": "./bin/flowscript"
@@ -14,10 +14,12 @@
   },
   "keywords": [
     "flowscript",
-    "parser",
-    "linter",
-    "cognitive-architecture",
-    "ai-memory"
+    "decision-intelligence",
+    "agent-memory",
+    "semantic-queries",
+    "ai-agents",
+    "query-engine",
+    "cognitive-architecture"
   ],
   "author": "Phillip Clapham",
   "license": "MIT",
