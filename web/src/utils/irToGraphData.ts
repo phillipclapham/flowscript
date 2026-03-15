@@ -117,11 +117,12 @@ export function irToGraphData(ir: IR): GraphData {
     });
 
   // Step 3b: Mark parent relationships for visual grouping
-  const nodeIdSet = new Set(nodes.map(n => n.id));
+  // Build lookup for O(1) child finding instead of O(n) per child
+  const nodeById = new Map(nodes.map(n => [n.id, n]));
   for (const node of ir.nodes) {
     if (node.children && node.children.length > 0) {
       for (const childId of node.children) {
-        const childNode = nodes.find(n => n.id === childId);
+        const childNode = nodeById.get(childId);
         if (childNode) {
           childNode.parentId = node.id;
         }
@@ -322,14 +323,20 @@ export function verifyTransformation(ir: IR, graphData: GraphData): {
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  // Check node count
-  if (ir.nodes.length !== graphData.nodes.length) {
-    errors.push(`Node count mismatch: IR=${ir.nodes.length}, GraphData=${graphData.nodes.length}`);
+  // Check node count (GraphData may have fewer due to deduplication)
+  const duplicateCount = buildDuplicateSet(ir.nodes).size;
+  const expectedNodes = ir.nodes.length - duplicateCount;
+  if (expectedNodes !== graphData.nodes.length) {
+    errors.push(`Node count mismatch: IR=${ir.nodes.length} - ${duplicateCount} deduped = ${expectedNodes}, GraphData=${graphData.nodes.length}`);
   }
 
-  // Check edge count
-  if (ir.relationships.length !== graphData.edges.length) {
-    errors.push(`Edge count mismatch: IR=${ir.relationships.length}, GraphData=${graphData.edges.length}`);
+  // Check edge count (edges referencing deduped nodes are also removed)
+  const duplicateIds = buildDuplicateSet(ir.nodes);
+  const expectedEdges = ir.relationships.filter(
+    rel => !duplicateIds.has(rel.source) && !duplicateIds.has(rel.target)
+  ).length;
+  if (expectedEdges !== graphData.edges.length) {
+    errors.push(`Edge count mismatch: expected=${expectedEdges}, GraphData=${graphData.edges.length}`);
   }
 
   // Check for unknown node types

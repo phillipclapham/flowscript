@@ -11,7 +11,6 @@
  */
 
 import { useState, useMemo } from 'react';
-import { parseFlowScript } from '../utils/fullFlowScriptParser';
 import { FlowScriptQueryEngine } from '../../../src/query-engine';
 import type { IR } from '../../../src/types';
 import { useTheme } from '../lib/theme/useTheme';
@@ -20,24 +19,22 @@ import './QueryPanel.css';
 type QueryType = 'tensions' | 'blocked' | 'alternatives' | 'why' | 'whatIf';
 
 export interface QueryPanelProps {
-  flowScriptCode: string;
+  ir: IR | null;
+  parseError: string | null;
 }
 
-export function QueryPanel({ flowScriptCode }: QueryPanelProps) {
+export function QueryPanel({ ir, parseError }: QueryPanelProps) {
   const [activeQuery, setActiveQuery] = useState<QueryType>('tensions');
   const [selectedNodeId, setSelectedNodeId] = useState<string>('');
   const { theme } = useTheme();
 
-  // Parse code and build query engine
-  const { ir, engine, parseError } = useMemo(() => {
-    const result = parseFlowScript(flowScriptCode);
-    if (result.error || !result.ir) {
-      return { ir: null, engine: null, parseError: result.error?.message || 'Parse failed' };
-    }
+  // Build query engine from IR (no parsing here — App.tsx owns that)
+  const engine = useMemo(() => {
+    if (!ir) return null;
     const eng = new FlowScriptQueryEngine();
-    eng.load(result.ir);
-    return { ir: result.ir, engine: eng, parseError: null };
-  }, [flowScriptCode]);
+    eng.load(ir);
+    return eng;
+  }, [ir]);
 
   // Get node lists for dropdowns
   const { questionNodes, allNodes } = useMemo(() => {
@@ -274,10 +271,12 @@ function WhyView({ result }: { result: any }) {
       ) : (
         <div className="result-empty">This node is a root — no causal ancestors.</div>
       )}
-      <div className="result-meta">
-        Root cause: {result.root_cause.content}
-        {result.metadata.has_multiple_paths && ' | Multiple paths detected'}
-      </div>
+      {result.root_cause && (
+        <div className="result-meta">
+          Root cause: {result.root_cause.content}
+          {result.metadata.has_multiple_paths && ' | Multiple paths detected'}
+        </div>
+      )}
     </div>
   );
 }

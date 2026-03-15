@@ -74,6 +74,15 @@ interface ParserState {
  *   console.log(result.ir.nodes); // [{ type: 'statement', content: 'A', ... }, ...]
  * }
  */
+// Memoize grammar compilation — ohm.grammar() is expensive and the grammar never changes
+let _cachedGrammar: ohm.Grammar | null = null;
+function getGrammar(): ohm.Grammar {
+  if (!_cachedGrammar) {
+    _cachedGrammar = ohm.grammar(grammarSource);
+  }
+  return _cachedGrammar;
+}
+
 export function parseFlowScript(input: string, sourceFile = 'editor.fs'): ParseResult {
   try {
     // Step 1: Preprocess indentation (Python-style → explicit blocks)
@@ -91,8 +100,8 @@ export function parseFlowScript(input: string, sourceFile = 'editor.fs'): ParseR
       };
     }
 
-    // Step 2: Parse with Ohm.js grammar
-    const grammar = ohm.grammar(grammarSource);
+    // Step 2: Parse with Ohm.js grammar (grammar compiled once, reused)
+    const grammar = getGrammar();
     const matchResult = grammar.match(scanResult.transformed);
 
     if (matchResult.failed()) {
@@ -522,6 +531,9 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
 
       let node;
       if (hasBlock) {
+        // Save modifiers before block parsing (block will clear them)
+        const savedModifiers = [...state.currentModifiers];
+
         // block.toIR() returns an array because Block? is optional (iteration node)
         const blockResultArray = block.toIR();
         const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
@@ -529,6 +541,15 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
         if (blockResult && blockResult.node) {
           node = blockResult.node;
           node.type = 'thought';
+
+          // Move modifiers from block's ext to root level
+          if (savedModifiers.length > 0) {
+            node.modifiers = savedModifiers;
+            if (node.ext?.modifiers) {
+              delete node.ext.modifiers;
+            }
+          }
+
           if (hasText) {
             node.content = text.sourceString.trim();
           } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
@@ -567,6 +588,9 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
 
       let node;
       if (hasBlock) {
+        // Save modifiers before block parsing (block will clear them)
+        const savedModifiers = [...state.currentModifiers];
+
         // block.toIR() returns an array because Block? is optional (iteration node)
         const blockResultArray = block.toIR();
         const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
@@ -574,6 +598,15 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
         if (blockResult && blockResult.node) {
           node = blockResult.node;
           node.type = 'action';
+
+          // Move modifiers from block's ext to root level
+          if (savedModifiers.length > 0) {
+            node.modifiers = savedModifiers;
+            if (node.ext?.modifiers) {
+              delete node.ext.modifiers;
+            }
+          }
+
           if (hasText) {
             node.content = text.sourceString.trim();
           } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
@@ -612,6 +645,9 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
 
       let node;
       if (hasBlock) {
+        // Save modifiers before block parsing (block will clear them)
+        const savedModifiers = [...state.currentModifiers];
+
         // block.toIR() returns an array because Block? is optional (iteration node)
         const blockResultArray = block.toIR();
         const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
@@ -619,6 +655,15 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
         if (blockResult && blockResult.node) {
           node = blockResult.node;
           node.type = 'question';
+
+          // Move modifiers from block's ext to root level
+          if (savedModifiers.length > 0) {
+            node.modifiers = savedModifiers;
+            if (node.ext?.modifiers) {
+              delete node.ext.modifiers;
+            }
+          }
+
           if (hasText) {
             node.content = text.sourceString.trim();
           } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
@@ -651,6 +696,9 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
 
       let node;
       if (hasBlock) {
+        // Save modifiers before block parsing (block will clear them)
+        const savedModifiers = [...state.currentModifiers];
+
         // block.toIR() returns an array because Block? is optional (iteration node)
         const blockResultArray = block.toIR();
         const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
@@ -658,6 +706,15 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
         if (blockResult && blockResult.node) {
           node = blockResult.node;
           node.type = 'completion';
+
+          // Move modifiers from block's ext to root level
+          if (savedModifiers.length > 0) {
+            node.modifiers = savedModifiers;
+            if (node.ext?.modifiers) {
+              delete node.ext.modifiers;
+            }
+          }
+
           if (hasText) {
             node.content = text.sourceString.trim();
           } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {
@@ -790,6 +847,9 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
 
       let node;
       if (hasBlock) {
+        // Save modifiers before block parsing (block will clear them)
+        const savedModifiers = [...state.currentModifiers];
+
         // block.toIR() returns an array because Block? is optional (iteration node)
         const blockResultArray = block.toIR();
         const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
@@ -797,6 +857,15 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
         if (blockResult && blockResult.node) {
           node = blockResult.node;
           node.type = 'alternative';
+
+          // Move modifiers from block's ext to root level
+          if (savedModifiers.length > 0) {
+            node.modifiers = savedModifiers;
+            if (node.ext?.modifiers) {
+              delete node.ext.modifiers;
+            }
+          }
+
           if (hasText) {
             node.content = text.sourceString.trim();
           } else if (node.content === '' && node.ext?.children && Array.isArray(node.ext.children)) {

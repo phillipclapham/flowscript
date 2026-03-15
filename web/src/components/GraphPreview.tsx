@@ -3,10 +3,10 @@
  * Session 7b: Real-time graph visualization of FlowScript
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
-import { parseFlowScript } from '../utils/fullFlowScriptParser';
 import { irToGraphData } from '../utils/irToGraphData';
+import type { IR } from '../../../src/types';
 import type { GraphData, GraphNode, NodeType, EdgeType, NodeShape } from '../types/graph';
 import { NODE_SHAPES, NODE_COLORS, EDGE_STYLES } from '../types/graph';
 import { useTheme } from '../lib/theme/useTheme';
@@ -14,40 +14,22 @@ import { applyLayout, type LayoutType } from '../utils/graphLayouts';
 import './GraphPreview.css';
 
 export interface GraphPreviewProps {
-  flowScriptCode: string;
+  ir: IR | null;
+  parseError: string | null;
   onNodeClick?: (lineNumber: number) => void;
 }
 
-export function GraphPreview({ flowScriptCode, onNodeClick }: GraphPreviewProps) {
+export function GraphPreview({ ir, parseError, onNodeClick }: GraphPreviewProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [graphData, setGraphData] = useState<GraphData | null>(null);
-  const [parseError, setParseError] = useState<string | null>(null);
   const [layoutType, setLayoutType] = useState<LayoutType>('force');
   const { theme } = useTheme();
 
-  // Parse FlowScript code
-  useEffect(() => {
-    const result = parseFlowScript(flowScriptCode);
-
-    if (result.error) {
-      console.error('[GraphPreview] Parse error:', result.error);
-      setParseError(result.error.message);
-      setGraphData(null);
-    } else if (result.ir) {
-      setParseError(null);
-      // Transform IR to GraphData (zero semantic loss)
-      console.log('[GraphPreview] Parse successful! IR:', result.ir);
-      const graphData = irToGraphData(result.ir);
-      console.log('[GraphPreview] GraphData transformed:', {
-        nodes: graphData.nodes.length,
-        edges: graphData.edges.length,
-        nodeTypes: [...new Set(graphData.nodes.map(n => n.type))],
-        edgeTypes: [...new Set(graphData.edges.map(e => e.type))],
-      });
-      setGraphData(graphData);
-    }
-  }, [flowScriptCode]);
+  // Transform IR to GraphData (memoized, only recomputes when IR changes)
+  const graphData = useMemo<GraphData | null>(() => {
+    if (!ir) return null;
+    return irToGraphData(ir);
+  }, [ir]);
 
   // Render graph with D3
   useEffect(() => {

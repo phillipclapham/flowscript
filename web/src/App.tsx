@@ -5,13 +5,14 @@
  * Session 7a.5: Theme System + UX Polish
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Editor } from "./components/Editor";
 import { GraphPreview } from "./components/GraphPreview";
 import { QueryPanel } from "./components/QueryPanel";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { LineWrapToggle } from "./components/LineWrapToggle";
 import { useTheme } from "./lib/theme/useTheme";
+import { parseFlowScript } from "./utils/fullFlowScriptParser";
 import "./App.css";
 
 // Example FlowScript content
@@ -84,6 +85,11 @@ function App() {
     setLineWrapping((prev) => !prev);
   };
 
+  // Single parse for both graph and query panel (no double-parsing)
+  const parseResult = useMemo(() => parseFlowScript(code), [code]);
+  const ir = parseResult.ir || null;
+  const parseError = parseResult.error?.message || null;
+
   return (
     <div className="app">
       {/* Header */}
@@ -131,8 +137,8 @@ function App() {
           </div>
           <div className="panel-content">
             <div className="preview-tabs">
-              <GraphPreview flowScriptCode={code} />
-              <QueryPanel flowScriptCode={code} />
+              <GraphPreview ir={ir} parseError={parseError} />
+              <QueryPanel ir={ir} parseError={parseError} />
             </div>
           </div>
         </div>
@@ -144,12 +150,8 @@ function App() {
           FlowScript v1.0 · AI Memory Infrastructure
         </p>
         <p className="footer-links">
-          <a href="https://github.com/anthropics/flowscript" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/phillipclapham/flowscript" target="_blank" rel="noopener noreferrer">
             GitHub
-          </a>
-          {" · "}
-          <a href="/docs" target="_blank" rel="noopener noreferrer">
-            Documentation
           </a>
         </p>
       </footer>
