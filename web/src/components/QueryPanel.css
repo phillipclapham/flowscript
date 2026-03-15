@@ -1,0 +1,343 @@
+/**
+ * Query Panel Styles
+ * Session 7c: Interactive query execution
+ */
+
+.query-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.query-error {
+  color: var(--color-blocked);
+  padding: 16px;
+}
+
+/* Tab bar */
+.query-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.query-tab {
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-background);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  transition: all 0.15s;
+}
+
+.query-tab:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.query-tab.active {
+  background: var(--color-causal);
+  color: white;
+  border-color: var(--color-causal);
+}
+
+/* Node picker */
+.query-node-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.query-node-picker label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.node-select {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-size: 12px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* Results area */
+.query-results {
+  min-height: 80px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-meta {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  padding: 4px 8px;
+  background: var(--color-surface);
+  border-radius: 4px;
+}
+
+.result-empty {
+  color: var(--color-text-secondary);
+  font-style: italic;
+  padding: 12px 0;
+}
+
+.result-error {
+  color: var(--color-blocked);
+  padding: 8px;
+  background: var(--color-blocked-bg);
+  border-radius: 4px;
+}
+
+/* Tensions */
+.tension-group {
+  padding: 8px;
+  background: var(--color-surface);
+  border-radius: 6px;
+  border-left: 3px solid var(--color-tension);
+}
+
+.tension-axis {
+  font-weight: 600;
+  color: var(--color-tension);
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.tension-pair {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.tension-source,
+.tension-target {
+  flex: 1;
+  font-size: 12px;
+}
+
+.tension-vs {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-tension);
+  text-transform: uppercase;
+}
+
+/* Blockers */
+.blocker-card {
+  padding: 8px;
+  background: var(--color-surface);
+  border-radius: 6px;
+  border-left: 3px solid var(--color-blocked);
+}
+
+.blocker-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.blocker-icon {
+  font-size: 14px;
+}
+
+.blocker-details {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 22px;
+}
+
+/* Alternatives */
+.alt-question {
+  font-weight: 600;
+  color: var(--color-question);
+  padding: 4px 0;
+}
+
+.alt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.alt-card {
+  padding: 8px;
+  background: var(--color-surface);
+  border-radius: 6px;
+  border-left: 3px solid var(--color-border);
+}
+
+.alt-card.chosen {
+  border-left-color: var(--color-decided);
+}
+
+.alt-card.rejected {
+  border-left-color: var(--color-text-secondary);
+  opacity: 0.8;
+}
+
+.alt-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.alt-status {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.alt-card.chosen .alt-status {
+  color: var(--color-decided);
+}
+
+.alt-card.rejected .alt-status {
+  color: var(--color-text-secondary);
+}
+
+.alt-rationale {
+  font-size: 11px;
+  color: var(--color-decided);
+  padding: 4px 0 0 22px;
+}
+
+.alt-consequences {
+  padding: 4px 0 0 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.alt-consequence {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.decision-summary {
+  padding: 6px 8px;
+  background: var(--color-decided-bg);
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* Why (causal chain) */
+.why-target {
+  padding: 4px 0;
+}
+
+.causal-chain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.chain-node {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: var(--color-surface);
+  border-radius: 4px;
+}
+
+.chain-node.chain-target {
+  border-left: 3px solid var(--color-causal);
+  font-weight: 600;
+}
+
+.chain-depth {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  min-width: 20px;
+}
+
+.chain-content {
+  flex: 1;
+  font-size: 12px;
+}
+
+.chain-rel {
+  font-size: 10px;
+  color: var(--color-causal);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.chain-arrow {
+  text-align: center;
+  color: var(--color-causal);
+  font-size: 16px;
+}
+
+/* WhatIf (impact analysis) */
+.whatif-source {
+  padding: 4px 0;
+}
+
+.impact-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.impact-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 0;
+}
+
+.impact-node {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  background: var(--color-surface);
+  border-radius: 4px;
+}
+
+.impact-node.indirect {
+  opacity: 0.85;
+}
+
+.impact-arrow {
+  color: var(--color-causal);
+  font-size: 12px;
+  white-space: pre;
+}
+
+.impact-content {
+  flex: 1;
+  font-size: 12px;
+}
+
+.impact-tension-badge {
+  font-size: 9px;
+  padding: 1px 5px;
+  background: var(--color-tension);
+  color: white;
+  border-radius: 3px;
+  font-weight: 600;
+}
