@@ -12,7 +12,7 @@
  * 5. alternatives(questionId) - Decision reconstruction
  */
 
-import { IR, Node, Relationship, State, RelationType } from './types'
+import type { IR, Node, Relationship, State, RelationType } from './types'
 
 // ============================================================================
 // Query Options Interfaces
@@ -1215,9 +1215,9 @@ export class FlowScriptQueryEngine {
    * Build impact tree with direct and indirect consequences
    */
   private buildImpactTree(
-    sourceId: string,
+    _sourceId: string,
     descendants: Array<Node & { depth: number; relationshipType?: RelationType }>,
-    relationshipTypes: RelationType[]
+    _relationshipTypes: RelationType[]
   ): {
     direct_consequences: ImpactConsequence[]
     indirect_consequences: ImpactConsequence[]

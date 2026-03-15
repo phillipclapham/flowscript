@@ -1,0 +1,9 @@
+name = "flowscript-compiler"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+RATE_LIMIT_MAX = "5"
+RATE_LIMIT_WINDOW_SECONDS = "3600"
+MAX_INPUT_CHARS = "2000"

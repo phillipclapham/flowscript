@@ -9,6 +9,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Editor } from "./components/Editor";
 import { GraphPreview } from "./components/GraphPreview";
 import { QueryPanel } from "./components/QueryPanel";
+import { CompilePanel } from "./components/CompilePanel";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { LineWrapToggle } from "./components/LineWrapToggle";
 import { useTheme } from "./lib/theme/useTheme";
@@ -16,55 +17,74 @@ import { parseFlowScript } from "./utils/fullFlowScriptParser";
 import "./App.css";
 
 // Example FlowScript content
-const EXAMPLE_FLOWSCRIPT = `# FlowScript Example - AI Memory Infrastructure
+const EXAMPLE_FLOWSCRIPT = `# Agent Memory — Platform Migration
 
-? {goal: Prove FlowScript as memory infrastructure}
-  || Build better prompts
-     -> easier for users
-     -> limited impact
-  || Build memory infrastructure
-     -> enables cognitive symbiosis
-     -> proves architectural readiness
-     -> [decided(rationale: "evidence from 6 architectures validates approach", on: "2025-10-24")]
+? {decision: Which database for the new session service?}
+  || PostgreSQL
+     -> mature ecosystem and tooling
+     -> team already knows it
+     + strong ACID guarantees
+  || Redis
+     -> sub-millisecond reads
+     -> natural fit for session data (TTL built-in)
+     -> [decided(rationale: "session data is ephemeral, speed matters more than durability", on: "2026-03-10")]
 
-thought: FlowScript isn't notation - it's computable substrate for memory
+? {decision: How should we handle the API versioning?}
+  || URL path versioning (/v1/, /v2/)
+     -> simple to understand
+     -> breaks caching across versions
+  || Header-based versioning
+     -> cleaner URLs
+     -> harder to test in browser
+     -> [decided(rationale: "API gateway handles header routing, keeps URLs stable for clients", on: "2026-03-12")]
 
-* Cross-architecture validation
-  -> 6 AI systems spontaneously parsed FlowScript
-  -> convergent insights across architectures
-  -> universal comprehension (not model-specific)
+thought: sessions are fundamentally temporary — optimizing for durability is solving the wrong problem
+  -> Redis chosen for sessions
+     -> deploy Redis cluster by end of sprint
+        -> update connection pooling config
+           -> run load tests against staging
+              -> ! validate p99 latency under 5ms
 
-! Memory-ready architecture:
-  -> content-hash IDs = automatic deduplication
-  -> provenance tracking = trust + audit
-  -> schema validation = invariants enforced
-  -> state markers = lifecycle automation
-  -> relationship types = computational operations
+* user preferences must remain in PostgreSQL
+  <- requires ACID for billing-linked settings
 
-speed ><[velocity vs maintainability] careful design
-  -> must balance shipping vs quality
-  -> ! quality NON-NEGOTIABLE for infrastructure
+[blocked(reason: "waiting on Redis cluster provisioning", since: "2026-03-11")]
+! auth service depends on session store
+  -> blocks login flow rollout
+     -> delays beta launch
 
-Phase 7 = Memory Infrastructure Launch
-  => Session 7a: Editor Core (7-8h)
-  => Session 7b: Graph Preview (6-7h)
-  => Session 7c: Linter + Queries (6-7h)
-  => Session 7d: Multi-Layer Showcase (9-11h)
-  => Session 7e: Tutorial + Deploy (5-6h)
-  => Session 7f: Research Papers + Launch (16-20h)
+[blocked(reason: "versioning strategy not yet implemented in gateway", since: "2026-03-13")]
+! API docs generation
+  -> blocks developer onboarding
+     -> delays partner integrations
 
-✓ Foundation complete (214/214 tests passing)
-✓ Query engine working (<1ms performance)
-~ Third Mind hypothesis [EVIDENCED] - needs multi-user validation
+speed ><[performance vs consistency] data safety
+  -> Redis replication is async (small window of data loss possible)
+  -> ! never store payment data in Redis
 
-action: Build production-ready web app with perfect syntax highlighting
+developer experience ><[simplicity vs flexibility] operational cost
+  -> simpler APIs = faster onboarding
+  -> flexible APIs = more support burden
 
-@project FlowScript v1.0
+~ exploring: could Redis Streams replace our Kafka setup?
+  <- similar pub/sub model but simpler ops
+  -> worth prototyping after migration ships
+     -> would reduce infrastructure cost by 30%
+
+✓ connection pooling library evaluated
+✓ staging environment provisioned
+✓ team aligned on migration approach
+
+action: write migration runbook before proceeding
+action: schedule downtime window with SRE team
 `;
+
+type EditorTab = 'editor' | 'convert';
 
 function App() {
   const [code, setCode] = useState(EXAMPLE_FLOWSCRIPT);
   const [cursorPos, setCursorPos] = useState({ line: 1, col: 0 });
+  const [activeTab, setActiveTab] = useState<EditorTab>('editor');
   const { theme } = useTheme();
   const [lineWrapping, setLineWrapping] = useState(() => {
     // Load from localStorage, default to true
@@ -115,17 +135,41 @@ function App() {
         {/* Editor Panel */}
         <div className="panel editor-panel">
           <div className="panel-header">
-            <h2>Editor</h2>
-            <span className="panel-subtitle">FlowScript v1.0 - 21 markers</span>
+            <div className="editor-tabs">
+              <button
+                className={`editor-tab ${activeTab === 'editor' ? 'active' : ''}`}
+                onClick={() => setActiveTab('editor')}
+              >
+                Editor
+              </button>
+              <button
+                className={`editor-tab ${activeTab === 'convert' ? 'active' : ''}`}
+                onClick={() => setActiveTab('convert')}
+              >
+                Convert
+              </button>
+            </div>
+            <span className="panel-subtitle">
+              {activeTab === 'editor' ? 'FlowScript v1.0 - 21 markers' : 'Natural language → FlowScript'}
+            </span>
           </div>
           <div className="panel-content">
-            <Editor
-              initialValue={code}
-              onChange={setCode}
-              onCursorChange={handleCursorChange}
-              lineWrapping={lineWrapping}
-              theme={theme}
-            />
+            {activeTab === 'editor' ? (
+              <Editor
+                initialValue={code}
+                onChange={setCode}
+                onCursorChange={handleCursorChange}
+                lineWrapping={lineWrapping}
+                theme={theme}
+              />
+            ) : (
+              <CompilePanel
+                onCompiled={(flowscript) => {
+                  setCode(flowscript);
+                  setActiveTab('editor');
+                }}
+              />
+            )}
           </div>
         </div>
 

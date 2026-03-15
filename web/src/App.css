@@ -346,6 +346,33 @@ body {
   color: var(--text-muted);
 }
 
+.editor-tabs {
+  display: flex;
+  gap: 2px;
+}
+
+.editor-tab {
+  padding: 4px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.editor-tab:hover {
+  background: var(--color-border);
+  color: var(--color-text);
+}
+
+.editor-tab.active {
+  background: var(--color-accent, #4a9eff);
+  color: white;
+}
+
 .panel-content {
   flex: 1;
   overflow: auto;
