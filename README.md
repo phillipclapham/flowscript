@@ -10,11 +10,58 @@
 
 Your agent made a decision. Your PM asks "why?" You dig through chat logs and JSON blobs. Good luck.
 
-Agent memory today is either opaque embeddings you can't inspect, expensive LLM self-editing you can't audit, or untyped state dicts with no structure. None of them answer "why did you decide that?" because none of them have semantics. They store tokens. FlowScript stores *reasoning*.
+Agent memory today is either opaque embeddings you can't inspect, expensive LLM self-editing you can't audit, or untyped state dicts with no structure. They store tokens. FlowScript stores *reasoning* — structured, typed, queryable in <1ms.
 
-## Hello World
+**Mem0, Zep, Letta, LangGraph — those solve retrieval. FlowScript solves reasoning.** They're not mutually exclusive. Use an embedding store for "find similar memories" and FlowScript for "why did we decide that?"
 
-> **v1.0 SDK** (coming soon)
+---
+
+## Try It Now (30 seconds)
+
+Everything below works today. 246 tests passing. No SDK required.
+
+```bash
+# Parse a decision file to structured IR
+npx flowscript parse examples/decision.fs -o /tmp/decision.json
+
+# Find every tradeoff in the decision
+npx flowscript query tensions /tmp/decision.json
+```
+
+Real output from that query:
+
+```json
+{
+  "tensions_by_axis": {
+    "security vs simplicity": [{
+      "source": { "content": "JWT tokens" },
+      "target": { "content": "implementation complexity" }
+    }],
+    "scaling vs security": [{
+      "source": { "content": "session tokens + Redis" },
+      "target": { "content": "operational complexity" }
+    }]
+  },
+  "metadata": {
+    "total_tensions": 2,
+    "unique_axes": ["security vs simplicity", "scaling vs security"]
+  }
+}
+```
+
+Typed tradeoffs with named axes. From a 17-line `.fs` file your PM can actually read. Try that with a vector database.
+
+```bash
+# Also available: why, what-if, blocked, alternatives
+npx flowscript query blocked /tmp/decision.json
+npx flowscript query alternatives /tmp/decision.json
+```
+
+---
+
+## Hello World — v1.0 SDK
+
+> The SDK wraps what's already working into a fluent API. **Coming soon** — [track progress](https://github.com/phillipclapham/flowscript/issues).
 
 ```typescript
 import { Memory } from 'flowscript';
@@ -71,6 +118,48 @@ Each query returns structured, typed results in multiple formats (chain, tree, f
 These operations are computationally impossible on unstructured text. That's the point. Structure makes reasoning queryable.
 
 Full query docs with TypeScript API: [QUERY_ENGINE.md](QUERY_ENGINE.md)
+
+---
+
+## Agent-to-Agent Decision Exchange
+
+FlowScript's most differentiated use case: **structured semantic payloads between agents.**
+
+When Agent A asks Agent B "why did you make that decision?", most systems return unstructured text. FlowScript returns a typed causal chain:
+
+```
+Agent A → why(decision_id) → Agent B
+       ← typed causal chain with provenance
+```
+
+```typescript
+// Agent B responds to a why() query with structured reasoning
+const chain = mem.query.why("auth-decision-001");
+// Returns: decision ← rationale ← evidence ← constraints
+// Every link typed, every source tracked, every tradeoff named
+
+// Agent A can then query further:
+const impacts = mem.query.whatIf("auth-decision-001");
+// "If that decision changes, what downstream effects propagate?"
+```
+
+This is [LDP Mode 3](https://arxiv.org/abs/2603.08852) (Semantic Graphs) — structured decision payloads as a protocol, not just storage. No other agent memory system enables typed reasoning exchange between agents. Embedding stores pass blobs. FlowScript passes *understanding*.
+
+See [flowscript-ldp](https://pypi.org/project/flowscript-ldp/) for the working reference implementation.
+
+---
+
+## Cross-Architecture Evidence
+
+Six AI architectures (Claude, ChatGPT, Gemini, DeepSeek, Claude Code, fresh Claude instances) parsed FlowScript *without being given the specification*. All six recognized the notation immediately and started using it in responses.
+
+Different training data, different attention mechanisms, different optimization targets. Same structural recognition. This suggests FlowScript taps fundamental patterns in language and reasoning, not model-specific quirks.
+
+Specification alone is sufficient for full adoption. No training. No fine-tuning. Just the syntax reference and examples.
+
+Running in production for 6+ months in the [flow system](https://github.com/phillipclapham/flow-methodology). Not theoretical.
+
+Details: [ARCHITECTURE.md](ARCHITECTURE.md) (cognitive patterns from 6 months of real use)
 
 ---
 
@@ -173,44 +262,10 @@ Full 21-marker spec: [FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md) | Beginner gui
 |-----------|-----------|-----------------|------------|--------------|
 | Semantic queries (why, blocked, tensions) | Yes | No | No | No |
 | Human-readable persistence | Yes (.fs files) | No | Partially | No |
-| Token efficiency (~3:1 compression) | Yes | N/A | No | No |
 | Decision provenance | Yes (typed chains) | No | No | Sometimes |
+| Agent-to-agent reasoning exchange | Yes (LDP Mode 3) | No | No | No |
 | Sub-ms query performance | Yes | Depends | Yes | No (LLM call) |
 | Works without fine-tuning | Yes | Yes | Yes | Yes |
-
-If you're evaluating Mem0, Zep, Letta, or LangGraph for agent memory, those solve retrieval. FlowScript solves reasoning. They're not mutually exclusive. Use an embedding store for "find similar memories" and FlowScript for "why did we decide that?"
-
----
-
-## Protocol Alignment
-
-Three independent systems arrived at symbolic notation for AI communication without cross-pollination:
-
-| System | Date | Scope |
-|--------|------|-------|
-| [SynthLang](https://github.com/ruvnet/SynthLang) | Jan 2025 | Prompt compression |
-| **FlowScript** | **Oct 2025** | **Decision intelligence + formal toolchain** |
-| [MetaGlyph](https://arxiv.org/abs/2601.07354) | Jan 2026 | Prompt compression (6 operators, 62-81% token reduction) |
-
-When independent builders converge on the same structural insight, that's evidence the insight is load-bearing.
-
-FlowScript's IR is the first implementation of **LDP Mode 3** (Semantic Graphs) from [arXiv:2603.08852](https://arxiv.org/abs/2603.08852). The [flowscript-ldp](https://pypi.org/project/flowscript-ldp/) package provides a working `LdpDelegate` with real HTTP integration, Mode 3 negotiation, and fallback chains. Active collaboration with the LDP paper author on session state machine co-design ([GitHub issues](https://github.com/sunilp/ldp-protocol/issues)).
-
-Also structurally aligned with [G2CP](https://github.com/karim0bkh/G2CP_AAMAS) (graph-grounded agent communication, 73% token reduction), [JamJet](https://jamjet.dev) (Rust agent runtime with ProtocolAdapter), and [NFD](https://arxiv.org/abs/2603.10808) (three-tier cognitive architecture matching FlowScript's temporal model).
-
-Running in production for 6+ months in the [flow system](https://github.com/phillipclapham/flow-methodology). Not theoretical.
-
----
-
-## Cross-Architecture Evidence
-
-Six AI architectures (Claude, ChatGPT, Gemini, DeepSeek, Claude Code, fresh Claude instances) parsed FlowScript *without being given the specification*. All six recognized the notation immediately and started using it in responses.
-
-Different training data, different attention mechanisms, different optimization targets. Same structural recognition. This suggests FlowScript taps fundamental patterns in language and reasoning, not model-specific quirks.
-
-Specification alone is sufficient for full adoption. No training. No fine-tuning. Just the syntax reference and examples.
-
-Details: [ARCHITECTURE.md](ARCHITECTURE.md) (cognitive patterns from 6 months of real use)
 
 ---
 
@@ -248,6 +303,24 @@ flowscript query alternatives <question-id> example.json
 [ARCHITECTURE.md](ARCHITECTURE.md) (cognitive patterns) | [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md) (implementation) | [spec/](spec/) (formal specifications) | [examples/](examples/) (golden .fs/.json pairs)
 
 **Try it live:** [flowscript.org](https://flowscript.org)
+
+---
+
+## Protocol Alignment
+
+Three independent systems arrived at symbolic notation for AI communication without cross-pollination:
+
+| System | Date | Scope |
+|--------|------|-------|
+| [SynthLang](https://github.com/ruvnet/SynthLang) | Jan 2025 | Prompt compression |
+| **FlowScript** | **Oct 2025** | **Decision intelligence + formal toolchain** |
+| [MetaGlyph](https://arxiv.org/abs/2601.07354) | Jan 2026 | Prompt compression (6 operators, 62-81% token reduction) |
+
+When independent builders converge on the same structural insight, that's evidence the insight is load-bearing.
+
+FlowScript's IR is the first implementation of **LDP Mode 3** (Semantic Graphs) from [arXiv:2603.08852](https://arxiv.org/abs/2603.08852). Active collaboration with the LDP paper author on session state machine co-design ([GitHub issues](https://github.com/sunilp/ldp-protocol/issues)).
+
+Also structurally aligned with [G2CP](https://github.com/karim0bkh/G2CP_AAMAS) (graph-grounded agent communication, 73% token reduction), [JamJet](https://jamjet.dev) (Rust agent runtime with ProtocolAdapter), and [NFD](https://arxiv.org/abs/2603.10808) (three-tier cognitive architecture matching FlowScript's temporal model).
 
 ---
 
