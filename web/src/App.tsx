@@ -127,7 +127,7 @@ function App() {
         <div className="panel preview-panel">
           <div className="panel-header">
             <h2>Preview</h2>
-            <span className="panel-subtitle">Coming in Session 7b & 7c</span>
+            <span className="panel-subtitle">Graph + Query Engine</span>
           </div>
           <div className="panel-content">
             <div className="preview-tabs">
@@ -141,7 +141,7 @@ function App() {
       {/* Footer */}
       <footer className="app-footer">
         <p>
-          Session 7a: Editor Core ✓ · Session 7a.5: Theme System + UX Polish ✓
+          FlowScript v1.0 · AI Memory Infrastructure
         </p>
         <p className="footer-links">
           <a href="https://github.com/anthropics/flowscript" target="_blank" rel="noopener noreferrer">

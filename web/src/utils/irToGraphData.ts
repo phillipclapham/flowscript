@@ -52,7 +52,6 @@ function buildDuplicateSet(nodes: Node[]): Set<string> {
       }
     }
   }
-
   return duplicateIds;
 }
 

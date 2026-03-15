@@ -522,7 +522,10 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
 
       let node;
       if (hasBlock) {
-        const blockResult = block.toIR();
+        // block.toIR() returns an array because Block? is optional (iteration node)
+        const blockResultArray = block.toIR();
+        const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+          ? blockResultArray[0] : null;
         if (blockResult && blockResult.node) {
           node = blockResult.node;
           node.type = 'thought';
@@ -564,7 +567,10 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
 
       let node;
       if (hasBlock) {
-        const blockResult = block.toIR();
+        // block.toIR() returns an array because Block? is optional (iteration node)
+        const blockResultArray = block.toIR();
+        const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+          ? blockResultArray[0] : null;
         if (blockResult && blockResult.node) {
           node = blockResult.node;
           node.type = 'action';
@@ -606,7 +612,10 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
 
       let node;
       if (hasBlock) {
-        const blockResult = block.toIR();
+        // block.toIR() returns an array because Block? is optional (iteration node)
+        const blockResultArray = block.toIR();
+        const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+          ? blockResultArray[0] : null;
         if (blockResult && blockResult.node) {
           node = blockResult.node;
           node.type = 'question';
@@ -642,7 +651,10 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
 
       let node;
       if (hasBlock) {
-        const blockResult = block.toIR();
+        // block.toIR() returns an array because Block? is optional (iteration node)
+        const blockResultArray = block.toIR();
+        const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+          ? blockResultArray[0] : null;
         if (blockResult && blockResult.node) {
           node = blockResult.node;
           node.type = 'completion';
@@ -778,7 +790,10 @@ function createSemantics(grammar: ohm.Grammar, state: ParserState) {
 
       let node;
       if (hasBlock) {
-        const blockResult = block.toIR();
+        // block.toIR() returns an array because Block? is optional (iteration node)
+        const blockResultArray = block.toIR();
+        const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+          ? blockResultArray[0] : null;
         if (blockResult && blockResult.node) {
           node = blockResult.node;
           node.type = 'alternative';
