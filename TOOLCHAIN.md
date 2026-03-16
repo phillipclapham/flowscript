@@ -2,7 +2,7 @@
 
 **Production-quality parser, linter, validator, and query engine for FlowScript**
 
-Status: Phase 6 Complete ✅ (167/167 tests passing, 100% coverage)
+Status: Complete ✅ (246 tests passing)
 
 ---
 

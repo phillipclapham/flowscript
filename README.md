@@ -300,7 +300,7 @@ flowscript query alternatives <question-id> example.json
 [QUERY_ENGINE.md](QUERY_ENGINE.md) (5 queries, TypeScript API) | [TOOLCHAIN.md](TOOLCHAIN.md) (parser, linter, validator)
 
 **Dive deeper:**
-[ARCHITECTURE.md](ARCHITECTURE.md) (cognitive patterns) | [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md) (implementation) | [spec/](spec/) (formal specifications) | [examples/](examples/) (golden .fs/.json pairs)
+[ADVANCED_PATTERNS.md](ADVANCED_PATTERNS.md) (sophisticated usage) | [spec/](spec/) (formal specifications) | [examples/](examples/) (golden .fs/.json pairs)
 
 **Try it live:** [flowscript.org](https://flowscript.org)
 
