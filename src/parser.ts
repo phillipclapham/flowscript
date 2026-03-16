@@ -224,12 +224,22 @@ export class Parser {
       },
 
       RelNode(_ws1, content, _ws2) {
-        // content is either Block or NodeText
+        // content is Block, TypedRelTarget, or NodeText
         const result = content.toIR();
 
         // If it's a block, result will be { type: 'block', node: blockNode }
         if (result && typeof result === 'object' && result.type === 'block') {
-          return result.node;  // Return the block node
+          return result.node;
+        }
+
+        // If it's an alternative wrapper, extract the node
+        if (result && typeof result === 'object' && result.type === 'alternative') {
+          return result.node;
+        }
+
+        // If it's a Node (from TypedRelTarget), return directly
+        if (result && typeof result === 'object' && result.id) {
+          return result;
         }
 
         // It's NodeText - create a statement node
@@ -237,6 +247,139 @@ export class Parser {
         const node = self.createNode('statement', text, self.currentModifiers, content);
         self.nodes.push(node);
         return node;
+      },
+
+      // TypedRelTarget: delegates to specific typed target rules
+      TypedRelTarget(target) {
+        return target.toIR();
+      },
+
+      // Typed targets inside relationship expressions
+      // These are like Thought/Action/Question/Completion/Alternative but without
+      // RelOpNodePair* chaining — the outer expression handles that
+      ThoughtTarget(_marker, _space, text, block) {
+        const textContent = text.sourceString.trim();
+        const hasBlock = block.sourceString.trim().length > 0;
+
+        let node;
+        if (hasBlock) {
+          const blockResultArray = block.toIR();
+          const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+            ? blockResultArray[0] : null;
+          if (blockResult && blockResult.node) {
+            node = blockResult.node;
+            node.type = 'thought';
+            if (textContent) node.content = textContent;
+          } else {
+            node = self.createNode('thought', textContent, self.currentModifiers, this);
+            self.nodes.push(node);
+          }
+        } else {
+          node = self.createNode('thought', textContent, self.currentModifiers, this);
+          self.nodes.push(node);
+        }
+        self.currentModifiers = [];
+        return node;
+      },
+
+      ActionTarget(_marker, _space, text, block) {
+        const textContent = text.sourceString.trim();
+        const hasBlock = block.sourceString.trim().length > 0;
+
+        let node;
+        if (hasBlock) {
+          const blockResultArray = block.toIR();
+          const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+            ? blockResultArray[0] : null;
+          if (blockResult && blockResult.node) {
+            node = blockResult.node;
+            node.type = 'action';
+            if (textContent) node.content = textContent;
+          } else {
+            node = self.createNode('action', textContent, self.currentModifiers, this);
+            self.nodes.push(node);
+          }
+        } else {
+          node = self.createNode('action', textContent, self.currentModifiers, this);
+          self.nodes.push(node);
+        }
+        self.currentModifiers = [];
+        return node;
+      },
+
+      QuestionTarget(_marker, _space, text, block) {
+        const textContent = text.sourceString.trim();
+        const hasBlock = block.sourceString.trim().length > 0;
+
+        let node;
+        if (hasBlock) {
+          const blockResultArray = block.toIR();
+          const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+            ? blockResultArray[0] : null;
+          if (blockResult && blockResult.node) {
+            node = blockResult.node;
+            node.type = 'question';
+            if (textContent) node.content = textContent;
+          } else {
+            node = self.createNode('question', textContent, self.currentModifiers, this);
+            self.nodes.push(node);
+          }
+        } else {
+          node = self.createNode('question', textContent, self.currentModifiers, this);
+          self.nodes.push(node);
+        }
+        self.currentModifiers = [];
+        return node;
+      },
+
+      CompletionTarget(_marker, _space, text, block) {
+        const textContent = text.sourceString.trim();
+        const hasBlock = block.sourceString.trim().length > 0;
+
+        let node;
+        if (hasBlock) {
+          const blockResultArray = block.toIR();
+          const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+            ? blockResultArray[0] : null;
+          if (blockResult && blockResult.node) {
+            node = blockResult.node;
+            node.type = 'completion';
+            if (textContent) node.content = textContent;
+          } else {
+            node = self.createNode('completion', textContent, self.currentModifiers, this);
+            self.nodes.push(node);
+          }
+        } else {
+          node = self.createNode('completion', textContent, self.currentModifiers, this);
+          self.nodes.push(node);
+        }
+        self.currentModifiers = [];
+        return node;
+      },
+
+      AlternativeTarget(_marker, _space, text, block) {
+        const textContent = text.sourceString.trim();
+        const hasBlock = block.sourceString.trim().length > 0;
+
+        let node;
+        if (hasBlock) {
+          const blockResultArray = block.toIR();
+          const blockResult = Array.isArray(blockResultArray) && blockResultArray.length > 0
+            ? blockResultArray[0] : null;
+          if (blockResult && blockResult.node) {
+            node = blockResult.node;
+            node.type = 'alternative';
+            if (textContent) node.content = textContent;
+          } else {
+            node = self.createNode('alternative', textContent, self.currentModifiers, this);
+            self.nodes.push(node);
+          }
+        } else {
+          node = self.createNode('alternative', textContent, self.currentModifiers, this);
+          self.nodes.push(node);
+        }
+        self.currentModifiers = [];
+        return { type: 'alternative', node };
       },
 
       NodeText(chars) {

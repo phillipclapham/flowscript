@@ -107,6 +107,29 @@ Linting examples/test.fs:
 15 error(s), 0 warning(s)
 ```
 
+### serialize - Convert IR JSON → FlowScript text
+
+```bash
+# Serialize to stdout
+flowscript serialize graph.json
+
+# Serialize to file
+flowscript serialize graph.json -o output.fs
+```
+
+**What it does:**
+- Loads IR JSON file
+- Converts back to valid FlowScript text
+- Preserves node types, relationships, states, modifiers, and nesting
+
+**Round-trip usage:**
+```bash
+# Parse → modify IR → serialize back
+flowscript parse input.fs -o graph.json
+# ... modify graph.json programmatically ...
+flowscript serialize graph.json -o output.fs
+```
+
 ### validate - Verify IR JSON against schema
 
 ```bash
@@ -310,7 +333,7 @@ console.log(validation.valid); // true/false
 
 - **CLI** (src/cli.ts)
   - Commander.js framework
-  - 3 commands: parse, lint, validate
+  - 4 commands: parse, serialize, lint, validate
 
 ### Build Process
 

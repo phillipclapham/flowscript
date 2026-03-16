@@ -40,6 +40,14 @@ complexity -> maintenance burden
 
 **Key distinction:** Use `->` for CAUSAL relationships. For temporal sequence without causation, use `=>`.
 
+**Typed targets:** Relationship operators can target typed nodes directly:
+```
+root cause -> thought: key insight about the pattern
+problem -> action: fix the bug immediately
+analysis -> ✓ hypothesis confirmed
+```
+This preserves both the relationship AND the target's type through round-trip serialization.
+
 ---
 
 #### `=>` then / followed by / temporal sequence

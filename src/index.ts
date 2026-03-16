@@ -39,6 +39,9 @@ export {
   TensionInfo
 } from './query-engine';
 
+// Serializer (IR → .fs)
+export { serialize, SerializeOptions } from './serializer';
+
 // Hash utilities
 export { hashContent } from './hash';
 

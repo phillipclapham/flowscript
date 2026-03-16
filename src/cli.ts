@@ -18,6 +18,7 @@ import { Linter } from './linter';
 import { validateIR } from './validate';
 import { IR } from './types';
 import { FlowScriptQueryEngine } from './query-engine';
+import { serialize } from './serializer';
 
 const program = new Command();
 
@@ -68,6 +69,37 @@ program
         console.error(`Parse error: ${error.message}`);
       } else {
         console.error('Parse error:', error);
+      }
+      process.exit(1);
+    }
+  });
+
+/**
+ * Serialize command: IR JSON → FlowScript text
+ */
+program
+  .command('serialize')
+  .description('Convert IR JSON back to FlowScript text')
+  .argument('<file>', 'IR JSON file to serialize (.json)')
+  .option('-o, --output <file>', 'Output file for FlowScript text (default: stdout)')
+  .action((file: string, options: { output?: string }) => {
+    try {
+      const ir = loadIR(file);
+      const output = serialize(ir);
+
+      if (options.output) {
+        fs.writeFileSync(options.output, output, 'utf-8');
+        console.log(`✓ Serialized ${file} → ${options.output}`);
+      } else {
+        process.stdout.write(output);
+      }
+
+      process.exit(0);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`Serialize error: ${error.message}`);
+      } else {
+        console.error('Serialize error:', error);
       }
       process.exit(1);
     }

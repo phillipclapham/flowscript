@@ -22,12 +22,21 @@ FlowScript {
   // Relationship Expressions (must come before Statement in Line)
   RelationshipExpression = RelNode RelOpNodePair+
   RelOpNodePair = RelOp RelNode
-  RelNode = space* (Block | NodeText) space*
+  RelNode = space* (Block | TypedRelTarget | NodeText) space*
+
+  // Typed targets in relationship expressions — like Insight/Question/Completion/Alternative
+  // but without RelOpNodePair* chaining (outer expression handles that)
+  TypedRelTarget = ThoughtTarget | ActionTarget | QuestionTarget | CompletionTarget | AlternativeTarget
+  ThoughtTarget = "thought:" space* thoughtText? Block?
+  ActionTarget = "action:" space* actionText? Block?
+  QuestionTarget = "?" space* questionText? Block?
+  CompletionTarget = "✓" space* completionText? Block?
+  AlternativeTarget = "||" space* alternativeText? Block?
 
   // Continuation Relationship (only valid inside blocks)
   ContinuationRel = RelOp space* RelNode
 
-  NodeText = ~insightPrefix (~("<->" | "->" | "<-" | "=>" | "><[" | "><" | "\n" | "{" | "}" | ";") any)+
+  NodeText = ~insightPrefix ~"?" ~"✓" ~"||" (~("<->" | "->" | "<-" | "=>" | "><[" | "><" | "\n" | "{" | "}" | ";") any)+
   insightPrefix = "thought:" | "action:"
 
   RelOp = bidirectional | reverseCausal | causal | temporal | tensionWithAxis | tensionWithoutAxis
