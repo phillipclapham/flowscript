@@ -119,7 +119,7 @@ function App() {
             <span className="logo-icon">⚡</span>
             FlowScript
           </h1>
-          <p className="tagline">AI Memory Infrastructure</p>
+          <p className="tagline">Decision Intelligence for AI Agents</p>
           <div className="header-actions">
             <LineWrapToggle enabled={lineWrapping} onToggle={toggleLineWrapping} />
             <ThemeToggle />
@@ -191,7 +191,7 @@ function App() {
       {/* Footer */}
       <footer className="app-footer">
         <p>
-          FlowScript v1.0 · AI Memory Infrastructure
+          FlowScript v1.0 · Decision Intelligence for AI Agents
         </p>
         <p className="footer-links">
           <a href="https://github.com/phillipclapham/flowscript" target="_blank" rel="noopener noreferrer">
