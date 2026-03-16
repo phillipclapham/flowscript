@@ -16,16 +16,19 @@ Agent memory today is either opaque embeddings you can't inspect, expensive LLM 
 
 ---
 
-## Try It Now (30 seconds)
+## Try It Now
 
-Everything below works today. 246 tests passing. No SDK required.
+Everything below works today. 246 tests passing.
 
 ```bash
+git clone https://github.com/phillipclapham/flowscript.git
+cd flowscript && npm install && npm run build
+
 # Parse a decision file to structured IR
-npx flowscript parse examples/decision.fs -o /tmp/decision.json
+node bin/flowscript parse examples/decision.fs -o /tmp/decision.json
 
 # Find every tradeoff in the decision
-npx flowscript query tensions /tmp/decision.json
+node bin/flowscript query tensions /tmp/decision.json
 ```
 
 Real output from that query:
@@ -53,8 +56,8 @@ Typed tradeoffs with named axes. From a 17-line `.fs` file your PM can actually 
 
 ```bash
 # Also available: why, what-if, blocked, alternatives
-npx flowscript query blocked /tmp/decision.json
-npx flowscript query alternatives /tmp/decision.json
+node bin/flowscript query blocked /tmp/decision.json
+node bin/flowscript query alternatives /tmp/decision.json
 ```
 
 ---
@@ -159,7 +162,7 @@ Specification alone is sufficient for full adoption. No training. No fine-tuning
 
 Running in production for 6+ months in the [flow system](https://github.com/phillipclapham/flow-methodology). Not theoretical.
 
-Details: [ARCHITECTURE.md](ARCHITECTURE.md) (cognitive patterns from 6 months of real use)
+Running in production daily in a multi-agent cognitive architecture with 11 sensors, 22 scheduled tasks, and bilateral AI-to-AI relay.
 
 ---
 
@@ -203,8 +206,11 @@ const mem = Memory.parse(`
 ## Install
 
 ```bash
-npm install flowscript
+git clone https://github.com/phillipclapham/flowscript.git
+cd flowscript && npm install && npm run build
 ```
+
+> **npm package coming soon.** The SDK (with Memory API, fluent builder, and `npm install`) is actively being built. [Track progress](https://github.com/phillipclapham/flowscript/issues).
 
 For Python and LDP protocol integration:
 
@@ -212,7 +218,7 @@ For Python and LDP protocol integration:
 pip install flowscript-ldp
 ```
 
-TypeScript-first. Python SDK wraps the same engine. See [flowscript-ldp](https://github.com/phillipclapham/flowscript-ldp) for the LDP Mode 3 reference implementation.
+See [flowscript-ldp](https://github.com/phillipclapham/flowscript-ldp) for the LDP Mode 3 reference implementation.
 
 ---
 
@@ -273,20 +279,20 @@ Full 21-marker spec: [FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md) | Beginner gui
 
 ```bash
 # Parse FlowScript to IR
-flowscript parse example.fs -o example.json
+node bin/flowscript parse example.fs -o example.json
 
 # Lint for semantic errors (9 rules)
-flowscript lint example.fs
+node bin/flowscript lint example.fs
 
 # Validate IR against schema
-flowscript validate example.json
+node bin/flowscript validate example.json
 
 # Query the graph
-flowscript query why <node-id> example.json
-flowscript query what-if <node-id> example.json
-flowscript query tensions example.json
-flowscript query blocked example.json
-flowscript query alternatives <question-id> example.json
+node bin/flowscript query why <node-id> example.json
+node bin/flowscript query what-if <node-id> example.json
+node bin/flowscript query tensions example.json
+node bin/flowscript query blocked example.json
+node bin/flowscript query alternatives <question-id> example.json
 ```
 
 ---
