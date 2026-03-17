@@ -1,16 +1,16 @@
 # FlowScript
 
-**Your AI forgot why you rejected microservices three weeks ago. FlowScript fixes that.**
+**Your AI rewrites your auth system in 20 minutes flat. Two days later your senior engineer is still explaining what it broke — because it didn't know you rejected JWT three weeks ago, or why, or what that decision blocks.**
 
 [![Tests](https://img.shields.io/badge/tests-628%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
 
 ---
 
-CLAUDE.md and .cursorrules remember facts — "we use Postgres," "prefer functional style." FlowScript remembers reasoning: *why* you chose Postgres, what tensions that creates with your caching strategy, what's blocked by the auth decision, and what breaks if you change your mind.
+FlowScript gives AI tools a structured reasoning graph — not text search over notes, but typed queries over actual decision logic: `why()`, `tensions()`, `blocked()`, `alternatives()`, `whatIf()`. Sub-ms local traversal on project-scale graphs.
 
-Five typed queries over a structured reasoning graph: `why()`, `tensions()`, `blocked()`, `alternatives()`, `whatIf()`. Sub-ms local traversal on project-scale graphs. Not text search — graph traversal over typed relationships.
+CLAUDE.md stores facts. FlowScript stores *reasoning* — why you chose Postgres, what tensions that creates, what's blocked, what breaks if you change your mind. They're complementary. Use both.
 
-This isn't competing with RAG. RAG finds relevant documents. FlowScript remembers why you decided against the alternatives. Use both.
+This isn't competing with RAG either. RAG finds relevant documents. FlowScript answers "why did we decide against the alternatives?" Different operation entirely.
 
 ---
 
