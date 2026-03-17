@@ -1,0 +1,30 @@
+# FlowScript — Project Reasoning Memory
+
+This project uses FlowScript for persistent decision intelligence.
+You have FlowScript MCP tools available. Use them naturally during work:
+
+## When to Record (do this automatically, not when asked)
+
+- **Decisions**: When you choose between approaches, record the question, alternatives, and rationale.
+  Use `add_node` (type: question), `add_alternative`, then `set_state` (decided/blocked/parked).
+- **Tensions**: When you notice a tradeoff, record both sides and the axis.
+  Use `relate_nodes` with type "tension" and an axis label like "performance vs cost".
+- **Blockers**: When something is stuck, record why and what's downstream.
+  Use `set_state` with type "blocked" and the reason.
+- **Insights**: When you learn something non-obvious, record it.
+  Use `add_node` (type: insight) and link it to what it derives from.
+- **Causal chains**: When A leads to B, record the relationship.
+  Use `relate_nodes` with type "causes".
+
+## When to Query
+
+- Before making a decision: `query_alternatives` — what did we consider last time?
+- When stuck: `query_blocked` — what's blocking what?
+- When evaluating changes: `query_what_if` — what's downstream of this?
+- During reviews: `query_tensions` — what tradeoffs exist?
+- When someone asks "why": `query_why` — trace the causal chain.
+
+## Persistence
+
+Memory persists across sessions automatically. Run `save_memory` before ending a session.
+Use `get_memory` to see the current state. Format "flowscript" for human-readable, "json" for structured.

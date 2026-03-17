@@ -1,0 +1,730 @@
+{
+  "flowscript_memory": "1.0.0",
+  "ir": {
+    "version": "1.0.0",
+    "nodes": [
+      {
+        "id": "3ae71ebb04cc1fbf5c7e89bcbd3b06c482a4462507c9d9db870f6a1c1a6941fd",
+        "type": "question",
+        "content": "Which database for user sessions and agent state?",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 1,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        },
+        "children": [
+          "fd0b0fa6ae090ff41bbefdeed3e67b0c61b8fd4c9543be56a35b769fad6be15b",
+          "ffc0fed4c166058a1624db689648ec0662643a7f2708e38f50db8d7cf8041ecf",
+          "0c1f7abbec49c7219441c0c099c1848659fd12b4a3459d3ea5cd5bcc8fcdab42"
+        ]
+      },
+      {
+        "id": "fd0b0fa6ae090ff41bbefdeed3e67b0c61b8fd4c9543be56a35b769fad6be15b",
+        "type": "alternative",
+        "content": "PostgreSQL — battle-tested, ACID, rich querying",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 2,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "ffc0fed4c166058a1624db689648ec0662643a7f2708e38f50db8d7cf8041ecf",
+        "type": "alternative",
+        "content": "Redis — sub-ms reads, great for session cache",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 4,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "0c1f7abbec49c7219441c0c099c1848659fd12b4a3459d3ea5cd5bcc8fcdab42",
+        "type": "alternative",
+        "content": "SQLite — zero ops, embedded, good enough for MVP",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 6,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "37cd36532a88ca9b6db6544b8661f3b4dd59283c5c18291a9d7ef4bd0b8c8e64",
+        "type": "thought",
+        "content": "Redis gives sub-ms reads but cluster costs $200/mo minimum",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 8,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "923d96c7a89137a3cc12ce14580777fcbd96a0da49e92dc41f36f25f60837372",
+        "type": "thought",
+        "content": "PostgreSQL on shared hosting is $15/mo and handles our scale for 18+ months",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 9,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "86b90d3578ec6daff42f37f72c97ebc3d59e65cb2ab22a9a9c434dc53a35a963",
+        "type": "thought",
+        "content": "SQLite cannot handle concurrent writes from multiple API workers",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 10,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "7edd645b04a2010875771b5dd663fe9f7a9be382410d308561945e17c46a9854",
+        "type": "question",
+        "content": "Which authentication approach for the API?",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 15,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        },
+        "children": [
+          "57226a3616200a07a7bb9d22ca23b777066dcd4e5696e0aec14b8c000345b178",
+          "f3c32b9cea24ff0527141b5f5edc71b77726e5447e154ffc8ea1c6c823560494",
+          "9a44004176598f30dd07b5a6a205852b01a081b8a2daab7c15526054a49d2d3a"
+        ]
+      },
+      {
+        "id": "57226a3616200a07a7bb9d22ca23b777066dcd4e5696e0aec14b8c000345b178",
+        "type": "alternative",
+        "content": "JWT with refresh tokens — stateless, scalable",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 16,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "f3c32b9cea24ff0527141b5f5edc71b77726e5447e154ffc8ea1c6c823560494",
+        "type": "alternative",
+        "content": "Server-side sessions — simpler, easier to revoke",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 18,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "9a44004176598f30dd07b5a6a205852b01a081b8a2daab7c15526054a49d2d3a",
+        "type": "alternative",
+        "content": "Delegate to Auth0/Clerk — zero auth code, monthly cost",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 20,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "d91799a59a7ae3c9d2c015f418cd9ed84fbf14a16ab7ba5d0871e1fb0a800c43",
+        "type": "thought",
+        "content": "JWT revocation is a pain — need a blocklist, which means server-side state anyway",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 22,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "cdf7c1d5c735ee91489e2d8a3755e9ea86eb02d49aad1d29047f135a463a5e5a",
+        "type": "thought",
+        "content": "Started with microservices but the overhead is killing velocity — 3 services, 3 deploy pipelines, distributed tracing just to serve CRUD",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 27,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "0940c07f1d07abcf57181283f4bfcc02ba536ff7223e28ab2227eb4d5e690400",
+        "type": "thought",
+        "content": "Collapsed back to a modular monolith — same code boundaries, one deploy, 10x faster iteration",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 28,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "d3683c6350ab67974ab230508f0498d8229e531c8026a3da1d311daf800e1a98",
+        "type": "insight",
+        "content": "Premature distribution is worse than premature optimization — at least premature optimization is local",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 30,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "826b484834e714539da08dac5613c618c2bb05bba7d982fde383a820bf4e97ec",
+        "type": "action",
+        "content": "Migrate user table from UUID v4 to ULID for sortable IDs",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 32,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "3f65bac4715da715cd835a62c3448b4cabf48062f0f3dcf07f016ed9207b2323",
+        "type": "thought",
+        "content": "Rate limiting needs to happen at the API gateway, not per-route — learned this the hard way when /search got hammered",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 34,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "29bca657837a76954230d0fb6b7f4d82c70e1b7c392a1076f0fd24827547c486",
+        "type": "thought",
+        "content": "Cache invalidation via TTL is simpler but stale-while-revalidate gives better UX for the dashboard",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 35,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "9ab5ba686b12506c38b277d85beb29caa39bf95a03476349e1f27a886429659c",
+        "type": "completion",
+        "content": "API v1 shipped — 12 endpoints, auth, rate limiting, monitoring",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 37,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "173ae8be23e756da2e4ccec12353f0d11ea154b25f9307607237496d4c3ec256",
+        "type": "insight",
+        "content": "Integration tests against real Postgres caught 3 bugs that unit tests with mocks missed — the ORM generates different SQL than you think",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 38,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      }
+    ],
+    "relationships": [
+      {
+        "id": "a762452b36e0808fc6d7367f0111144cf2419dbaf70d2169ed97506fca2878ed",
+        "type": "alternative",
+        "source": "3ae71ebb04cc1fbf5c7e89bcbd3b06c482a4462507c9d9db870f6a1c1a6941fd",
+        "target": "fd0b0fa6ae090ff41bbefdeed3e67b0c61b8fd4c9543be56a35b769fad6be15b",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 3,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "6b088921c2919c67817386e61b5972902fc7284645b45f3404e861fe2f0152b1",
+        "type": "alternative",
+        "source": "3ae71ebb04cc1fbf5c7e89bcbd3b06c482a4462507c9d9db870f6a1c1a6941fd",
+        "target": "ffc0fed4c166058a1624db689648ec0662643a7f2708e38f50db8d7cf8041ecf",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 5,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "814f341df3fe514fb2dea98b8ca56c9e1b4dc042581b72a0d3c8b4772375ee62",
+        "type": "alternative",
+        "source": "3ae71ebb04cc1fbf5c7e89bcbd3b06c482a4462507c9d9db870f6a1c1a6941fd",
+        "target": "0c1f7abbec49c7219441c0c099c1848659fd12b4a3459d3ea5cd5bcc8fcdab42",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 7,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "fc6173acf0c2ea5b40dde79292c26ce8e0ce7abb299f10ab21751cc4b751ad91",
+        "type": "tension",
+        "source": "37cd36532a88ca9b6db6544b8661f3b4dd59283c5c18291a9d7ef4bd0b8c8e64",
+        "target": "923d96c7a89137a3cc12ce14580777fcbd96a0da49e92dc41f36f25f60837372",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 11,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        },
+        "axis_label": "performance vs cost"
+      },
+      {
+        "id": "be380698e112cc47cfa2f54d7e92a0aac5c5ff377a2e049e351a8fb1391f178b",
+        "type": "causes",
+        "source": "86b90d3578ec6daff42f37f72c97ebc3d59e65cb2ab22a9a9c434dc53a35a963",
+        "target": "0c1f7abbec49c7219441c0c099c1848659fd12b4a3459d3ea5cd5bcc8fcdab42",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 12,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "3d07c83533149018dc3632c05758f33ba7ec3b1a41a264725e714d3019e28be7",
+        "type": "alternative",
+        "source": "7edd645b04a2010875771b5dd663fe9f7a9be382410d308561945e17c46a9854",
+        "target": "57226a3616200a07a7bb9d22ca23b777066dcd4e5696e0aec14b8c000345b178",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 17,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "619f7d66aeac12aad860d7364ecb6db92713abcc7600207308a996008315364d",
+        "type": "alternative",
+        "source": "7edd645b04a2010875771b5dd663fe9f7a9be382410d308561945e17c46a9854",
+        "target": "f3c32b9cea24ff0527141b5f5edc71b77726e5447e154ffc8ea1c6c823560494",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 19,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "62924d388f7984caed36e9951a41c23118e45b534b7aa2226df45a7d29192060",
+        "type": "alternative",
+        "source": "7edd645b04a2010875771b5dd663fe9f7a9be382410d308561945e17c46a9854",
+        "target": "9a44004176598f30dd07b5a6a205852b01a081b8a2daab7c15526054a49d2d3a",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 21,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "7d114774b70e905cc5aa33bb9b6301ebb0e230351c51b33484817c143179da87",
+        "type": "causes",
+        "source": "d91799a59a7ae3c9d2c015f418cd9ed84fbf14a16ab7ba5d0871e1fb0a800c43",
+        "target": "f3c32b9cea24ff0527141b5f5edc71b77726e5447e154ffc8ea1c6c823560494",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 23,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "f9fea6c88c4ce9b05b4d2468128d6fde4b4e16964fb6b49d58f10c1b2fd5dffe",
+        "type": "tension",
+        "source": "57226a3616200a07a7bb9d22ca23b777066dcd4e5696e0aec14b8c000345b178",
+        "target": "d91799a59a7ae3c9d2c015f418cd9ed84fbf14a16ab7ba5d0871e1fb0a800c43",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 24,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        },
+        "axis_label": "statelessness vs revocability"
+      },
+      {
+        "id": "926fdda670bd5b95e8a41caf87a114983d1e8c5ec57f5978f687ddc6636db99b",
+        "type": "causes",
+        "source": "cdf7c1d5c735ee91489e2d8a3755e9ea86eb02d49aad1d29047f135a463a5e5a",
+        "target": "0940c07f1d07abcf57181283f4bfcc02ba536ff7223e28ab2227eb4d5e690400",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 29,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "db9a21587b752898de3dc99ff79babbf144469244a5a236225b4a6a018be730a",
+        "type": "derives_from",
+        "source": "0940c07f1d07abcf57181283f4bfcc02ba536ff7223e28ab2227eb4d5e690400",
+        "target": "d3683c6350ab67974ab230508f0498d8229e531c8026a3da1d311daf800e1a98",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 31,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "c71af1ba8fb359eaab9f80010b807353b005d40e8d790320e92be8edf11a5831",
+        "type": "tension",
+        "source": "29bca657837a76954230d0fb6b7f4d82c70e1b7c392a1076f0fd24827547c486",
+        "target": "3f65bac4715da715cd835a62c3448b4cabf48062f0f3dcf07f016ed9207b2323",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 36,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        },
+        "axis_label": "freshness vs performance"
+      },
+      {
+        "id": "2f2c11a8467f3ff9d42acf5dc20de578cf9d1df81a939a2cfb451f2d62173eef",
+        "type": "derives_from",
+        "source": "9ab5ba686b12506c38b277d85beb29caa39bf95a03476349e1f27a886429659c",
+        "target": "173ae8be23e756da2e4ccec12353f0d11ea154b25f9307607237496d4c3ec256",
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 39,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      }
+    ],
+    "states": [
+      {
+        "id": "fd48493449a6c2e4d2e6c78619f6d2aaf08c2a55b88c8d56aec4c87ffbe7929f",
+        "type": "decided",
+        "node_id": "fd0b0fa6ae090ff41bbefdeed3e67b0c61b8fd4c9543be56a35b769fad6be15b",
+        "fields": {
+          "rationale": "Best balance of cost, reliability, and query power for our scale. Redis if we hit performance walls later.",
+          "on": "2026-03-17"
+        },
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 13,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "d03604198d7a58a7ae8d48dc51bb20c9572f07d0fbccb28744b626c5f2ca2ed1",
+        "type": "blocked",
+        "node_id": "0c1f7abbec49c7219441c0c099c1848659fd12b4a3459d3ea5cd5bcc8fcdab42",
+        "fields": {
+          "reason": "Cannot handle concurrent writes from multiple API workers",
+          "since": "2026-03-17"
+        },
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 14,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "035f5beb145069e62efcd3491e544da62c34ff993dc4d27d00ad9b20b89579d0",
+        "type": "decided",
+        "node_id": "f3c32b9cea24ff0527141b5f5edc71b77726e5447e154ffc8ea1c6c823560494",
+        "fields": {
+          "rationale": "JWT revocation complexity not worth the statelessness benefit at our scale. Server sessions + Redis cache.",
+          "on": "2026-03-17"
+        },
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 25,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "8ad50f3f1f3854c3c84f66f747c4c06d58b279bc5e22ce390e182a3b39a96a58",
+        "type": "parking",
+        "node_id": "9a44004176598f30dd07b5a6a205852b01a081b8a2daab7c15526054a49d2d3a",
+        "fields": {
+          "why": "Monthly cost does not make sense pre-revenue. Revisit after launch."
+        },
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 26,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      },
+      {
+        "id": "19f05f492dea90ba9550348f888a7f6602fb45898f0bd283641f38190710239e",
+        "type": "exploring",
+        "node_id": "826b484834e714539da08dac5613c618c2bb05bba7d982fde383a820bf4e97ec",
+        "fields": {},
+        "provenance": {
+          "source_file": "memory",
+          "line_number": 33,
+          "timestamp": "2026-03-17T21:36:42.496Z",
+          "author": {
+            "agent": "sdk",
+            "role": "ai"
+          }
+        }
+      }
+    ],
+    "invariants": {},
+    "metadata": {
+      "parser": "memory-sdk",
+      "parsed_at": "2026-03-17T21:36:42.494Z"
+    }
+  },
+  "temporal": {
+    "3ae71ebb04cc1fbf5c7e89bcbd3b06c482a4462507c9d9db870f6a1c1a6941fd": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "fd0b0fa6ae090ff41bbefdeed3e67b0c61b8fd4c9543be56a35b769fad6be15b": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "ffc0fed4c166058a1624db689648ec0662643a7f2708e38f50db8d7cf8041ecf": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "0c1f7abbec49c7219441c0c099c1848659fd12b4a3459d3ea5cd5bcc8fcdab42": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "37cd36532a88ca9b6db6544b8661f3b4dd59283c5c18291a9d7ef4bd0b8c8e64": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "923d96c7a89137a3cc12ce14580777fcbd96a0da49e92dc41f36f25f60837372": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "86b90d3578ec6daff42f37f72c97ebc3d59e65cb2ab22a9a9c434dc53a35a963": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "7edd645b04a2010875771b5dd663fe9f7a9be382410d308561945e17c46a9854": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "57226a3616200a07a7bb9d22ca23b777066dcd4e5696e0aec14b8c000345b178": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "f3c32b9cea24ff0527141b5f5edc71b77726e5447e154ffc8ea1c6c823560494": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "9a44004176598f30dd07b5a6a205852b01a081b8a2daab7c15526054a49d2d3a": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "d91799a59a7ae3c9d2c015f418cd9ed84fbf14a16ab7ba5d0871e1fb0a800c43": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "cdf7c1d5c735ee91489e2d8a3755e9ea86eb02d49aad1d29047f135a463a5e5a": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "0940c07f1d07abcf57181283f4bfcc02ba536ff7223e28ab2227eb4d5e690400": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "d3683c6350ab67974ab230508f0498d8229e531c8026a3da1d311daf800e1a98": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "826b484834e714539da08dac5613c618c2bb05bba7d982fde383a820bf4e97ec": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "3f65bac4715da715cd835a62c3448b4cabf48062f0f3dcf07f016ed9207b2323": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "29bca657837a76954230d0fb6b7f4d82c70e1b7c392a1076f0fd24827547c486": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "9ab5ba686b12506c38b277d85beb29caa39bf95a03476349e1f27a886429659c": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    },
+    "173ae8be23e756da2e4ccec12353f0d11ea154b25f9307607237496d4c3ec256": {
+      "createdAt": "2026-03-17T21:36:42.496Z",
+      "lastTouched": "2026-03-17T21:36:42.496Z",
+      "frequency": 1,
+      "tier": "current"
+    }
+  },
+  "snapshots": [],
+  "config": {}
+}

@@ -31,20 +31,90 @@ import type { RelationType } from './types';
 // Version from package.json
 const VERSION: string = require('../package.json').version;
 
+/**
+ * Seed a demo memory with a realistic API project for exploring queries.
+ * 20 nodes: 2 decisions, 3 tensions, 1 blocker, 2 insights, causal chains.
+ */
+function seedDemoMemory(filePath: string): Memory {
+  const fs = require('fs');
+  if (fs.existsSync(filePath)) {
+    console.error(`Demo: Loading existing memory from ${filePath}`);
+    return Memory.load(filePath);
+  }
+
+  console.error(`Demo: Creating sample project memory at ${filePath}`);
+  const mem = new Memory();
+
+  // Database decision
+  const qDb = mem.question('Which database for user sessions and agent state?');
+  const altPg = mem.alternative(qDb, 'PostgreSQL — battle-tested, ACID, rich querying');
+  const altRedis = mem.alternative(qDb, 'Redis — sub-ms reads, great for session cache');
+  const altSqlite = mem.alternative(qDb, 'SQLite — zero ops, embedded, good enough for MVP');
+
+  const tSpeed = mem.thought('Redis gives sub-ms reads but cluster costs $200/mo minimum');
+  const tCost = mem.thought('PostgreSQL on shared hosting is $15/mo and handles our scale for 18+ months');
+  const tConcurrent = mem.thought('SQLite cannot handle concurrent writes from multiple API workers');
+
+  mem.tension(tSpeed, tCost, 'performance vs cost');
+  tConcurrent.causes(altSqlite);
+  altPg.decide({ rationale: 'Best balance of cost, reliability, and query power for our scale. Redis if we hit performance walls later.' });
+  altSqlite.block({ reason: 'Cannot handle concurrent writes from multiple API workers' });
+
+  // Auth decision
+  const qAuth = mem.question('Which authentication approach for the API?');
+  const altJwt = mem.alternative(qAuth, 'JWT with refresh tokens — stateless, scalable');
+  const altSession = mem.alternative(qAuth, 'Server-side sessions — simpler, easier to revoke');
+  const altOauth = mem.alternative(qAuth, 'Delegate to Auth0/Clerk — zero auth code, monthly cost');
+
+  const tJwtRevoke = mem.thought('JWT revocation is a pain — need a blocklist, which means server-side state anyway');
+  tJwtRevoke.causes(altSession);
+  mem.tension(altJwt, tJwtRevoke, 'statelessness vs revocability');
+  altSession.decide({ rationale: 'JWT revocation complexity not worth the statelessness benefit at our scale. Server sessions + Redis cache.' });
+  altOauth.park({ why: 'Monthly cost does not make sense pre-revenue. Revisit after launch.' });
+
+  // Architecture evolution
+  const tMicro = mem.thought('Started with microservices but the overhead is killing velocity — 3 services, 3 deploy pipelines, distributed tracing just to serve CRUD');
+  const tMono = mem.thought('Collapsed back to a modular monolith — same code boundaries, one deploy, 10x faster iteration');
+  tMicro.causes(tMono);
+  const iPremature = mem.insight('Premature distribution is worse than premature optimization — at least premature optimization is local');
+  iPremature.derivesFrom(tMono);
+
+  // Ongoing work
+  const aMigrate = mem.action('Migrate user table from UUID v4 to ULID for sortable IDs');
+  aMigrate.explore();
+  mem.thought('Rate limiting needs to happen at the API gateway, not per-route — learned this the hard way when /search got hammered');
+  const tCache = mem.thought('Cache invalidation via TTL is simpler but stale-while-revalidate gives better UX for the dashboard');
+  const tRate = mem.thought('Rate limiting needs to happen at the API gateway, not per-route — learned this the hard way when /search got hammered');
+  mem.tension(tCache, tRate, 'freshness vs performance');
+
+  mem.completion('API v1 shipped — 12 endpoints, auth, rate limiting, monitoring');
+  const cApi = mem.completion('API v1 shipped — 12 endpoints, auth, rate limiting, monitoring');
+  const iTesting = mem.insight('Integration tests against real Postgres caught 3 bugs that unit tests with mocks missed — the ORM generates different SQL than you think');
+  iTesting.derivesFrom(cApi);
+
+  mem.save(filePath);
+  console.error(`Demo: ${mem.nodes.length} nodes, 3 tensions, 1 blocker, 2 decisions. Try query_tensions or query_blocked!`);
+  return mem;
+}
+
 // Parse memory file path from args
 const args = process.argv.slice(2);
 
 if (args.includes('--help') || args.includes('-h')) {
   console.error(`FlowScript MCP Server v${VERSION}`);
   console.error('');
-  console.error('Usage: flowscript-mcp <memory-file.json>');
+  console.error('Usage: flowscript-mcp [options] <memory-file.json>');
+  console.error('');
+  console.error('Options:');
+  console.error('  --demo    Load a sample project memory to explore queries');
   console.error('');
   console.error('Exposes FlowScript decision intelligence as MCP tools.');
   console.error('Memory file is created if it does not exist.');
   process.exit(0);
 }
 
-let memoryPath = './memory.json';
+const isDemo = args.includes('--demo');
+let memoryPath = isDemo ? './demo-memory.json' : './memory.json';
 for (const arg of args) {
   if (!arg.startsWith('-')) {
     memoryPath = arg;
@@ -53,7 +123,7 @@ for (const arg of args) {
 }
 
 // Load or create memory
-const memory = Memory.loadOrCreate(memoryPath);
+const memory = isDemo ? seedDemoMemory(memoryPath) : Memory.loadOrCreate(memoryPath);
 
 // Auto-save on exit signals
 function gracefulSave() {
