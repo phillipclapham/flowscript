@@ -1,8 +1,21 @@
 {
-  "name": "flowscript",
+  "name": "flowscript-core",
   "version": "1.0.0",
   "description": "Decision intelligence for AI agents. Typed semantic queries over structured reasoning.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "bin",
+    "LICENSE",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "bin": {
     "flowscript": "./bin/flowscript"
   },
@@ -10,7 +23,8 @@
     "build": "tsc && cp src/grammar.ohm dist/grammar.ohm",
     "test": "NODE_OPTIONS='--max-old-space-size=2048' jest",
     "test:watch": "NODE_OPTIONS='--max-old-space-size=2048' jest --watch",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
     "flowscript",
@@ -19,10 +33,26 @@
     "semantic-queries",
     "ai-agents",
     "query-engine",
-    "cognitive-architecture"
+    "cognitive-architecture",
+    "llm-memory",
+    "agent-tools",
+    "reasoning",
+    "explainability",
+    "audit-trail"
   ],
-  "author": "Phillip Clapham",
+  "author": "Phillip Clapham <me@phillipclapham.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phillipclapham/flowscript.git"
+  },
+  "homepage": "https://flowscript.org",
+  "bugs": {
+    "url": "https://github.com/phillipclapham/flowscript/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "ajv": "^8.12.0",
     "commander": "^11.0.0",

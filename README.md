@@ -2,7 +2,7 @@
 
 **Decision intelligence for AI agents.**
 
-[![Tests](https://img.shields.io/badge/tests-246%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
+[![Tests](https://img.shields.io/badge/tests-532%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
 
 ---
 
@@ -16,64 +16,29 @@ Agent memory today is either opaque embeddings you can't inspect, expensive LLM 
 
 ---
 
-## Try It Now
-
-Everything below works today. 246 tests passing.
+## Install
 
 ```bash
-git clone https://github.com/phillipclapham/flowscript.git
-cd flowscript && npm install && npm run build
-
-# Parse a decision file to structured IR
-node bin/flowscript parse examples/decision.fs -o /tmp/decision.json
-
-# Find every tradeoff in the decision
-node bin/flowscript query tensions /tmp/decision.json
-```
-
-Real output from that query:
-
-```json
-{
-  "tensions_by_axis": {
-    "security vs simplicity": [{
-      "source": { "content": "JWT tokens" },
-      "target": { "content": "implementation complexity" }
-    }],
-    "scaling vs security": [{
-      "source": { "content": "session tokens + Redis" },
-      "target": { "content": "operational complexity" }
-    }]
-  },
-  "metadata": {
-    "total_tensions": 2,
-    "unique_axes": ["security vs simplicity", "scaling vs security"]
-  }
-}
-```
-
-Typed tradeoffs with named axes. From a 17-line `.fs` file your PM can actually read. Try that with a vector database.
-
-```bash
-# Also available: why, what-if, blocked, alternatives
-node bin/flowscript query blocked /tmp/decision.json
-node bin/flowscript query alternatives /tmp/decision.json
+npm install flowscript-core
 ```
 
 ---
 
-## Hello World — v1.0 SDK
-
-> The SDK wraps what's already working into a fluent API. **Coming soon** — [track progress](https://github.com/phillipclapham/flowscript/issues).
+## Hello World
 
 ```typescript
-import { Memory } from 'flowscript';
+import { Memory } from 'flowscript-core';
+
 const mem = new Memory();
 
 const q = mem.question("Which database for agent memory?");
 mem.alternative(q, "Redis").decide({ rationale: "speed critical for real-time agents" });
 mem.alternative(q, "SQLite").block({ reason: "no concurrent write support" });
-mem.thought("Redis gives sub-ms reads").vs(mem.thought("cluster costs $200/mo"), "performance vs cost");
+mem.tension(
+  mem.thought("Redis gives sub-ms reads"),
+  mem.thought("cluster costs $200/mo"),
+  "performance vs cost"
+);
 
 console.log(mem.query.blocked());   // structured blockers + downstream impact
 console.log(mem.query.tensions());  // tradeoffs with named axes
@@ -84,23 +49,157 @@ Three lines of output, three things no other memory system gives you: typed bloc
 
 ---
 
-## What You Get
+## The Complete Developer Loop
 
-### Token Efficiency
+This is what v1.0 delivers. Persistent, evolving agent memory in 10 minutes.
 
-~3:1 compression ratio vs prose. Same reasoning, 66% fewer memory tokens. At scale that's real money.
+```typescript
+import { Memory } from 'flowscript-core';
 
-### Decision Provenance
+// 1. Load or create persistent memory (zero-friction first run)
+const mem = Memory.loadOrCreate('./agent-memory.json');
 
-`why(nodeId)` returns a typed causal chain. Not vibes, not "the model said so." A traceable path from decision back through every factor that led there.
+// 2. Wire to your agent framework (12 tools, OpenAI function calling format)
+const tools = mem.asTools();
+// → add_node, relate_nodes, set_state, remove_state,
+//   query_why, query_what_if, query_tensions, query_blocked, query_alternatives,
+//   get_memory, search_nodes, add_alternative
 
-### Blocker Analysis
+// 3. Your agent builds reasoning in real-time via tool calls
+//    (no FlowScript syntax knowledge needed — the tools handle it)
 
-`blocked()` finds every stuck node, scores downstream impact, and tells you how long it's been waiting. Your agent doesn't just know *what's* blocked, it knows *what breaks* because of it.
+// 4. Inject memory into agent prompt (respects token budget)
+const context = mem.toFlowScript({
+  maxTokens: 4000,
+  strategy: 'tier-priority'  // proven+foundation always included
+});
 
-### Human-Readable Audit
+// 5. End of session: housekeep + save
+mem.prune();   // dormant nodes → .audit.jsonl (append-only, crash-safe)
+mem.save();    // no-arg save to stored path
 
-`.fs` files read like structured prose. Your PM can open agent memory in a code review. Try that with a vector database.
+// 6. Next session: load → memory has evolved
+//    Growing nodes (recent), resting (few days), dormant (auto-prunable)
+//    Patterns graduate: current → developing → proven → foundation
+```
+
+---
+
+## Three Ways In
+
+**1. Agent tools** (zero learning curve — wire and go)
+
+```typescript
+const mem = Memory.loadOrCreate('./memory.json');
+const tools = mem.asTools();
+
+// Pass tools to any OpenAI-compatible agent framework.
+// The agent builds structured reasoning via tool calls —
+// no FlowScript syntax knowledge needed.
+```
+
+**2. From agent transcripts** (extract reasoning from existing conversations)
+
+```typescript
+const mem = await Memory.fromTranscript(agentLog, {
+  extract: async (prompt) => await yourLLM(prompt)  // any LLM
+});
+console.log(mem.query.tensions());
+```
+
+Paste an existing agent conversation. The LLM extracts structured reasoning. You get queryable decision intelligence back. LLM-agnostic — bring your own model.
+
+**3. Builder API** (programmatic construction)
+
+```typescript
+const mem = new Memory();
+const t = mem.thought("caching improves latency");
+t.causes(mem.thought("higher memory usage"));
+mem.tension(
+  mem.thought("speed matters"),
+  mem.thought("cost constraints"),
+  "performance vs budget"
+);
+```
+
+Fluent chaining, type-safe, auto-generates the reasoning graph.
+
+**4. Parse `.fs` directly** (power users)
+
+```typescript
+const mem = Memory.parse(`
+  ? which database for sessions
+  || Redis <- speed critical
+  || Postgres <- better durability
+  speed >< durability
+`);
+```
+
+21 markers, human-readable, works in any text editor. [Full syntax spec](FLOWSCRIPT_SYNTAX.md).
+
+---
+
+## Wire to Your Agent
+
+`asTools()` returns 12 tools in OpenAI function calling format. Your agent gets structured reasoning as tool calls — no prompt engineering, no FlowScript syntax.
+
+```typescript
+const tools = mem.asTools();
+// Returns: MemoryTool[] — each has { type, function: { name, description, parameters }, handler }
+
+// Filter by category:
+const queryOnly = mem.asTools({ include: ['query'] });
+
+// Namespace for multi-tool agents:
+const prefixed = mem.asTools({ prefix: 'memory_' });
+// → memory_add_node, memory_query_why, etc.
+```
+
+**Core tools** (build the graph): `add_node`, `add_alternative`, `relate_nodes`, `set_state`, `remove_state`
+
+**Query tools** (ask questions): `query_why`, `query_what_if`, `query_tensions`, `query_blocked`, `query_alternatives`
+
+**Memory tools** (inspect + search): `get_memory`, `search_nodes`
+
+Each tool handler returns typed `{ success: true, data }` or `{ success: false, error }`.
+
+---
+
+## Token-Budgeted Serialization
+
+Inject memory into agent prompts without blowing your context window.
+
+```typescript
+// Hard budget — never exceeds maxTokens
+const context = mem.toFlowScript({ maxTokens: 4000 });
+
+// Four strategies:
+mem.toFlowScript({ maxTokens: 4000, strategy: 'tier-priority' });  // foundation first (default)
+mem.toFlowScript({ maxTokens: 4000, strategy: 'recency' });        // newest first
+mem.toFlowScript({ maxTokens: 4000, strategy: 'frequency' });      // most-referenced first
+mem.toFlowScript({ maxTokens: 4000, strategy: 'relevance', relevanceQuery: 'auth' }); // topic match
+
+// Proven + foundation tiers always included (preserveTiers default)
+// Dormant nodes excluded by default (excludeDormant)
+```
+
+~3:1 compression ratio vs prose. Same reasoning, 66% fewer tokens. At scale that's real money.
+
+---
+
+## Audit Trail
+
+`prune()` doesn't delete — it archives. Every pruned node, relationship, and state is appended to `.audit.jsonl` with full provenance. Write-before-remove ordering for crash safety.
+
+```typescript
+mem.prune();  // dormant nodes → agent-memory.audit.jsonl
+
+// Query the audit trail
+const history = Memory.readAuditLog('./agent-memory.audit.jsonl');
+// Returns: AuditEntry[] — timestamp, event, full node objects, temporal metadata
+```
+
+Your agent's decision history is always recoverable. Compliance-friendly by design.
 
 ---
 
@@ -124,16 +223,26 @@ Full query docs with TypeScript API: [QUERY_ENGINE.md](QUERY_ENGINE.md)
 
 ---
 
+## Temporal Intelligence
+
+Memory that gets smarter over time. Nodes have temporal tiers that reflect how established knowledge is:
+
+| Tier | Meaning | Behavior |
+|------|---------|----------|
+| `current` | New, recent observations | Grows quickly, may be pruned |
+| `developing` | Patterns emerging (touched 2+ times) | Building confidence |
+| `proven` | Validated through repeated use (3+ times) | Protected from pruning |
+| `foundation` | Core truths | Always preserved, even under budget pressure |
+
+Nodes graduate automatically based on frequency. The `garden()` method shows what's growing, resting, and dormant. `prune()` removes dormant nodes to the audit trail. Proven and foundation tiers are preserved through budget constraints — your agent never loses hard-won knowledge.
+
+---
+
 ## Agent-to-Agent Decision Exchange
 
 FlowScript's most differentiated use case: **structured semantic payloads between agents.**
 
 When Agent A asks Agent B "why did you make that decision?", most systems return unstructured text. FlowScript returns a typed causal chain:
-
-```
-Agent A → why(decision_id) → Agent B
-       ← typed causal chain with provenance
-```
 
 ```typescript
 // Agent B responds to a why() query with structured reasoning
@@ -160,88 +269,31 @@ Different training data, different attention mechanisms, different optimization 
 
 Specification alone is sufficient for full adoption. No training. No fine-tuning. Just the syntax reference and examples.
 
-Running in production for 6+ months in the [flow system](https://github.com/phillipclapham/flow-methodology). Not theoretical.
-
-Running in production daily in a multi-agent cognitive architecture with 11 sensors, 22 scheduled tasks, and bilateral AI-to-AI relay.
+Running in production daily in a multi-agent cognitive architecture with 11 sensors, 22 scheduled tasks, and bilateral AI-to-AI relay. Not theoretical.
 
 ---
 
-## Three Ways In
+## Why This Isn't Another Memory Layer
 
-**1. From agent transcripts** (zero learning curve)
-
-```typescript
-const mem = Memory.fromTranscript(agentLog);
-console.log(mem.query.tensions());
-```
-
-The LLM writes FlowScript. You never touch the syntax. Paste existing agent output, get queryable decision intelligence back.
-
-**2. Builder API** (programmatic)
-
-```typescript
-const mem = new Memory();
-const t = mem.thought("caching improves latency");
-t.causes(mem.thought("higher memory usage"));
-t.tensionWith(mem.thought("cost constraints"), "performance vs budget");
-```
-
-Feels like a builder/ORM. Type-safe, fluent chaining, auto-generates the graph.
-
-**3. Parse `.fs` directly** (power users)
-
-```typescript
-const mem = Memory.parse(`
-  ? which database for sessions
-  || Redis <- speed critical
-  || Postgres <- better durability
-  speed >< durability
-`);
-```
-
-21 markers, human-readable, works in any text editor. [Full syntax spec](FLOWSCRIPT_SYNTAX.md).
+| Capability | FlowScript | Embedding stores | State dicts | LLM self-edit |
+|-----------|-----------|-----------------|------------|--------------|
+| Semantic queries (why, blocked, tensions) | Yes | No | No | No |
+| Human-readable persistence | Yes (.fs files) | No | Partially | No |
+| Decision provenance | Yes (typed chains) | No | No | Sometimes |
+| Agent-to-agent reasoning exchange | Yes (LDP Mode 3) | No | No | No |
+| Token-budgeted serialization | Yes (4 strategies) | No | No | No |
+| Temporal tiers + graduation | Yes | No | No | No |
+| Append-only audit trail | Yes (.audit.jsonl) | No | No | No |
+| Sub-ms query performance | Yes | Depends | Yes | No (LLM call) |
+| Works without fine-tuning | Yes | Yes | Yes | Yes |
 
 ---
 
-## Install
+## EU AI Act Alignment
 
-```bash
-git clone https://github.com/phillipclapham/flowscript.git
-cd flowscript && npm install && npm run build
-```
+FlowScript's `why()` query produces the typed explanatory chains that Articles 12, 13(3)(b)(iv), and 86 of the EU AI Act require for high-risk AI systems. The append-only audit trail (`.audit.jsonl`) provides the decision provenance record these regulations mandate. Built for reasoning — compliance comes free.
 
-> **npm package coming soon.** The SDK (with Memory API, fluent builder, and `npm install`) is actively being built. [Track progress](https://github.com/phillipclapham/flowscript/issues).
-
-For Python and LDP protocol integration:
-
-```bash
-pip install flowscript-ldp
-```
-
-See [flowscript-ldp](https://github.com/phillipclapham/flowscript-ldp) for the LDP Mode 3 reference implementation.
-
----
-
-## How It Works
-
-```
-.fs file / builder API / transcript
-        ↓
-   FlowScript Parser (Ohm.js PEG grammar)
-        ↓
-   Intermediate Representation
-   (typed graph: content-hash IDs, provenance tracking, SHA-256 dedup)
-        ↓
-   Query Engine (5 semantic operations)
-        ↓
-   Structured Results (chain / tree / flat / comparison)
-```
-
-The IR is the core. Every node gets a content-hash ID. Every relationship is typed (causes, derives, tension, blocks, etc.). Provenance tracks source files and line numbers. The schema is formally specified and validated.
-
-246 tests. All passing. Parser, linter (9 semantic rules), validator, query engine, CLI.
-
-Details: [TOOLCHAIN.md](TOOLCHAIN.md) | Formal specs: [spec/](spec/)
+*Applies to high-risk AI systems under Annex III. Not a universal compliance claim.*
 
 ---
 
@@ -262,53 +314,24 @@ Full 21-marker spec: [FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md) | Beginner gui
 
 ---
 
-## Why This Isn't Another Memory Layer
-
-| Capability | FlowScript | Embedding stores | State dicts | LLM self-edit |
-|-----------|-----------|-----------------|------------|--------------|
-| Semantic queries (why, blocked, tensions) | Yes | No | No | No |
-| Human-readable persistence | Yes (.fs files) | No | Partially | No |
-| Decision provenance | Yes (typed chains) | No | No | Sometimes |
-| Agent-to-agent reasoning exchange | Yes (LDP Mode 3) | No | No | No |
-| Sub-ms query performance | Yes | Depends | Yes | No (LLM call) |
-| Works without fine-tuning | Yes | Yes | Yes | Yes |
-
----
-
 ## CLI
 
 ```bash
 # Parse FlowScript to IR
-node bin/flowscript parse example.fs -o example.json
+npx flowscript-core parse example.fs -o example.json
 
 # Lint for semantic errors (9 rules)
-node bin/flowscript lint example.fs
+npx flowscript-core lint example.fs
 
 # Validate IR against schema
-node bin/flowscript validate example.json
+npx flowscript-core validate example.json
 
 # Query the graph
-node bin/flowscript query why <node-id> example.json
-node bin/flowscript query what-if <node-id> example.json
-node bin/flowscript query tensions example.json
-node bin/flowscript query blocked example.json
-node bin/flowscript query alternatives <question-id> example.json
+npx flowscript-core query why <node-id> example.json
+npx flowscript-core query tensions example.json
+npx flowscript-core query blocked example.json
+npx flowscript-core query alternatives <question-id> example.json
 ```
-
----
-
-## Documentation
-
-**Learn the notation:**
-[FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md) (complete spec) | [FLOWSCRIPT_LEARNING.md](FLOWSCRIPT_LEARNING.md) (beginner guide) | [FLOWSCRIPT_EXAMPLES.md](FLOWSCRIPT_EXAMPLES.md) (real-world patterns)
-
-**Understand the engine:**
-[QUERY_ENGINE.md](QUERY_ENGINE.md) (5 queries, TypeScript API) | [TOOLCHAIN.md](TOOLCHAIN.md) (parser, linter, validator)
-
-**Dive deeper:**
-[ADVANCED_PATTERNS.md](ADVANCED_PATTERNS.md) (sophisticated usage) | [spec/](spec/) (formal specifications) | [examples/](examples/) (golden .fs/.json pairs)
-
-**Try it live:** [flowscript.org](https://flowscript.org)
 
 ---
 
@@ -330,6 +353,21 @@ Also structurally aligned with [G2CP](https://github.com/karim0bkh/G2CP_AAMAS) (
 
 ---
 
+## Documentation
+
+**Learn the notation:**
+[FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md) (complete spec) | [FLOWSCRIPT_LEARNING.md](FLOWSCRIPT_LEARNING.md) (beginner guide) | [FLOWSCRIPT_EXAMPLES.md](FLOWSCRIPT_EXAMPLES.md) (real-world patterns)
+
+**Understand the engine:**
+[QUERY_ENGINE.md](QUERY_ENGINE.md) (5 queries, TypeScript API) | [TOOLCHAIN.md](TOOLCHAIN.md) (parser, linter, validator)
+
+**Dive deeper:**
+[ADVANCED_PATTERNS.md](ADVANCED_PATTERNS.md) (sophisticated usage) | [spec/](spec/) (formal specifications) | [examples/](examples/) (golden .fs/.json pairs)
+
+**Try it live:** [flowscript.org](https://flowscript.org)
+
+---
+
 ## Contributing
 
 Use FlowScript. Report what's friction. Open issues with evidence from real use, not theoretical proposals.
@@ -345,4 +383,4 @@ Working on agent protocols? FlowScript's IR is a natural fit for structured sema
 
 MIT. See [LICENSE](LICENSE).
 
-*Decision intelligence for AI agents. Typed semantic queries over structured reasoning.*
+*Decision intelligence for AI agents. 532 tests. Typed semantic queries over structured reasoning.*

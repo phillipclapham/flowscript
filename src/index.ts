@@ -42,6 +42,35 @@ export {
 // Serializer (IR → .fs)
 export { serialize, SerializeOptions } from './serializer';
 
+// Memory (programmatic builder + temporal intelligence)
+export {
+  Memory,
+  NodeRef,
+  MemoryOptions,
+  TemporalConfig,
+  TemporalTierConfig,
+  DormancyConfig,
+  TemporalTier,
+  TemporalMeta,
+  GardenReport,
+  PruneReport,
+  SnapshotEntry,
+  SnapshotInfo,
+  GraduationCandidate,
+  GraduationResult,
+  GraduationHandler,
+  MemoryJSON,
+  BudgetedSerializeOptions,
+  ToolSchema,
+  ToolResult,
+  MemoryTool,
+  AsToolsOptions,
+  ExtractFn,
+  FromTranscriptOptions,
+  TranscriptExtraction,
+  AuditEntry
+} from './memory';
+
 // Hash utilities
 export { hashContent } from './hash';
 

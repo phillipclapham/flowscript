@@ -21,8 +21,11 @@ import * as crypto from 'crypto';
  * // => 'a7f2c8d1b4e9f6a3c5d8e2b7f1a4c9d6e3b8a2f7c1d5e9b4a8f2c6d1e5a9b3f7'
  */
 export function hashContent(data: any): string {
-  // Normalize: sort object keys for deterministic JSON
-  const normalized = JSON.stringify(data, Object.keys(data).sort());
+  // Normalize: recursively sort object keys for deterministic JSON
+  // Note: the previous implementation used an array replacer which
+  // only whitelists top-level keys — nested object fields were silently
+  // dropped. This recursive sort handles all nesting depths correctly.
+  const normalized = JSON.stringify(sortKeys(data));
 
   // Generate SHA-256 hash
   const hash = crypto.createHash('sha256');
@@ -30,4 +33,15 @@ export function hashContent(data: any): string {
 
   // Return lowercase hex (64 chars)
   return hash.digest('hex');
+}
+
+/** Recursively sort object keys for deterministic serialization */
+function sortKeys(obj: any): any {
+  if (obj === null || obj === undefined) return obj;
+  if (Array.isArray(obj)) return obj.map(sortKeys);
+  if (typeof obj !== 'object') return obj;
+  return Object.keys(obj).sort().reduce((acc: Record<string, any>, key) => {
+    acc[key] = sortKeys(obj[key]);
+    return acc;
+  }, {});
 }
