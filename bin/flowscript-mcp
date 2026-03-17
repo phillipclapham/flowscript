@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+/**
+ * FlowScript MCP Server - Entry point
+ *
+ * Usage:
+ *   flowscript-mcp ./agent-memory.json
+ *   flowscript-mcp --help
+ */
+
+require('../dist/mcp-server.js');
