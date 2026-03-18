@@ -34,7 +34,7 @@ describe('Memory — Node Creation', () => {
     expect(mem.action('do it').type).toBe('action');
     expect(mem.insight('aha').type).toBe('insight');
     expect(mem.completion('done').type).toBe('completion');
-    expect(mem.block('group').type).toBe('block');
+    expect(mem.group('group').type).toBe('block');
   });
 
   test('creates alternative linked to question', () => {
@@ -108,7 +108,7 @@ describe('NodeRef — Child Nodes', () => {
 
   test('creates multiple child types', () => {
     const mem = new Memory();
-    const parent = mem.block('analysis');
+    const parent = mem.group('analysis');
 
     const t = parent.thought('idea');
     const a = parent.action('do thing');
@@ -594,7 +594,7 @@ describe('Memory — Garden', () => {
   test('garden excludes block nodes', () => {
     const mem = new Memory();
     mem.thought('visible');
-    mem.block('structural');
+    mem.group('structural');
 
     const garden = mem.garden();
     expect(garden.stats.total).toBe(1);

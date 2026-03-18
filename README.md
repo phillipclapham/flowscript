@@ -2,7 +2,7 @@
 
 **Your AI rewrites your auth system in 20 minutes flat. Two days later your senior engineer is still explaining what it broke — because it didn't know you rejected JWT three weeks ago, or why, or what that decision blocks.**
 
-[![Tests](https://img.shields.io/badge/tests-614%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
+[![Tests](https://img.shields.io/badge/tests-616%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
 
 ---
 
@@ -140,7 +140,7 @@ The difference matters when your agent hits a decision point. With just CLAUDE.m
 
 ### MCP (Claude Code, Cursor)
 
-12 tools, local file persistence, zero cloud dependency. [Setup above](#try-it). Your reasoning stays on your machine — no cloud, no telemetry.
+14 tools, local file persistence, zero cloud dependency. [Setup above](#try-it). Your reasoning stays on your machine — no cloud, no telemetry.
 
 ### Agent Frameworks (Python)
 
@@ -214,7 +214,7 @@ import { Memory } from 'flowscript-core';
 // 1. Load or create (zero-friction first run)
 const mem = Memory.loadOrCreate('./agent-memory.json');
 
-// 2. Wire to your agent (12 tools, OpenAI function calling format)
+// 2. Wire to your agent (14 tools, OpenAI function calling format)
 const tools = mem.asTools();
 
 // 3. Agent builds reasoning via tool calls during work
@@ -292,4 +292,12 @@ Use FlowScript. Report what's friction. Open issues with evidence from real use.
 
 ---
 
-MIT. 628 tests across TypeScript + Python. Built by [Phillip Clapham](https://phillipclapham.com).
+## Known Limitations
+
+- **Single-agent access**: `save()` uses non-atomic `writeFileSync`. Two agents writing the same file concurrently will clobber each other. Use separate memory files per agent.
+- **`.fs` format is lossy**: Temporal metadata, config, and snapshots are not preserved in `.fs` files. Use `.json` for the full operational loop.
+- **CJS package**: Exports CommonJS. Works in ESM projects via Node.js CJS interop (`import { Memory } from 'flowscript-core'` works in Node 18+). Native ESM build planned.
+
+---
+
+MIT. Built by [Phillip Clapham](https://phillipclapham.com).

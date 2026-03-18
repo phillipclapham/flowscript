@@ -85,12 +85,10 @@ function seedDemoMemory(filePath: string): Memory {
   // Ongoing work
   const aMigrate = mem.action('Migrate user table from UUID v4 to ULID for sortable IDs');
   aMigrate.explore();
-  mem.thought('Rate limiting needs to happen at the API gateway, not per-route — learned this the hard way when /search got hammered');
-  const tCache = mem.thought('Cache invalidation via TTL is simpler but stale-while-revalidate gives better UX for the dashboard');
-  const tRate = mem.thought('Rate limiting needs to happen at the API gateway, not per-route — learned this the hard way when /search got hammered');
-  mem.tension(tCache, tRate, 'freshness vs performance');
+  const tSimple = mem.thought('Cache invalidation via TTL is simpler and easier to reason about');
+  const tFresh = mem.thought('Stale-while-revalidate gives better UX but adds complexity to every cache layer');
+  mem.tension(tSimple, tFresh, 'simplicity vs user experience');
 
-  mem.completion('API v1 shipped — 12 endpoints, auth, rate limiting, monitoring');
   const cApi = mem.completion('API v1 shipped — 12 endpoints, auth, rate limiting, monitoring');
   const iTesting = mem.insight('Integration tests against real Postgres caught 3 bugs that unit tests with mocks missed — the ORM generates different SQL than you think');
   iTesting.derivesFrom(cApi);
@@ -441,6 +439,27 @@ const toolDefinitions: Array<Record<string, unknown>> = [
       },
     },
     {
+      name: 'remove_state',
+      description:
+        `Remove states from a node. Use to unblock a node, clear a decision, or remove any applied state. ${NODE_ID_HINT}`,
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          node_id: { type: 'string', description: 'Node to remove state from' },
+          states: {
+            type: 'array',
+            items: {
+              type: 'string',
+              enum: ['decided', 'blocked', 'exploring', 'parked'],
+            },
+            description: 'State types to remove. If omitted, removes ALL states.',
+          },
+        },
+        required: ['node_id'],
+        additionalProperties: false,
+      },
+    },
+    {
       name: 'save_memory',
       description:
         'Persist all changes to disk. Mutations from add_node, relate_nodes, and set_state are held in memory until this is called. Auto-saves on server shutdown.',
@@ -735,6 +754,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             return toolError(`Unknown state: ${state}. Use: decided, blocked, exploring, parked.`);
         }
         return toolSuccess({ success: true, node_id: args!.node_id, state });
+      }
+      case 'remove_state': {
+        const err = requireArgs(args, 'node_id');
+        if (err) return toolError(err);
+        const nodeId = args!.node_id as string;
+        const states = args?.states as string[] | undefined;
+        let totalRemoved = 0;
+        if (states && states.length > 0) {
+          for (const s of states) {
+            // Map user-facing 'parked' to internal StateType 'parking'
+            const mapped = s === 'parked' ? 'parking' : s;
+            totalRemoved += memory.removeStates(nodeId, mapped as any);
+          }
+        } else {
+          totalRemoved = memory.removeStates(nodeId);
+        }
+        return toolSuccess({ success: true, node_id: nodeId, removed: totalRemoved });
       }
       case 'save_memory': {
         memory.save();

@@ -726,9 +726,7 @@ describe('E2E: Memory Lifecycle Across Multiple Sessions', () => {
     // SESSION 1: Create the reasoning graph
     // ====================================================================
     {
-      const mem = Memory.loadOrCreate(filePath);
-      // Apply temporal config (loadOrCreate uses defaults)
-      (mem as any)._config.temporal = temporalConfig;
+      const mem = Memory.loadOrCreate(filePath, { temporal: temporalConfig });
 
       const q = mem.question('Which database for agent sessions?');
       const altPg = mem.alternative(q, 'PostgreSQL — reliable ACID');
@@ -770,8 +768,7 @@ describe('E2E: Memory Lifecycle Across Multiple Sessions', () => {
     let tSpeedId: string;
     {
       const mem = Memory.load(filePath);
-      // Restore temporal config (config doesn't persist in JSON yet)
-      (mem as any)._config.temporal = temporalConfig;
+      // Config persists through JSON — no manual restore needed
 
       const start2 = mem.sessionStart();
       expect(start2.totalNodes).toBeGreaterThanOrEqual(6); // same nodes survived
@@ -808,7 +805,6 @@ describe('E2E: Memory Lifecycle Across Multiple Sessions', () => {
     // ====================================================================
     {
       const mem = Memory.load(filePath);
-      (mem as any)._config.temporal = temporalConfig;
 
       // Tier from session 2 should survive save/load
       // With session dedup: session 1 (freq 2) + session 2 (freq 3) = developing (threshold 3)
@@ -841,7 +837,6 @@ describe('E2E: Memory Lifecycle Across Multiple Sessions', () => {
     // ====================================================================
     {
       const mem = Memory.load(filePath);
-      (mem as any)._config.temporal = temporalConfig;
 
       // Force some nodes dormant (simulate time passing)
       const nodes = mem.toIR().nodes;
@@ -895,6 +890,95 @@ describe('E2E: Memory Lifecycle Across Multiple Sessions', () => {
     }
 
     // Clean up
+    fs.rmSync(tmpDir, { recursive: true });
+  });
+});
+
+// ============================================================================
+// Config Persistence — verify config survives save/load round-trip
+// ============================================================================
+
+describe('Config Persistence', () => {
+  test('temporal config and touchOnQuery survive JSON round-trip', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fs-config-'));
+    const filePath = path.join(tmpDir, 'config-test.json');
+
+    const config = {
+      temporal: {
+        tiers: {
+          developing: { maxAge: '7d', graduationThreshold: 2 },
+          proven: { maxAge: '30d', graduationThreshold: 5 },
+          foundation: { maxAge: null as string | null, graduationThreshold: 10 },
+        },
+        dormancy: { resting: '2d', dormant: '5d', archive: '14d' }
+      },
+      touchOnQuery: false,
+      author: { agent: 'test-agent', role: 'ai' as const },
+    };
+
+    // Create with config, add a node, save
+    const mem1 = Memory.loadOrCreate(filePath, config);
+    mem1.thought('test node');
+    mem1.save();
+
+    // Load and verify config survived
+    const mem2 = Memory.load(filePath);
+    const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+
+    // Verify raw JSON has config
+    expect(raw.config).toBeDefined();
+    expect(raw.config.touchOnQuery).toBe(false);
+    expect(raw.config.temporal.tiers.developing.graduationThreshold).toBe(2);
+    expect(raw.config.temporal.dormancy.resting).toBe('2d');
+    expect(raw.config.author.agent).toBe('test-agent');
+
+    // Verify loaded Memory has functional config
+    // touchOnQuery=false: queries should NOT increment frequency
+    const nodes = mem2.toIR().nodes;
+    const testNode = nodes.find(n => n.content.includes('test node'))!;
+    const freqBefore = getMeta(mem2, testNode.id)!.frequency;
+    mem2.query.tensions();
+    const freqAfter = getMeta(mem2, testNode.id)!.frequency;
+    expect(freqAfter).toBe(freqBefore); // touchOnQuery=false respected
+
+    // Verify graduation threshold from config (2, not default 3)
+    mem2.touchNodes([testNode.id]);
+    const meta = getMeta(mem2, testNode.id)!;
+    expect(meta.frequency).toBeGreaterThanOrEqual(2);
+    expect(meta.tier).toBe('developing'); // graduated at threshold=2
+
+    fs.rmSync(tmpDir, { recursive: true });
+  });
+
+  test('loadOrCreate preserves config from existing file, ignores new options', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fs-config-override-'));
+    const filePath = path.join(tmpDir, 'override-test.json');
+
+    // Create with specific config
+    const originalConfig = {
+      temporal: {
+        tiers: { developing: { maxAge: '7d', graduationThreshold: 2 } },
+      },
+      touchOnQuery: false,
+    };
+    const mem1 = Memory.loadOrCreate(filePath, originalConfig);
+    mem1.thought('persisted node');
+    mem1.save();
+
+    // loadOrCreate with DIFFERENT options — should use persisted config, not new options
+    const differentConfig = {
+      temporal: {
+        tiers: { developing: { maxAge: '30d', graduationThreshold: 99 } },
+      },
+      touchOnQuery: true,
+    };
+    const mem2 = Memory.loadOrCreate(filePath, differentConfig);
+
+    // Verify original config was loaded, not the new options
+    const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    expect(raw.config.touchOnQuery).toBe(false); // original, not new
+    expect(raw.config.temporal.tiers.developing.graduationThreshold).toBe(2); // original, not 99
+
     fs.rmSync(tmpDir, { recursive: true });
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "flowscript-core",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Decision intelligence for AI agents. Typed semantic queries over structured reasoning.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,8 +13,9 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "default": "./dist/index.js"
     }
   },
   "bin": {

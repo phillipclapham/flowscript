@@ -980,8 +980,8 @@ ${transcript}
     return this._addNode('completion', content);
   }
 
-  /** Create a block node (structural container) */
-  block(content: string): NodeRef {
+  /** Create a group node (structural container for organizing related nodes) */
+  group(content: string): NodeRef {
     return this._addNode('block', content);
   }
 
@@ -1266,10 +1266,12 @@ ${transcript}
    * CrewAI, and any framework using standard function calling.
    *
    * Categories:
-   * - 'core': add_node, add_alternative, relate_nodes, set_state
+   * - 'core': add_node, add_alternative, relate_nodes, set_state, remove_state
    * - 'query': query_why, query_what_if, query_tensions, query_blocked, query_alternatives
    * - 'memory': get_memory, search_nodes
    * - 'lifecycle': session_start, session_end
+   *
+   * 14 tools total.
    */
   asTools(options?: AsToolsOptions): MemoryTool[] {
     const include = new Set(options?.include ?? ['core', 'query', 'memory', 'lifecycle']);
@@ -1493,7 +1495,9 @@ ${transcript}
       },
       ['nodeId'],
       (args) => {
-        const type = args.state as StateType | undefined;
+        // Map user-facing 'parked' to internal StateType 'parking'
+        const rawType = args.state as string | undefined;
+        const type = (rawType === 'parked' ? 'parking' : rawType) as StateType | undefined;
         const removed = mem.removeStates(args.nodeId, type);
         return {
           success: true,

@@ -563,7 +563,7 @@ describe('Token Budget — edge cases', () => {
 
   test('block nodes are skipped in budgeting', () => {
     const mem = new Memory();
-    mem.block('container');
+    mem.group('container');
     mem.statement('real content');
 
     const budgeted = mem.toFlowScript({ maxTokens: 200, preserveTiers: [] });
