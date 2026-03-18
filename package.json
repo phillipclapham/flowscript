@@ -7,6 +7,7 @@
   "files": [
     "dist",
     "bin",
+    "tool-integrity.json",
     "LICENSE",
     "README.md"
   ],
@@ -25,7 +26,8 @@
     "test": "NODE_OPTIONS='--max-old-space-size=2048' jest",
     "test:watch": "NODE_OPTIONS='--max-old-space-size=2048' jest --watch",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run build && npm test"
+    "generate-manifest": "node dist/mcp-server.js --generate-manifest",
+    "prepublishOnly": "npm run build && npm run generate-manifest && npm test"
   },
   "keywords": [
     "flowscript",

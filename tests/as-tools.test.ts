@@ -2,7 +2,7 @@
  * FlowScript asTools() Tests
  *
  * Tests the auto-generated function calling tool definitions from the Memory API.
- * Covers: tool schema structure, all 11 tools (core + query + memory),
+ * Covers: tool schema structure, all 14 tools (core + query + memory + lifecycle),
  * handler execution, error handling, options (include, prefix), and integration.
  */
 
@@ -13,11 +13,11 @@ import { Memory, MemoryTool, NodeRef } from '../src/memory';
 // ============================================================================
 
 describe('asTools — Schema Structure', () => {
-  test('returns all 11 tools by default', () => {
+  test('returns all 14 tools by default (core + query + memory + lifecycle)', () => {
     const mem = new Memory();
     const tools = mem.asTools();
 
-    expect(tools.length).toBe(12);
+    expect(tools.length).toBe(14);
   });
 
   test('each tool has valid schema structure', () => {

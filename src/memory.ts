@@ -19,7 +19,22 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { hashContent } from './hash';
 import { serialize, SerializeOptions } from './serializer';
-import { FlowScriptQueryEngine } from './query-engine';
+import {
+  FlowScriptQueryEngine,
+  type WhyOptions,
+  type WhatIfOptions,
+  type TensionOptions,
+  type BlockedOptions,
+  type AlternativesOptions,
+  type CausalAncestry,
+  type MinimalWhy,
+  type ImpactAnalysis,
+  type ImpactSummary,
+  type TensionsResult,
+  type BlockedResult,
+  type AlternativesResult,
+  type TensionDetail,
+} from './query-engine';
 import { Parser } from './parser';
 import type {
   IR, Node, NodeType, Relationship, RelationType,
@@ -56,6 +71,8 @@ export interface MemoryOptions {
   sourceFile?: string;
   author?: { agent: string; role: 'human' | 'ai' };
   autoSnapshot?: boolean;  // default: true
+  /** When true (default), query operations touch returned nodes (update lastTouched, increment frequency). */
+  touchOnQuery?: boolean;  // default: true
 }
 
 // ============================================================================
@@ -90,6 +107,36 @@ export interface GardenReport {
 export interface PruneReport {
   archived: NodeRef[];
   count: number;
+}
+
+// ============================================================================
+// Session Lifecycle Types
+// ============================================================================
+
+export interface SessionStartResult {
+  /** Token-budgeted memory summary in FlowScript notation */
+  summary: string;
+  /** Current blockers (empty array if none) */
+  blockers: BlockedResult;
+  /** Current tensions (empty array if none) */
+  tensions: TensionsResult;
+  /** Garden status: growing, resting, dormant counts */
+  garden: GardenReport;
+  /** Node counts by tier */
+  tierCounts: Record<TemporalTier, number>;
+  /** Total node count */
+  totalNodes: number;
+}
+
+export interface SessionEndResult {
+  /** Prune report (what was archived) */
+  pruned: PruneReport;
+  /** Garden status after prune */
+  garden: GardenReport;
+  /** Whether save was called */
+  saved: boolean;
+  /** File path saved to (null if no filePath set) */
+  path: string | null;
 }
 
 // ============================================================================
@@ -214,7 +261,7 @@ export interface MemoryTool extends ToolSchema {
 
 export interface AsToolsOptions {
   /** Which tool categories to include. Default: all categories. */
-  include?: Array<'core' | 'query' | 'memory'>;
+  include?: Array<'core' | 'query' | 'memory' | 'lifecycle'>;
   /** Prefix for tool names (e.g., 'memory_' → 'memory_add_node'). Default: '' */
   prefix?: string;
 }
@@ -949,7 +996,25 @@ ${transcript}
 
   // ---------- Query Engine ----------
 
-  /** Access the query engine. Lazy-refreshes when IR has changed. */
+  /**
+   * Touch nodes by ID: update lastTouched, increment frequency, check graduation.
+   * Public API for manual touch operations outside of queries.
+   */
+  touchNodes(ids: string[]): void {
+    for (const id of ids) {
+      this._touchNode(id);
+    }
+  }
+
+  /**
+   * Access the query engine. Lazy-refreshes when IR has changed.
+   *
+   * When touchOnQuery is enabled (default), query results automatically
+   * touch returned nodes — updating lastTouched, incrementing frequency,
+   * and triggering graduation when thresholds are met. This is what makes
+   * temporal intelligence actually work: the act of querying knowledge
+   * keeps relevant nodes alive and drives their graduation through tiers.
+   */
   get query(): {
     why: FlowScriptQueryEngine['why'];
     whatIf: FlowScriptQueryEngine['whatIf'];
@@ -961,12 +1026,49 @@ ${transcript}
       this._queryEngine.load(this.ir);
       this._dirty = false;
     }
+
+    const touchEnabled = this._config.touchOnQuery !== false;
+
+    if (!touchEnabled) {
+      return {
+        why: this._queryEngine.why.bind(this._queryEngine),
+        whatIf: this._queryEngine.whatIf.bind(this._queryEngine),
+        tensions: this._queryEngine.tensions.bind(this._queryEngine),
+        blocked: this._queryEngine.blocked.bind(this._queryEngine),
+        alternatives: this._queryEngine.alternatives.bind(this._queryEngine)
+      };
+    }
+
+    // Touch-aware wrappers: execute query, extract node IDs, touch them
+    const engine = this._queryEngine;
+    const mem = this;
+
     return {
-      why: this._queryEngine.why.bind(this._queryEngine),
-      whatIf: this._queryEngine.whatIf.bind(this._queryEngine),
-      tensions: this._queryEngine.tensions.bind(this._queryEngine),
-      blocked: this._queryEngine.blocked.bind(this._queryEngine),
-      alternatives: this._queryEngine.alternatives.bind(this._queryEngine)
+      why(nodeId: string, options?: WhyOptions): CausalAncestry | MinimalWhy {
+        const result = engine.why(nodeId, options);
+        mem.touchNodes(extractWhyNodeIds(result));
+        return result;
+      },
+      whatIf(nodeId: string, options?: WhatIfOptions): ImpactAnalysis | ImpactSummary {
+        const result = engine.whatIf(nodeId, options);
+        mem.touchNodes(extractWhatIfNodeIds(result));
+        return result;
+      },
+      tensions(options?: TensionOptions): TensionsResult {
+        const result = engine.tensions(options);
+        mem.touchNodes(extractTensionNodeIds(result));
+        return result;
+      },
+      blocked(options?: BlockedOptions): BlockedResult {
+        const result = engine.blocked(options);
+        mem.touchNodes(extractBlockedNodeIds(result));
+        return result;
+      },
+      alternatives(questionId: string, options?: AlternativesOptions): AlternativesResult {
+        const result = engine.alternatives(questionId, options);
+        mem.touchNodes(extractAlternativesNodeIds(result));
+        return result;
+      }
     };
   }
 
@@ -1126,15 +1228,16 @@ ${transcript}
    * - 'core': add_node, add_alternative, relate_nodes, set_state
    * - 'query': query_why, query_what_if, query_tensions, query_blocked, query_alternatives
    * - 'memory': get_memory, search_nodes
+   * - 'lifecycle': session_start, session_end
    */
   asTools(options?: AsToolsOptions): MemoryTool[] {
-    const include = new Set(options?.include ?? ['core', 'query', 'memory']);
+    const include = new Set(options?.include ?? ['core', 'query', 'memory', 'lifecycle']);
     const prefix = options?.prefix ?? '';
     const tools: MemoryTool[] = [];
     const mem = this;
 
     function tool(
-      category: 'core' | 'query' | 'memory',
+      category: 'core' | 'query' | 'memory' | 'lifecycle',
       name: string,
       description: string,
       properties: Record<string, unknown>,
@@ -1553,6 +1656,58 @@ ${transcript}
       }
     );
 
+    // ---- Lifecycle: Session Start ----
+
+    tool('lifecycle', 'session_start',
+      'Call at the START of every session (once). Returns token-budgeted memory summary, blockers, tensions, garden health, and tier distribution. Blocker and tension nodes are touched, keeping critical knowledge alive.',
+      {
+        maxTokens: {
+          type: 'number',
+          description: 'Token budget for the memory summary (default: 4000)'
+        }
+      },
+      [],
+      (args) => {
+        const result = mem.sessionStart(args.maxTokens ? { maxTokens: args.maxTokens } : undefined);
+        return {
+          success: true,
+          data: {
+            summary: result.summary,
+            blockers: result.blockers,
+            tensions: result.tensions,
+            garden: result.garden.stats,
+            tierCounts: result.tierCounts,
+            totalNodes: result.totalNodes
+          }
+        };
+      }
+    );
+
+    // ---- Lifecycle: Session End ----
+
+    tool('lifecycle', 'session_end',
+      'Call at the END of every session. Prunes dormant nodes (archived to audit log), saves memory to disk. Returns what was pruned and garden health after cleanup.',
+      {},
+      [],
+      (_args) => {
+        const result = mem.sessionEnd();
+        return {
+          success: true,
+          data: {
+            prunedCount: result.pruned.count,
+            prunedNodes: result.pruned.archived.map(ref => ({
+              nodeId: ref.id,
+              type: ref.type,
+              content: ref.content
+            })),
+            gardenAfter: result.garden.stats,
+            saved: result.saved,
+            path: result.path
+          }
+        };
+      }
+    );
+
     return tools;
   }
 
@@ -1742,6 +1897,95 @@ ${transcript}
 
     this._dirty = true;
     return { archived: dormant, count: dormant.length };
+  }
+
+  // ---------- Session Lifecycle ----------
+
+  /**
+   * Orient at session start: return token-budgeted memory summary,
+   * blockers, tensions, garden stats, and tier distribution.
+   *
+   * Queries executed here touch returned nodes — so the act of
+   * starting a session keeps relevant knowledge alive.
+   *
+   * @param maxTokens - Token budget for the FlowScript summary (default: 4000)
+   */
+  sessionStart(options?: { maxTokens?: number }): SessionStartResult {
+    const maxTokens = options?.maxTokens ?? 4000;
+
+    // Token-budgeted summary (strategy: tier-priority for best orientation)
+    const rawSummary = this.toFlowScript({ maxTokens, strategy: 'tier-priority' });
+    const summary = rawSummary?.trim() || '(empty memory)';
+
+    // Use pure query engine (bypass touch wrappers) to avoid double-touching
+    // nodes that appear in both blocked and tensions results.
+    if (this._dirty) {
+      this._queryEngine.load(this.ir);
+      this._dirty = false;
+    }
+    const blockers = this._queryEngine.blocked();
+    const tensions = this._queryEngine.tensions();
+
+    // Collect ALL node IDs from both queries, deduplicate, touch once.
+    // This prevents a node appearing in both blocked() and tensions() from
+    // getting double-touched (which would inflate frequency and cause
+    // premature graduation — a node could jump current→proven in one call).
+    if (this._config.touchOnQuery !== false) {
+      const allIds = new Set<string>([
+        ...extractBlockedNodeIds(blockers),
+        ...extractTensionNodeIds(tensions),
+      ]);
+      this.touchNodes(Array.from(allIds));
+    }
+
+    // Garden status (pure read, no touch needed)
+    const gardenReport = this.garden();
+
+    // Tier distribution
+    const tierCounts: Record<TemporalTier, number> = {
+      current: 0,
+      developing: 0,
+      proven: 0,
+      foundation: 0
+    };
+    for (const meta of this.temporalMap.values()) {
+      tierCounts[meta.tier]++;
+    }
+
+    return {
+      summary,
+      blockers,
+      tensions,
+      garden: gardenReport,
+      tierCounts,
+      totalNodes: this.size
+    };
+  }
+
+  /**
+   * Wrap up at session end: prune dormant nodes, save to disk.
+   * Returns what was pruned, garden state after prune, and save status.
+   *
+   * Call this at the end of every agent session to keep memory healthy.
+   */
+  sessionEnd(): SessionEndResult {
+    const pruned = this.prune();
+    const gardenReport = this.garden();
+
+    let saved = false;
+    let savePath: string | null = null;
+    if (this._filePath) {
+      this.save();
+      saved = true;
+      savePath = this._filePath;
+    }
+
+    return {
+      pruned,
+      garden: gardenReport,
+      saved,
+      path: savePath
+    };
   }
 
   // ---------- Snapshots ----------
@@ -2239,4 +2483,138 @@ function parseDuration(duration: string): number {
     case 'w': return value * 7 * 24 * 60 * 60 * 1000;
     default: throw new Error(`Unknown duration unit: ${unit}`);
   }
+}
+
+// ============================================================================
+// Query Touch Extractors
+// ============================================================================
+// Extract node IDs from query results for touch-on-query behavior.
+// Each extractor handles all format variants of its query type.
+// Returns deduplicated IDs. Gracefully returns [] for formats without IDs.
+
+/** Extract node IDs from why() result (CausalAncestry | MinimalWhy) */
+function extractWhyNodeIds(result: CausalAncestry | MinimalWhy): string[] {
+  // MinimalWhy has no IDs (just strings) — check for CausalAncestry shape
+  if ('target' in result && typeof result.target === 'object' && 'id' in result.target) {
+    const ancestry = result as CausalAncestry;
+    const ids = new Set<string>();
+    ids.add(ancestry.target.id);
+    if (ancestry.root_cause?.id) ids.add(ancestry.root_cause.id);
+    for (const node of ancestry.causal_chain || []) {
+      if (node.id) ids.add(node.id);
+    }
+    return Array.from(ids);
+  }
+  return [];
+}
+
+/** Extract node IDs from whatIf() result (ImpactAnalysis | ImpactSummary) */
+function extractWhatIfNodeIds(result: ImpactAnalysis | ImpactSummary): string[] {
+  // ImpactSummary has no IDs — check for ImpactAnalysis shape
+  if ('source' in result && typeof result.source === 'object' && 'id' in result.source) {
+    const analysis = result as ImpactAnalysis;
+    const ids = new Set<string>();
+    ids.add(analysis.source.id);
+    for (const c of analysis.impact_tree?.direct_consequences || []) {
+      if (c.id) ids.add(c.id);
+    }
+    for (const c of analysis.impact_tree?.indirect_consequences || []) {
+      if (c.id) ids.add(c.id);
+    }
+    // Tension endpoints in the impact zone
+    for (const t of analysis.tensions_in_impact_zone || []) {
+      if (t.source?.id) ids.add(t.source.id);
+      if (t.target?.id) ids.add(t.target.id);
+    }
+    return Array.from(ids);
+  }
+  return [];
+}
+
+/** Extract node IDs from tensions() result */
+function extractTensionNodeIds(result: TensionsResult): string[] {
+  const ids = new Set<string>();
+  // Handle all grouping formats
+  const tensionArrays: TensionDetail[][] = [];
+  if (result.tensions) tensionArrays.push(result.tensions);
+  if (result.tensions_by_axis) {
+    for (const arr of Object.values(result.tensions_by_axis)) tensionArrays.push(arr);
+  }
+  if (result.tensions_by_node) {
+    for (const arr of Object.values(result.tensions_by_node)) tensionArrays.push(arr);
+  }
+  for (const arr of tensionArrays) {
+    for (const t of arr) {
+      if (t.source?.id) ids.add(t.source.id);
+      if (t.target?.id) ids.add(t.target.id);
+      for (const ctx of t.context || []) {
+        if (ctx.id) ids.add(ctx.id);
+      }
+    }
+  }
+  return Array.from(ids);
+}
+
+/** Extract node IDs from blocked() result */
+function extractBlockedNodeIds(result: BlockedResult): string[] {
+  const ids = new Set<string>();
+  for (const b of result.blockers || []) {
+    if (b.node?.id) ids.add(b.node.id);
+    for (const c of b.transitive_causes || []) {
+      if (c.id) ids.add(c.id);
+    }
+    for (const e of b.transitive_effects || []) {
+      if (e.id) ids.add(e.id);
+    }
+  }
+  return Array.from(ids);
+}
+
+/** Extract node IDs from alternatives() result (discriminated union) */
+function extractAlternativesNodeIds(result: AlternativesResult): string[] {
+  const ids = new Set<string>();
+
+  if ('format' in result) {
+    switch (result.format) {
+      case 'comparison': {
+        if (result.question?.id) ids.add(result.question.id);
+        for (const alt of result.alternatives || []) {
+          if (alt.id) ids.add(alt.id);
+          for (const c of alt.consequences || []) {
+            if (c.id) ids.add(c.id);
+          }
+          // Tension endpoints linked to this alternative
+          for (const t of alt.tensions || []) {
+            if (t.source?.id) ids.add(t.source.id);
+            if (t.target?.id) ids.add(t.target.id);
+          }
+        }
+        break;
+      }
+      case 'tree': {
+        if (result.question?.id) ids.add(result.question.id);
+        // Recursive tree walk
+        const walkTree = (alts: Array<{ id: string; children?: Array<{ id: string; children?: any[] }> }>) => {
+          for (const alt of alts || []) {
+            if (alt.id) ids.add(alt.id);
+            if (alt.children) walkTree(alt.children);
+          }
+        };
+        walkTree(result.alternatives || []);
+        break;
+      }
+      case 'simple':
+        // No IDs in simple format
+        break;
+    }
+  } else {
+    // Fallback: treat as comparison (default format, pre-discriminated-union)
+    const comp = result as any;
+    if (comp.question?.id) ids.add(comp.question.id);
+    for (const alt of comp.alternatives || []) {
+      if (alt.id) ids.add(alt.id);
+    }
+  }
+
+  return Array.from(ids);
 }

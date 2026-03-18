@@ -24,7 +24,10 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
+  ListResourcesRequestSchema,
+  ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
+import * as crypto from 'crypto';
 import { Memory } from './memory';
 import type { RelationType } from './types';
 
@@ -106,11 +109,29 @@ if (args.includes('--help') || args.includes('-h')) {
   console.error('Usage: flowscript-mcp [options] <memory-file.json>');
   console.error('');
   console.error('Options:');
-  console.error('  --demo    Load a sample project memory to explore queries');
+  console.error('  --demo                Load a sample project memory to explore queries');
+  console.error('  --generate-manifest   Generate tool-integrity.json for build-time verification');
   console.error('');
   console.error('Exposes FlowScript decision intelligence as MCP tools.');
   console.error('Memory file is created if it does not exist.');
   process.exit(0);
+}
+
+// Generate build-time integrity manifest and exit
+if (args.includes('--generate-manifest')) {
+  const manifest: Record<string, string> = {};
+  // toolDefinitions is defined below — this block runs after module evaluation
+  // We need to defer this to after toolDefinitions is initialized.
+  // Using a function that will be called after the definitions are set up.
+  process.nextTick(() => {
+    for (const tool of toolDefinitions) {
+      manifest[tool.name as string] = hashToolDefinition(tool);
+    }
+    const outPath = require('path').resolve(__dirname, '..', 'tool-integrity.json');
+    require('fs').writeFileSync(outPath, JSON.stringify(manifest, null, 2) + '\n', 'utf-8');
+    console.error(`Generated ${outPath} (${Object.keys(manifest).length} tools)`);
+    process.exit(0);
+  });
 }
 
 const isDemo = args.includes('--demo');
@@ -125,7 +146,9 @@ for (const arg of args) {
 // Load or create memory
 const memory = isDemo ? seedDemoMemory(memoryPath) : Memory.loadOrCreate(memoryPath);
 
-// Auto-save on exit signals
+// Auto-save on exit signals — save only, no prune.
+// Pruning mutates IR in-place; if it throws mid-execution, save() would persist
+// inconsistent state. Let sessionEnd() handle pruning in the normal lifecycle.
 function gracefulSave() {
   try { memory.save(); } catch { /* best effort */ }
   process.exit(0);
@@ -162,15 +185,78 @@ function toolSuccess(data: Record<string, unknown>) {
 // Node ID hint used in multiple tool descriptions
 const NODE_ID_HINT = 'Node IDs are hex hashes returned by add_node, add_alternative, and search_nodes.';
 
-// Create MCP server
-const server = new Server(
-  { name: 'flowscript', version: VERSION },
-  { capabilities: { tools: {} } }
-);
+// ============================================================================
+// Tool Description Integrity — Reference Implementation
+// ============================================================================
+// Addresses the MCP description poisoning gap identified in:
+//   - GitHub Discussion #2402 (modelcontextprotocol/modelcontextprotocol)
+//   - "Two Agent Identity Problems" (arXiv, Clapham 2026)
+//
+// THREAT MODEL (be honest about scope):
+//
+// DETECTS:
+//   - In-process description mutation (malicious npm dependency, monkey-patching,
+//     or middleware that modifies tool objects in the same Node.js process)
+//   - Accidental mutation (buggy wrapper that string-replaces descriptions)
+//
+// DOES NOT DETECT (requires ecosystem-level changes):
+//   - Supply chain attacks (poisoned before startup — manifest captures poisoned state)
+//   - Transport-layer attacks (MITM between server and client — hashes never leave process)
+//   - Client-side injection (host manipulates descriptions after receiving them)
+//
+// ARCHITECTURAL LAYERS:
+//   1. Tool: verify_integrity — LLM-callable, detects in-process mutation
+//   2. Resource: flowscript://integrity/manifest — Host-verifiable manifest
+//      (enables Claude Code/Cursor to verify descriptions WITHOUT LLM involvement,
+//       moving the security boundary to the correct layer)
+//
+// This is a reference implementation. Full integrity requires client-side verification
+// against an out-of-band manifest (build-time hashes, package signatures, etc.).
+// See Discussion #2402 for the complete threat model and ecosystem proposal.
+// ============================================================================
 
-// Tool definitions
-server.setRequestHandler(ListToolsRequestSchema, async () => ({
-  tools: [
+/**
+ * Canonicalize a JSON-serializable value for deterministic hashing.
+ * Sorted keys, no whitespace, deterministic primitive serialization.
+ * Handles: objects (sorted keys), arrays (order-preserving), primitives (JSON.stringify).
+ * Note: simplified canonicalization sufficient for MCP tool schemas (ASCII strings,
+ * small numbers, booleans). Does not handle RFC 8785 edge cases (-0, NaN, Unicode
+ * normalization) which are not present in MCP tool definitions.
+ */
+function canonicalize(obj: unknown): string {
+  if (obj === undefined || obj === null) return 'null';
+  if (typeof obj !== 'object') return JSON.stringify(obj);
+  if (Array.isArray(obj)) {
+    return '[' + obj.map(canonicalize).join(',') + ']';
+  }
+  const sorted = Object.keys(obj as Record<string, unknown>).sort();
+  const entries = sorted
+    .filter(k => (obj as Record<string, unknown>)[k] !== undefined)  // skip undefined (like JSON.stringify)
+    .map(k => JSON.stringify(k) + ':' + canonicalize((obj as Record<string, unknown>)[k]));
+  return '{' + entries.join(',') + '}';
+}
+
+/** Compute SHA-256 hash of a canonical JSON representation. */
+function hashToolDefinition(tool: Record<string, unknown>): string {
+  const canonical = canonicalize(tool);
+  return crypto.createHash('sha256').update(canonical, 'utf-8').digest('hex');
+}
+
+/** Deep-freeze an object to make any mutation throw in strict mode. */
+function deepFreeze<T extends Record<string, unknown>>(obj: T): Readonly<T> {
+  Object.freeze(obj);
+  for (const key of Object.keys(obj)) {
+    const val = obj[key];
+    if (val && typeof val === 'object' && !Object.isFrozen(val)) {
+      deepFreeze(val as Record<string, unknown>);
+    }
+  }
+  return obj;
+}
+
+// Tool definitions — extracted as a constant so we can hash them at startup.
+// The verify_integrity tool is NOT in this list (it verifies, it isn't verified).
+const toolDefinitions: Array<Record<string, unknown>> = [
     // === Query tools ===
     {
       name: 'query_tensions',
@@ -364,8 +450,134 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         additionalProperties: false,
       },
     },
+    // === Session lifecycle tools ===
+    {
+      name: 'session_start',
+      description:
+        'Call at the START of every session. Returns a token-budgeted memory summary, active blockers, tensions, garden health, and tier distribution. Orients you on the current state of the reasoning graph. Blocker and tension nodes are touched (frequency incremented, keeping critical knowledge alive). Call exactly once per session.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          max_tokens: {
+            type: 'number',
+            description: 'Token budget for the memory summary (default: 4000)',
+          },
+        },
+        additionalProperties: false,
+      },
+    },
+    {
+      name: 'session_end',
+      description:
+        'Call at the END of every session. Prunes dormant nodes (archived to audit log), saves memory to disk. Returns what was pruned, garden health after cleanup, and save status. Keeps memory healthy across sessions.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {},
+        additionalProperties: false,
+      },
+    },
+];
+
+// Deep-freeze all tool definitions — any in-process mutation will throw in strict mode
+// and be detectable via verify_integrity in non-strict mode.
+for (const tool of toolDefinitions) {
+  deepFreeze(tool);
+}
+
+// Compute integrity manifest at startup — captures the "intended" state of all tool definitions.
+const integrityManifest: Record<string, string> = {};
+const expectedToolCount = toolDefinitions.length;
+for (const tool of toolDefinitions) {
+  integrityManifest[tool.name as string] = hashToolDefinition(tool);
+}
+Object.freeze(integrityManifest);
+
+// Load build-time manifest if it exists (generated by: npx flowscript-mcp --generate-manifest)
+// Build-time manifest provides a root of trust independent of the running process.
+let buildTimeManifest: Record<string, string> | null = null;
+try {
+  const manifestPath = require('path').resolve(__dirname, '..', 'tool-integrity.json');
+  buildTimeManifest = JSON.parse(require('fs').readFileSync(manifestPath, 'utf-8'));
+  console.error(`Integrity: loaded build-time manifest (${Object.keys(buildTimeManifest!).length} tools)`);
+} catch {
+  // No build-time manifest — startup-only verification
+}
+
+// The verify_integrity tool definition — separate from the verified tools.
+// Honest framing: detects in-process mutation, not transport-layer attacks.
+const verifyIntegrityTool: Record<string, unknown> = {
+  name: 'verify_integrity',
+  description:
+    'Verify that tool descriptions have not been mutated in-process since server startup. ' +
+    'Detects description modifications by malicious dependencies, middleware, or monkey-patching. ' +
+    'Returns per-tool SHA-256 hashes (expected vs current) and a pass/fail verdict. ' +
+    'NOTE: This verifies the server\'s own state — transport-layer integrity requires ' +
+    'host-level verification via the flowscript://integrity/manifest resource. ' +
+    'Reference implementation: github.com/modelcontextprotocol/modelcontextprotocol/discussions/2402',
+  inputSchema: {
+    type: 'object' as const,
+    properties: {},
+    additionalProperties: false,
+  },
+};
+deepFreeze(verifyIntegrityTool);
+
+// Create MCP server with tools + resources capabilities
+const server = new Server(
+  { name: 'flowscript', version: VERSION },
+  { capabilities: { tools: {}, resources: {} } }
+);
+
+// Register tool definitions (verified tools + the verifier)
+server.setRequestHandler(ListToolsRequestSchema, async () => ({
+  tools: [...toolDefinitions, verifyIntegrityTool] as any[],
+}));
+
+// ============================================================================
+// Integrity Resource — Host-Verifiable Manifest
+// ============================================================================
+// Exposes the integrity manifest as an MCP Resource so the HOST application
+// (Claude Code, Cursor, etc.) can verify tool descriptions independently of
+// the LLM. This moves the security boundary to the correct layer:
+//   - Tool (verify_integrity): LLM-callable, in-process check
+//   - Resource (manifest): Host-callable, enables client-side verification
+
+server.setRequestHandler(ListResourcesRequestSchema, async () => ({
+  resources: [
+    {
+      uri: 'flowscript://integrity/manifest',
+      name: 'Tool Integrity Manifest',
+      description: 'SHA-256 hashes of all tool definitions for client-side integrity verification. Compare these hashes against the tool definitions you received to detect transport-layer description mutation.',
+      mimeType: 'application/json',
+    },
   ],
 }));
+
+server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+  const { uri } = request.params;
+
+  if (uri === 'flowscript://integrity/manifest') {
+    const manifest = {
+      version: VERSION,
+      algorithm: 'SHA-256',
+      canonicalization: 'deterministic sorted-keys JSON',
+      generated_at: new Date().toISOString(),
+      tool_count: expectedToolCount,
+      tools: integrityManifest,
+      build_time_manifest: buildTimeManifest ? 'available' : 'not generated',
+      usage: 'Hash each tool definition (sorted keys, no whitespace, SHA-256) and compare against the hashes in this manifest. Mismatches indicate description mutation between server and client.',
+    };
+    return {
+      contents: [{
+        uri,
+        mimeType: 'application/json',
+        text: JSON.stringify(manifest, null, 2),
+      }],
+    };
+  }
+
+  throw new Error(`Unknown resource: ${uri}`);
+});
 
 // Tool handlers
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
@@ -527,6 +739,109 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'save_memory': {
         memory.save();
         return toolSuccess({ success: true, path: memory.filePath });
+      }
+
+      // === Session lifecycle handlers ===
+      case 'session_start': {
+        const maxTokens = args?.max_tokens as number | undefined;
+        const result = memory.sessionStart(maxTokens ? { maxTokens } : undefined);
+        return toolSuccess({
+          success: true,
+          summary: result.summary,
+          blockers: result.blockers,
+          tensions: result.tensions,
+          garden: {
+            growing: result.garden.stats.growing,
+            resting: result.garden.stats.resting,
+            dormant: result.garden.stats.dormant,
+            total: result.garden.stats.total,
+          },
+          tier_counts: result.tierCounts,
+          total_nodes: result.totalNodes,
+        });
+      }
+      case 'session_end': {
+        const result = memory.sessionEnd();
+        return toolSuccess({
+          success: true,
+          pruned_count: result.pruned.count,
+          pruned_nodes: result.pruned.archived.map(ref => ({
+            node_id: ref.id,
+            type: ref.type,
+            content: ref.content,
+          })),
+          garden_after: {
+            growing: result.garden.stats.growing,
+            resting: result.garden.stats.resting,
+            dormant: result.garden.stats.dormant,
+            total: result.garden.stats.total,
+          },
+          saved: result.saved,
+          path: result.path,
+        });
+      }
+
+      // === Integrity verification handler ===
+      case 'verify_integrity': {
+        const results: Array<{
+          tool: string;
+          expected_hash: string;
+          current_hash: string;
+          status: 'pass' | 'fail';
+          build_time_status?: 'pass' | 'fail' | 'no_manifest';
+        }> = [];
+
+        let allPassed = true;
+
+        // Check: has the tool count changed? (detect additions/removals)
+        const countMatch = toolDefinitions.length === expectedToolCount;
+        if (!countMatch) allPassed = false;
+
+        // Per-tool hash verification
+        for (const tool of toolDefinitions) {
+          const toolName = tool.name as string;
+          const expected = integrityManifest[toolName];
+          const current = hashToolDefinition(tool);
+          const passed = expected === current;
+          if (!passed) allPassed = false;
+
+          const entry: typeof results[number] = {
+            tool: toolName,
+            expected_hash: expected,
+            current_hash: current,
+            status: passed ? 'pass' : 'fail',
+          };
+
+          // Compare against build-time manifest if available
+          if (buildTimeManifest) {
+            const buildHash = buildTimeManifest[toolName];
+            if (buildHash) {
+              const buildMatch = buildHash === current;
+              if (!buildMatch) allPassed = false;
+              entry.build_time_status = buildMatch ? 'pass' : 'fail';
+            } else {
+              entry.build_time_status = 'no_manifest';
+            }
+          }
+
+          results.push(entry);
+        }
+
+        return toolSuccess({
+          success: true,
+          verdict: allPassed ? 'PASS' : 'FAIL',
+          tool_count: toolDefinitions.length,
+          expected_tool_count: expectedToolCount,
+          count_match: countMatch,
+          algorithm: 'SHA-256',
+          canonicalization: 'deterministic sorted-keys JSON',
+          build_time_manifest: buildTimeManifest ? 'verified' : 'not available',
+          tools: results,
+          scope: 'Verifies in-process description integrity (detects mutation by dependencies, middleware, or monkey-patching). Transport-layer integrity requires host-side verification via flowscript://integrity/manifest resource.',
+          description: allPassed
+            ? 'All tool descriptions match their startup hashes. No in-process mutation detected.'
+            : 'WARNING: Tool description integrity violation detected. One or more definitions have been modified since server startup.',
+        });
       }
 
       default:
