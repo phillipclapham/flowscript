@@ -243,36 +243,46 @@ describe('Touch-on-Query — graduation', () => {
     expect(getMeta(mem, tCost.id)!.tier).toBe('developing');
   });
 
-  test('continued queries drive graduation from developing to proven', () => {
+  test('continued queries across sessions drive graduation from developing to proven', () => {
     const { mem, tCost } = createTestMemory();
     // Nodes start at frequency 1. Graduation thresholds: developing=2, proven=3.
+    // Session-scoped dedup: max +1 frequency per node per session.
 
-    // First query: frequency 1→2, graduates current→developing
+    // Session 1: first query → frequency 1→2, graduates current→developing
     mem.query.tensions();
+    expect(getMeta(mem, tCost.id)!.frequency).toBe(2);
     expect(getMeta(mem, tCost.id)!.tier).toBe('developing');
 
-    // Second query: frequency 2→3, graduates developing→proven
+    // Same session: second query → frequency stays at 2 (session dedup)
+    mem.query.tensions();
+    expect(getMeta(mem, tCost.id)!.frequency).toBe(2);
+
+    // New session: reset touch set, query again → frequency 2→3, graduates to proven
+    mem.sessionStart();
     mem.query.tensions();
     expect(getMeta(mem, tCost.id)!.frequency).toBe(3);
     expect(getMeta(mem, tCost.id)!.tier).toBe('proven');
   });
 
-  test('graduation is cumulative across different query types', () => {
+  test('graduation is cumulative across sessions, not within-session queries', () => {
     const { mem, altRedis, q } = createTestMemory();
     // altRedis appears in blocked() AND alternatives()
     // Initial frequency = 1, graduation threshold for developing = 2
+    // Session dedup: within a session, max +1 per node regardless of query count
 
-    // blocked() touches altRedis → frequency 1→2
+    // blocked() touches altRedis → frequency 1→2 (first touch this session)
     mem.query.blocked();
-    const freqAfterBlocked = getMeta(mem, altRedis.id)!.frequency;
-    expect(freqAfterBlocked).toBe(2);
+    expect(getMeta(mem, altRedis.id)!.frequency).toBe(2);
+    expect(getMeta(mem, altRedis.id)!.tier).toBe('developing');
 
-    // alternatives() also touches altRedis → frequency 2→3
+    // alternatives() also returns altRedis but session dedup prevents double-touch
     mem.query.alternatives(q.id);
-    const freqAfterAlts = getMeta(mem, altRedis.id)!.frequency;
-    expect(freqAfterAlts).toBe(freqAfterBlocked + 1);
+    expect(getMeta(mem, altRedis.id)!.frequency).toBe(2); // still 2, not 3
 
-    // altRedis should have graduated through both thresholds
+    // New session: touch budget resets → frequency 2→3
+    mem.sessionStart();
+    mem.query.blocked();
+    expect(getMeta(mem, altRedis.id)!.frequency).toBe(3);
     expect(getMeta(mem, altRedis.id)!.tier).toBe('proven');
   });
 });
@@ -560,18 +570,329 @@ describe('Full Session Lifecycle', () => {
     expect(getMeta(mem, t1.id)!.frequency).toBe(1);
     expect(getMeta(mem, t1.id)!.tier).toBe('current');
 
-    // First query: freq 1→2, graduates current→developing
+    // Session 1: query → freq 1→2, graduates current→developing
     mem.query.tensions();
+    expect(getMeta(mem, t1.id)!.frequency).toBe(2);
     expect(getMeta(mem, t1.id)!.tier).toBe('developing');
 
-    // Second query: freq 2→3, graduates developing→proven
+    // Same session: second query → freq stays at 2 (session dedup)
     mem.query.tensions();
+    expect(getMeta(mem, t1.id)!.frequency).toBe(2);
+
+    // Session 2: new session → freq 2→3, graduates developing→proven
+    mem.sessionStart();
+    mem.query.tensions();
+    expect(getMeta(mem, t1.id)!.frequency).toBe(3);
     expect(getMeta(mem, t1.id)!.tier).toBe('proven');
 
     // Save and reload — tier should persist
     mem.save(filePath);
     const mem2 = Memory.load(filePath);
     expect(mem2.getTemporalMeta(t1.id)!.tier).toBe('proven');
+
+    // Clean up
+    fs.rmSync(tmpDir, { recursive: true });
+  });
+});
+
+// ============================================================================
+// Session-Scoped Touch Deduplication
+// ============================================================================
+
+describe('Session-scoped touch dedup', () => {
+  test('same node touched by multiple queries only increments frequency once per session', () => {
+    const { mem, tCost, tSpeed, altRedis, q } = createTestMemory();
+    const freqCostBefore = getMeta(mem, tCost.id)!.frequency;
+
+    // Three different queries all return tCost (it's in tensions)
+    mem.query.tensions();
+    mem.query.tensions();
+    mem.query.tensions();
+
+    // Session dedup: only +1 regardless of query count
+    expect(getMeta(mem, tCost.id)!.frequency).toBe(freqCostBefore + 1);
+  });
+
+  test('different query types touching same node still dedup within session', () => {
+    const { mem, altRedis, q } = createTestMemory();
+    // altRedis appears in both blocked() and alternatives()
+    const freqBefore = getMeta(mem, altRedis.id)!.frequency;
+
+    mem.query.blocked();      // touches altRedis
+    mem.query.alternatives(q.id);  // also touches altRedis
+
+    // Session dedup across different query types
+    expect(getMeta(mem, altRedis.id)!.frequency).toBe(freqBefore + 1);
+  });
+
+  test('sessionStart resets touch dedup — new session allows fresh touch', () => {
+    const { mem, tCost } = createTestMemory();
+    const freqBefore = getMeta(mem, tCost.id)!.frequency;
+
+    // Session 1: one touch
+    mem.query.tensions();
+    expect(getMeta(mem, tCost.id)!.frequency).toBe(freqBefore + 1);
+
+    // Session 2: reset + one more touch
+    mem.sessionStart();
+    mem.query.tensions();
+    expect(getMeta(mem, tCost.id)!.frequency).toBe(freqBefore + 2);
+
+    // Session 3: reset + one more touch
+    mem.sessionStart();
+    mem.query.tensions();
+    expect(getMeta(mem, tCost.id)!.frequency).toBe(freqBefore + 3);
+  });
+
+  test('lastTouched always updates even when frequency is deduped', () => {
+    const { mem, tCost } = createTestMemory();
+
+    // First query: touches and increments
+    mem.query.tensions();
+    const touchedAfterFirst = getMeta(mem, tCost.id)!.lastTouched;
+
+    // Small delay
+    const before = Date.now();
+
+    // Second query: deduped on frequency but lastTouched still updates
+    mem.query.tensions();
+    const touchedAfterSecond = getMeta(mem, tCost.id)!.lastTouched;
+
+    expect(new Date(touchedAfterSecond).getTime())
+      .toBeGreaterThanOrEqual(new Date(touchedAfterFirst).getTime());
+  });
+
+  test('touchNodes() public API always increments (not session-scoped)', () => {
+    const { mem, tCost } = createTestMemory();
+    const freqBefore = getMeta(mem, tCost.id)!.frequency;
+
+    // Public API: each call is an explicit action, always increments
+    mem.touchNodes([tCost.id]);
+    mem.touchNodes([tCost.id]);
+    mem.touchNodes([tCost.id]);
+
+    expect(getMeta(mem, tCost.id)!.frequency).toBe(freqBefore + 3);
+  });
+
+  test('cross-session frequency drives graduation correctly', () => {
+    const mem = new Memory({
+      temporal: {
+        tiers: {
+          developing: { maxAge: '7d', graduationThreshold: 3 },
+        }
+      }
+    });
+    const t1 = mem.thought('test node');
+    const t2 = mem.thought('counter');
+    mem.tension(t1, t2, 'X vs Y');
+
+    // Frequency starts at 1 (creation). Threshold for developing = 3.
+    expect(getMeta(mem, t1.id)!.frequency).toBe(1);
+    expect(getMeta(mem, t1.id)!.tier).toBe('current');
+
+    // Session 1: freq 1→2
+    mem.query.tensions();
+    expect(getMeta(mem, t1.id)!.frequency).toBe(2);
+
+    // Session 2: freq 2→3 → graduates
+    mem.sessionStart();
+    mem.query.tensions();
+    expect(getMeta(mem, t1.id)!.frequency).toBe(3);
+    expect(getMeta(mem, t1.id)!.tier).toBe('developing');
+  });
+});
+
+// ============================================================================
+// THE CRITICAL E2E TEST — Multi-Session Lifecycle Across Restarts
+// If this passes, the README is honest. If it fails, it's a lie.
+// ============================================================================
+
+describe('E2E: Memory Lifecycle Across Multiple Sessions', () => {
+  test('full lifecycle: create → query → save → restart → graduate → prune', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fs-e2e-'));
+    const filePath = path.join(tmpDir, 'e2e-memory.json');
+
+    // Low thresholds so we can drive graduation in a few queries
+    const temporalConfig = {
+      tiers: {
+        developing: { maxAge: '7d', graduationThreshold: 3 },
+        proven: { maxAge: '30d', graduationThreshold: 5 },
+        foundation: { maxAge: null as string | null, graduationThreshold: 8 },
+      },
+      dormancy: { resting: '3d', dormant: '7d' }
+    };
+
+    // ====================================================================
+    // SESSION 1: Create the reasoning graph
+    // ====================================================================
+    {
+      const mem = Memory.loadOrCreate(filePath);
+      // Apply temporal config (loadOrCreate uses defaults)
+      (mem as any)._config.temporal = temporalConfig;
+
+      const q = mem.question('Which database for agent sessions?');
+      const altPg = mem.alternative(q, 'PostgreSQL — reliable ACID');
+      const altRedis = mem.alternative(q, 'Redis — fast in-memory');
+      const altSqlite = mem.alternative(q, 'SQLite — embedded simplicity');
+
+      // Record reasoning
+      const tCost = mem.thought('PostgreSQL $15/mo vs Redis $200/mo');
+      const tSpeed = mem.thought('Redis gives sub-ms reads');
+      mem.tension(tCost, tSpeed, 'cost vs performance');
+
+      altSqlite.block({ reason: 'No concurrent write support' });
+      altPg.decide({ rationale: 'Best cost-performance balance at our scale' });
+
+      // Step 1: session_start — orient
+      const start1 = mem.sessionStart();
+      expect(start1.totalNodes).toBeGreaterThanOrEqual(6); // q + 3 alts + 2 thoughts
+      expect(start1.blockers.blockers.length).toBe(1); // SQLite blocked
+      expect(start1.tensions.metadata.total_tensions).toBe(1); // cost vs performance
+
+      // Step 2: Query — this touches nodes
+      mem.query.tensions(); // touches tCost, tSpeed
+      mem.query.blocked(); // touches altSqlite
+
+      // Step 3: session_end — prune + save
+      const end1 = mem.sessionEnd();
+      expect(end1.saved).toBe(true);
+      expect(end1.pruned.count).toBe(0); // all fresh, nothing dormant
+
+      // Verify frequency increments persisted
+      // tCost: 1 (creation) + 1 (session dedup: sessionStart + explicit query = still just +1) = 2
+      expect(getMeta(mem, tCost.id)!.frequency).toBeGreaterThanOrEqual(2);
+    }
+
+    // ====================================================================
+    // SESSION 2: Reload, query more, watch graduation
+    // ====================================================================
+    let tCostId: string;
+    let tSpeedId: string;
+    {
+      const mem = Memory.load(filePath);
+      // Restore temporal config (config doesn't persist in JSON yet)
+      (mem as any)._config.temporal = temporalConfig;
+
+      const start2 = mem.sessionStart();
+      expect(start2.totalNodes).toBeGreaterThanOrEqual(6); // same nodes survived
+
+      // Find our tension nodes (they were touched in session 1)
+      const tensionResult = mem.query.tensions();
+      expect(tensionResult.metadata.total_tensions).toBe(1);
+
+      // Extract node IDs from the graph for tracking
+      const nodes = mem.toIR().nodes;
+      const costNode = nodes.find(n => n.content.includes('$15/mo'));
+      const speedNode = nodes.find(n => n.content.includes('sub-ms'));
+      expect(costNode).toBeDefined();
+      expect(speedNode).toBeDefined();
+      tCostId = costNode!.id;
+      tSpeedId = speedNode!.id;
+
+      // Query more — but session dedup means only +1 per session regardless of query count
+      mem.query.tensions();
+      mem.query.tensions();
+
+      // Check graduation — with session dedup, each session contributes max +1
+      // Session 1: freq=2 (creation + 1 session touch). Session 2: +1 (session touch) = 3
+      const costMeta = getMeta(mem, tCostId)!;
+      expect(costMeta.frequency).toBeGreaterThanOrEqual(3);
+      expect(costMeta.tier).toBe('developing'); // threshold for developing=3, proven=5
+
+      const end2 = mem.sessionEnd();
+      expect(end2.saved).toBe(true);
+    }
+
+    // ====================================================================
+    // SESSION 3: Verify graduation persisted, add new knowledge, prune old
+    // ====================================================================
+    {
+      const mem = Memory.load(filePath);
+      (mem as any)._config.temporal = temporalConfig;
+
+      // Tier from session 2 should survive save/load
+      // With session dedup: session 1 (freq 2) + session 2 (freq 3) = developing (threshold 3)
+      const costMeta = getMeta(mem, tCostId)!;
+      expect(costMeta.tier).toBe('developing');
+      expect(costMeta.frequency).toBeGreaterThanOrEqual(3);
+
+      // Session start still works with developing nodes
+      const start3 = mem.sessionStart();
+      expect(start3.tierCounts.developing).toBeGreaterThanOrEqual(1);
+
+      // Add new knowledge in session 3
+      const newInsight = mem.thought('Redis Cluster adds $150/mo for HA');
+      expect(getMeta(mem, newInsight.id)!.tier).toBe('current'); // new = current
+
+      // Query the new insight
+      mem.query.tensions();
+
+      // sessionWrap for richer stats
+      const wrap3 = mem.sessionWrap();
+      expect(wrap3.nodesBefore).toBeGreaterThanOrEqual(7); // original 6 + new insight
+      expect(wrap3.saved).toBe(true);
+
+      // No dormant nodes yet — everything has been touched
+      expect(wrap3.pruned.count).toBe(0);
+    }
+
+    // ====================================================================
+    // SESSION 4: Force dormancy, verify pruning works across restart
+    // ====================================================================
+    {
+      const mem = Memory.load(filePath);
+      (mem as any)._config.temporal = temporalConfig;
+
+      // Force some nodes dormant (simulate time passing)
+      const nodes = mem.toIR().nodes;
+      const sqliteNode = nodes.find(n => n.content.includes('SQLite'));
+      expect(sqliteNode).toBeDefined();
+      const sqliteMeta = (mem as any).temporalMap.get(sqliteNode!.id);
+      sqliteMeta.lastTouched = new Date(Date.now() - 1000 * 60 * 60 * 24 * 10).toISOString(); // 10 days ago
+
+      const nodesBefore = mem.size;
+
+      // sessionWrap should prune the dormant SQLite node
+      const wrap4 = mem.sessionWrap();
+      expect(wrap4.pruned.count).toBe(1);
+      expect(wrap4.nodesAfter).toBe(nodesBefore - 1);
+      expect(wrap4.saved).toBe(true);
+
+      // Verify audit trail was written
+      const auditPath = filePath.replace('.json', '.audit.jsonl');
+      expect(fs.existsSync(auditPath)).toBe(true);
+      const auditContent = fs.readFileSync(auditPath, 'utf-8').trim();
+      const auditEntry = JSON.parse(auditContent);
+      expect(auditEntry.event).toBe('prune');
+      expect(auditEntry.nodes[0].content).toContain('SQLite');
+    }
+
+    // ====================================================================
+    // SESSION 5: Final verification — pruned node gone, graduated nodes intact
+    // ====================================================================
+    {
+      const mem = Memory.load(filePath);
+
+      const nodes = mem.toIR().nodes;
+      const sqliteNode = nodes.find(n => n.content.includes('SQLite'));
+      expect(sqliteNode).toBeUndefined(); // pruned in session 4
+
+      // Node survived pruning — still has accumulated frequency from prior sessions
+      const costMeta = getMeta(mem, tCostId);
+      expect(costMeta).toBeDefined();
+      // With session dedup: 5 sessions × max +1 each = freq ~6 (creation + 5 sessions)
+      // Graduation thresholds: developing=3, proven=5, foundation=8
+      expect(costMeta!.frequency).toBeGreaterThanOrEqual(4);
+      // Should have graduated past developing at minimum
+      expect(['developing', 'proven', 'foundation']).toContain(costMeta!.tier);
+
+      // sessionStart still works after pruning
+      const start5 = mem.sessionStart();
+      expect(start5.tensions.metadata.total_tensions).toBe(1); // tension survived
+      // Some nodes should have graduated past current across 5 sessions
+      const advancedCount = start5.tierCounts.developing + start5.tierCounts.proven + start5.tierCounts.foundation;
+      expect(advancedCount).toBeGreaterThanOrEqual(1);
+    }
 
     // Clean up
     fs.rmSync(tmpDir, { recursive: true });
@@ -670,16 +991,17 @@ describe('Touch-on-Query — edge cases', () => {
     expect(() => mem.query.blocked()).not.toThrow();
   });
 
-  test('multiple rapid queries accumulate frequency correctly', () => {
+  test('rapid queries within session only increment frequency once (session dedup)', () => {
     const { mem, tCost } = createTestMemory();
     const freqBefore = getMeta(mem, tCost.id)!.frequency; // starts at 1
 
-    // 5 rapid tension queries
+    // 5 rapid tension queries — session dedup caps at +1
     for (let i = 0; i < 5; i++) {
       mem.query.tensions();
     }
 
-    expect(getMeta(mem, tCost.id)!.frequency).toBe(freqBefore + 5);
+    // Only +1 from session dedup, not +5
+    expect(getMeta(mem, tCost.id)!.frequency).toBe(freqBefore + 1);
   });
 
   test('touchOnQuery defaults to true when not specified', () => {
@@ -953,6 +1275,198 @@ describe('Tool Description Integrity — canonicalize + hash', () => {
 // ============================================================================
 // Audit Trail Integration
 // ============================================================================
+
+// ============================================================================
+// sessionWrap() — Complete Session Lifecycle
+// ============================================================================
+
+describe('sessionWrap()', () => {
+  test('returns complete before/after stats', () => {
+    const { mem } = createTestMemory();
+    const result = mem.sessionWrap();
+
+    expect(result).toHaveProperty('nodesBefore');
+    expect(result).toHaveProperty('tiersBefore');
+    expect(result).toHaveProperty('pruned');
+    expect(result).toHaveProperty('gardenAfter');
+    expect(result).toHaveProperty('nodesAfter');
+    expect(result).toHaveProperty('tiersAfter');
+    expect(result).toHaveProperty('saved');
+    expect(result).toHaveProperty('path');
+  });
+
+  test('nodesBefore reflects pre-prune count', () => {
+    const mem = new Memory({
+      temporal: { dormancy: { resting: '1ms', dormant: '2ms' } }
+    });
+    mem.thought('old thought');
+    mem.thought('another old thought');
+    mem.thought('fresh thought');
+
+    // Force first two dormant
+    const entries = Array.from((mem as any).temporalMap.entries());
+    const freshId = entries[2][0];
+    for (const [id, meta] of entries) {
+      if (id !== freshId) {
+        meta.lastTouched = new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString();
+      }
+    }
+
+    const result = mem.sessionWrap();
+
+    expect(result.nodesBefore).toBe(3);
+    expect(result.nodesAfter).toBe(1);
+    expect(result.pruned.count).toBe(2);
+  });
+
+  test('tier distribution captured before and after prune', () => {
+    const mem = new Memory({
+      temporal: {
+        tiers: {
+          developing: { maxAge: '7d', graduationThreshold: 2 },
+        },
+        dormancy: { resting: '1ms', dormant: '2ms' }
+      }
+    });
+    const t1 = mem.thought('will graduate then get pruned');
+    const t2 = mem.thought('counter');
+    mem.tension(t1, t2, 'X vs Y');
+
+    // Touch to graduate t1 and t2 to developing
+    mem.query.tensions(); // freq 1→2, graduates current→developing
+
+    // Force both dormant
+    for (const [_id, meta] of (mem as any).temporalMap) {
+      meta.lastTouched = new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString();
+    }
+
+    // Add a fresh node that won't be pruned
+    const fresh = mem.thought('I am fresh');
+
+    const result = mem.sessionWrap();
+
+    // Before: t1 (developing, dormant), t2 (developing, dormant), fresh (current)
+    expect(result.tiersBefore.developing).toBe(2);
+    expect(result.tiersBefore.current).toBe(1);
+
+    // After: only fresh remains
+    expect(result.tiersAfter.current).toBe(1);
+    expect(result.tiersAfter.developing).toBe(0);
+    expect(result.nodesAfter).toBe(1);
+  });
+
+  test('saves when filePath is set', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fs-lifecycle-'));
+    const filePath = path.join(tmpDir, 'wrap-test.json');
+
+    const mem = Memory.loadOrCreate(filePath);
+    mem.thought('test');
+    const result = mem.sessionWrap();
+
+    expect(result.saved).toBe(true);
+    expect(result.path).toBe(filePath);
+    expect(fs.existsSync(filePath)).toBe(true);
+
+    // Clean up
+    fs.rmSync(tmpDir, { recursive: true });
+  });
+
+  test('does not save when no filePath', () => {
+    const mem = new Memory();
+    mem.thought('test');
+    const result = mem.sessionWrap();
+
+    expect(result.saved).toBe(false);
+    expect(result.path).toBeNull();
+  });
+
+  test('no pruning needed for fresh nodes', () => {
+    const { mem } = createTestMemory();
+    const result = mem.sessionWrap();
+
+    expect(result.pruned.count).toBe(0);
+    expect(result.nodesBefore).toBe(result.nodesAfter);
+  });
+
+  test('gardenAfter reflects post-prune state', () => {
+    const mem = new Memory({
+      temporal: { dormancy: { resting: '1ms', dormant: '2ms' } }
+    });
+    mem.thought('will be pruned');
+    const fresh = mem.thought('I am fresh');
+
+    // Force first node dormant
+    const entries = Array.from((mem as any).temporalMap.entries());
+    for (const [id, meta] of entries) {
+      if (id !== fresh.id) {
+        meta.lastTouched = new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString();
+      }
+    }
+
+    const result = mem.sessionWrap();
+
+    expect(result.gardenAfter.stats.total).toBe(1);
+    expect(result.gardenAfter.stats.growing).toBe(1);
+    expect(result.gardenAfter.stats.dormant).toBe(0);
+  });
+
+  test('writes audit log for pruned nodes', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'fs-lifecycle-'));
+    const filePath = path.join(tmpDir, 'wrap-audit.json');
+
+    const mem = Memory.loadOrCreate(filePath);
+    mem.thought('will be pruned');
+
+    // Force dormancy
+    for (const [_id, meta] of (mem as any).temporalMap) {
+      meta.lastTouched = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString();
+    }
+
+    mem.sessionWrap();
+
+    const auditPath = filePath.replace('.json', '.audit.jsonl');
+    expect(fs.existsSync(auditPath)).toBe(true);
+
+    const auditContent = fs.readFileSync(auditPath, 'utf-8').trim();
+    const entry = JSON.parse(auditContent);
+    expect(entry.event).toBe('prune');
+
+    // Clean up
+    fs.rmSync(tmpDir, { recursive: true });
+  });
+
+  test('works on empty memory', () => {
+    const mem = new Memory();
+    const result = mem.sessionWrap();
+
+    expect(result.nodesBefore).toBe(0);
+    expect(result.nodesAfter).toBe(0);
+    expect(result.pruned.count).toBe(0);
+    expect(result.tiersBefore.current).toBe(0);
+    expect(result.tiersAfter.current).toBe(0);
+    expect(result.saved).toBe(false);
+  });
+
+  test('second call shows 0 pruned (already clean)', () => {
+    const mem = new Memory({
+      temporal: { dormancy: { resting: '1ms', dormant: '2ms' } }
+    });
+    mem.thought('old thought');
+
+    // Force dormancy
+    for (const [_id, meta] of (mem as any).temporalMap) {
+      meta.lastTouched = new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString();
+    }
+
+    const first = mem.sessionWrap();
+    expect(first.pruned.count).toBe(1);
+
+    const second = mem.sessionWrap();
+    expect(second.pruned.count).toBe(0);
+    expect(second.nodesBefore).toBe(0);
+    expect(second.nodesAfter).toBe(0);
+  });
+});
 
 describe('Session lifecycle — audit trail', () => {
   test('sessionEnd writes audit log for pruned nodes', () => {

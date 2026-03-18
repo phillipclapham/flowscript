@@ -24,7 +24,18 @@ You have FlowScript MCP tools available. Use them naturally during work:
 - During reviews: `query_tensions` — what tradeoffs exist?
 - When someone asks "why": `query_why` — trace the causal chain.
 
+## Session Lifecycle
+
+Call `session_start` at the beginning of every conversation. It returns:
+- Token-budgeted memory summary (what you already know)
+- Active blockers and tensions (what needs attention)
+- Garden stats (what's growing, resting, dormant)
+
+Call `session_end` when the session is done. It prunes dormant nodes to an audit trail and saves.
+
+Queries keep knowledge alive — every `query_tensions`, `query_blocked`, etc. touches the returned nodes, driving graduation from current → developing → proven → foundation. Knowledge that keeps coming up earns permanence.
+
 ## Persistence
 
-Memory persists across sessions automatically. Run `save_memory` before ending a session.
+Memory persists across sessions automatically. `session_end` handles save + prune.
 Use `get_memory` to see the current state. Format "flowscript" for human-readable, "json" for structured.

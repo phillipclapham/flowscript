@@ -2,7 +2,7 @@
 
 **Your AI rewrites your auth system in 20 minutes flat. Two days later your senior engineer is still explaining what it broke — because it didn't know you rejected JWT three weeks ago, or why, or what that decision blocks.**
 
-[![Tests](https://img.shields.io/badge/tests-628%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
+[![Tests](https://img.shields.io/badge/tests-614%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
 
 ---
 
@@ -184,6 +184,26 @@ Nodes graduate automatically. `prune()` moves dormant nodes to an append-only au
 
 The memory *compresses itself*, and the compression reveals structure that verbosity obscures. A decision that keeps coming back up earns its place. One-off observations fade.
 
+### Session Lifecycle
+
+Queries keep knowledge alive. Every query — `why()`, `whatIf()`, `tensions()`, `blocked()`, `alternatives()` — touches the returned nodes, incrementing frequency and updating timestamps. This is what drives graduation: knowledge that keeps getting queried earns its place.
+
+```typescript
+// Start of session: orient with token-budgeted summary + active issues
+const orientation = mem.sessionStart({ maxTokens: 4000 });
+// → summary, blockers, tensions, garden stats, tier distribution
+
+// During session: queries automatically touch returned nodes
+mem.query.tensions();     // nodes get frequency++
+mem.query.why(nodeId);    // causal chain nodes get frequency++
+
+// End of session: prune dormant, save, get before/after stats
+const wrap = mem.sessionWrap();
+// → { nodesBefore, tiersBefore, pruned, gardenAfter, nodesAfter, tiersAfter, saved }
+```
+
+Touch-on-query is enabled by default. Disable with `{ touchOnQuery: false }` for read-only analysis.
+
 ---
 
 ## The Complete Developer Loop
@@ -211,9 +231,10 @@ const mem2 = await Memory.fromTranscript(agentLog, {
   extract: async (prompt) => await yourLLM(prompt)
 });
 
-// 6. Housekeep + save
-mem.prune();   // dormant → .audit.jsonl (append-only)
-mem.save();    // no-arg save to stored path
+// 6. End of session — prune dormant, save, get stats
+const wrap = mem.sessionWrap();
+// → pruned dormant nodes to .audit.jsonl, saved to disk
+// → { nodesBefore, pruned, nodesAfter, tiersAfter, saved }
 ```
 
 Four budget strategies: `tier-priority` (foundation first), `recency`, `frequency`, `relevance` (topic match). ~3:1 compression ratio vs prose.

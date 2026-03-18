@@ -139,6 +139,25 @@ export interface SessionEndResult {
   path: string | null;
 }
 
+export interface SessionWrapResult {
+  /** Node count before pruning */
+  nodesBefore: number;
+  /** Tier distribution before pruning */
+  tiersBefore: Record<TemporalTier, number>;
+  /** Prune report (what was archived) */
+  pruned: PruneReport;
+  /** Garden status after prune */
+  gardenAfter: GardenReport;
+  /** Node count after pruning */
+  nodesAfter: number;
+  /** Tier distribution after pruning */
+  tiersAfter: Record<TemporalTier, number>;
+  /** Whether save was called */
+  saved: boolean;
+  /** File path saved to (null if no filePath set) */
+  path: string | null;
+}
+
 // ============================================================================
 // Audit Log Types
 // ============================================================================
@@ -505,6 +524,13 @@ export class Memory {
   private _config: MemoryOptions;
   private _defaultDormancy: DormancyConfig;
   private _filePath: string | null;
+  /**
+   * Session-scoped touch deduplication set.
+   * Each node gains at most +1 frequency per session, regardless of how many
+   * queries touch it. Cross-session frequency is the real graduation signal.
+   * Within-session repetition is noise. Reset on sessionStart().
+   */
+  private _sessionTouchSet: Set<string>;
 
   constructor(options?: MemoryOptions) {
     this._config = options || {};
@@ -532,6 +558,7 @@ export class Memory {
       archive: options?.temporal?.dormancy?.archive || '30d'
     };
     this._filePath = null;
+    this._sessionTouchSet = new Set();
   }
 
   // ---------- Static Constructors ----------
@@ -999,10 +1026,23 @@ ${transcript}
   /**
    * Touch nodes by ID: update lastTouched, increment frequency, check graduation.
    * Public API for manual touch operations outside of queries.
+   *
+   * Not session-scoped: each explicit call always increments frequency.
+   * Session dedup only applies to implicit query-driven touches.
    */
   touchNodes(ids: string[]): void {
     for (const id of ids) {
-      this._touchNode(id);
+      this._touchNode(id, false);
+    }
+  }
+
+  /**
+   * Session-scoped touch: used by query wrappers internally.
+   * Each node gains at most +1 frequency per session from queries.
+   */
+  private _touchNodesSessionScoped(ids: string[]): void {
+    for (const id of ids) {
+      this._touchNode(id, true);
     }
   }
 
@@ -1039,34 +1079,35 @@ ${transcript}
       };
     }
 
-    // Touch-aware wrappers: execute query, extract node IDs, touch them
+    // Touch-aware wrappers: execute query, extract node IDs, touch them (session-scoped).
+    // Query touches use _touchNodesSessionScoped: max +1 frequency per node per session.
     const engine = this._queryEngine;
     const mem = this;
 
     return {
       why(nodeId: string, options?: WhyOptions): CausalAncestry | MinimalWhy {
         const result = engine.why(nodeId, options);
-        mem.touchNodes(extractWhyNodeIds(result));
+        mem._touchNodesSessionScoped(extractWhyNodeIds(result));
         return result;
       },
       whatIf(nodeId: string, options?: WhatIfOptions): ImpactAnalysis | ImpactSummary {
         const result = engine.whatIf(nodeId, options);
-        mem.touchNodes(extractWhatIfNodeIds(result));
+        mem._touchNodesSessionScoped(extractWhatIfNodeIds(result));
         return result;
       },
       tensions(options?: TensionOptions): TensionsResult {
         const result = engine.tensions(options);
-        mem.touchNodes(extractTensionNodeIds(result));
+        mem._touchNodesSessionScoped(extractTensionNodeIds(result));
         return result;
       },
       blocked(options?: BlockedOptions): BlockedResult {
         const result = engine.blocked(options);
-        mem.touchNodes(extractBlockedNodeIds(result));
+        mem._touchNodesSessionScoped(extractBlockedNodeIds(result));
         return result;
       },
       alternatives(questionId: string, options?: AlternativesOptions): AlternativesResult {
         const result = engine.alternatives(questionId, options);
-        mem.touchNodes(extractAlternativesNodeIds(result));
+        mem._touchNodesSessionScoped(extractAlternativesNodeIds(result));
         return result;
       }
     };
@@ -1911,6 +1952,10 @@ ${transcript}
    * @param maxTokens - Token budget for the FlowScript summary (default: 4000)
    */
   sessionStart(options?: { maxTokens?: number }): SessionStartResult {
+    // Reset session-scoped touch deduplication — new session = fresh touch budget.
+    // Each node can gain at most +1 frequency per session.
+    this._sessionTouchSet = new Set();
+
     const maxTokens = options?.maxTokens ?? 4000;
 
     // Token-budgeted summary (strategy: tier-priority for best orientation)
@@ -1935,29 +1980,18 @@ ${transcript}
         ...extractBlockedNodeIds(blockers),
         ...extractTensionNodeIds(tensions),
       ]);
-      this.touchNodes(Array.from(allIds));
+      this._touchNodesSessionScoped(Array.from(allIds));
     }
 
     // Garden status (pure read, no touch needed)
     const gardenReport = this.garden();
-
-    // Tier distribution
-    const tierCounts: Record<TemporalTier, number> = {
-      current: 0,
-      developing: 0,
-      proven: 0,
-      foundation: 0
-    };
-    for (const meta of this.temporalMap.values()) {
-      tierCounts[meta.tier]++;
-    }
 
     return {
       summary,
       blockers,
       tensions,
       garden: gardenReport,
-      tierCounts,
+      tierCounts: this._countTiers(),
       totalNodes: this.size
     };
   }
@@ -1985,6 +2019,35 @@ ${transcript}
       garden: gardenReport,
       saved,
       path: savePath
+    };
+  }
+
+  /**
+   * Complete session lifecycle wrap: snapshot before/after state, prune, save.
+   *
+   * Like sessionEnd() but returns richer stats — node counts and tier distribution
+   * both before and after pruning, so you can see exactly what changed.
+   *
+   * Use this for programmatic SDK usage where you want the full picture.
+   * Use sessionEnd() for MCP tool handlers where simpler output is preferred.
+   */
+  sessionWrap(): SessionWrapResult {
+    // Capture pre-prune state
+    const nodesBefore = this.size;
+    const tiersBefore = this._countTiers();
+
+    // Delegate to sessionEnd for prune + garden + save
+    const endResult = this.sessionEnd();
+
+    return {
+      nodesBefore,
+      tiersBefore,
+      pruned: endResult.pruned,
+      gardenAfter: endResult.garden,
+      nodesAfter: this.size,
+      tiersAfter: this._countTiers(),
+      saved: endResult.saved,
+      path: endResult.path
     };
   }
 
@@ -2070,10 +2133,11 @@ ${transcript}
   _addNode(type: NodeType, content: string, parentId?: string): NodeRef {
     const id = hashContent({ type, content });
 
-    // Dedup: if same content+type exists, increment frequency and return existing
+    // Dedup: if same content+type exists, increment frequency and return existing.
+    // Not session-scoped: each explicit creation call is a real observation.
     const existing = this.nodeMap.get(id);
     if (existing) {
-      this._touchNode(id);
+      this._touchNode(id, false);
       // Still add as child if parent specified and not already a child
       if (parentId) {
         this._addChild(parentId, id);
@@ -2332,12 +2396,41 @@ ${transcript}
 
   // ---------- Private Helpers ----------
 
-  /** Touch a node: update lastTouched, increment frequency, check graduation */
-  private _touchNode(id: string): void {
+  /** Count nodes by temporal tier. Used by sessionStart, sessionWrap. */
+  private _countTiers(): Record<TemporalTier, number> {
+    const counts: Record<TemporalTier, number> = {
+      current: 0, developing: 0, proven: 0, foundation: 0
+    };
+    for (const meta of this.temporalMap.values()) {
+      counts[meta.tier]++;
+    }
+    return counts;
+  }
+
+  /**
+   * Touch a node: update lastTouched, increment frequency, check graduation.
+   *
+   * @param sessionScoped - When true (default), applies session-scoped dedup:
+   *   each node gains at most +1 frequency per session from queries. Cross-session
+   *   frequency is the real graduation signal — within-session query repetition
+   *   (querying tensions 5 times while working through a problem) is noise.
+   *   When false, touch always increments (used by creation dedup — each explicit
+   *   API call to mem.thought('same content') is a real observation).
+   */
+  private _touchNode(id: string, sessionScoped: boolean = true): void {
     const meta = this.temporalMap.get(id);
     if (!meta) return;
 
+    // Always update lastTouched (recency is always relevant)
     meta.lastTouched = new Date().toISOString();
+
+    // Session-scoped dedup: query touches max +1 per session per node.
+    // Creation dedup (sessionScoped=false) always increments.
+    if (sessionScoped) {
+      if (this._sessionTouchSet.has(id)) return;
+      this._sessionTouchSet.add(id);
+    }
+
     meta.frequency += 1;
 
     // Check graduation threshold
