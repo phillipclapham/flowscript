@@ -16,6 +16,11 @@
       "types": "./dist/index.d.ts",
       "require": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./vercel": {
+      "types": "./dist/vercel.d.ts",
+      "require": "./dist/vercel.js",
+      "default": "./dist/vercel.js"
     }
   },
   "bin": {
