@@ -99,7 +99,7 @@ pip install flowscript-agents[langgraph]   # or crewai, google-adk, openai-agent
 
 ## What the Queries Return
 
-Typed graph traversal, not string matching. Real output from a project memory:
+Typed graph traversal, not string matching. Queries return structured objects — here's what they find in a project memory:
 
 **`tensions()`** — every tradeoff, with named axes:
 
