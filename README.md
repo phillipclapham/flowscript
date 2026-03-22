@@ -14,11 +14,15 @@ const tools = mem.asTools(); // 15 tools, OpenAI function calling format
 // → pass to OpenAI, Anthropic, or any function-calling LLM as tool definitions
 // → your agent builds the reasoning graph during normal work
 
-mem.query.tensions();            // → tradeoffs with named axes
-mem.query.blocked();             // → what's stuck + downstream impact
-mem.query.why(nodeId);           // → causal chain backward from any decision
-mem.query.whatIf(nodeId);        // → what breaks if this changes
-mem.query.alternatives(nodeId);  // → what was considered + what was decided
+// Five typed queries over the reasoning your agent built:
+mem.query.tensions();            // structured tradeoffs with named axes
+mem.query.blocked();             // what's stuck + downstream impact
+mem.query.why(nodeId);           // causal chain backward from any decision
+mem.query.whatIf(nodeId);        // what breaks if this changes
+mem.query.alternatives(nodeId);  // what was considered + what was decided
+
+// Human-readable view of the entire graph:
+console.log(mem.toFlowScript());
 
 const wrap = mem.sessionWrap();  // prune dormant → audit trail, save
 ```
@@ -99,48 +103,34 @@ pip install flowscript-agents[langgraph]   # or crewai, google-adk, openai-agent
 
 ## What the Queries Return
 
-Typed graph traversal, not string matching. Queries return structured objects — here's what they find in a project memory:
-
-**`tensions()`** — every tradeoff, with named axes:
-
-```
-><[performance vs cost]
-  "Redis gives sub-ms reads but cluster costs $200/mo"
-  vs "PostgreSQL on shared hosting is $15/mo and handles our scale"
-```
-
-**`blocked()`** — what's stuck and why:
-
-```
-[blocked] SQLite — zero ops, embedded, good enough for MVP
-  reason: "Cannot handle concurrent writes from multiple API workers"
-```
-
-**`why("modular-monolith")`** — causal chain backward:
-
-```
-Collapsed back to a modular monolith — same code boundaries, one deploy
-  ← Started with microservices but the overhead is killing velocity
-    → Premature distribution is worse than premature optimization
-```
-
-**`alternatives("database-question")`** — what was considered, what was decided:
+Queries return structured objects. `toFlowScript()` renders the full graph in human-readable `.fs` notation. Here's a project memory and what each query extracts from it:
 
 ```
 ? Which database for user sessions and agent state?
-  [decided] PostgreSQL — "Best balance of cost, reliability, and query power"
-  [open]    Redis — sub-ms reads, great for session cache
-  [blocked] SQLite — cannot handle concurrent writes
+  [decided(rationale: "Best balance of cost, reliability, and query power", on: "2026-03-22")] || PostgreSQL
+    -> thought: Session storage needs replacement
+    -> thought: Server-side auth decision invalidated
+    -> thought: ULID migration becomes irrelevant
+  || Redis — sub-ms reads, great for session cache
+  [blocked(reason: "Cannot handle concurrent writes", since: "2026-03-22")] || SQLite
+
+thought: Redis gives sub-ms reads but cluster costs $200/mo
+  ><[performance vs cost] thought: PostgreSQL on shared hosting is $15/mo
+
+thought: Started with microservices but the overhead is killing velocity
+  -> thought: Collapsed back to a modular monolith — same code boundaries, one deploy
+    -> thought: Premature distribution is worse than premature optimization
 ```
 
-**`whatIf("postgresql")`** — downstream impact:
+**`tensions()`** finds the `><` relationships — tradeoffs with named axes. Returns `{ tensions_by_axis: { "performance vs cost": [{ source, target }] } }`.
 
-```
-If PostgreSQL is removed:
-  → Session storage needs replacement
-  → Server-side auth decision invalidated
-  → ULID migration becomes irrelevant
-```
+**`blocked()`** finds `[blocked]` states — what's stuck and why. Returns `{ blockers: [{ node, blocked_state: { reason } }] }`.
+
+**`why(nodeId)`** traces `->` chains backward — the full causal ancestry of any node. Returns `{ causal_chain, root_cause }`.
+
+**`alternatives(questionId)`** collects `||` alternatives under a `?` question — with decided/blocked states. Returns `{ alternatives: [{ content, chosen, rationale }] }`.
+
+**`whatIf(nodeId)`** traces `->` chains forward — everything downstream. Returns `{ impact_tree: { direct_consequences, indirect_consequences } }`.
 
 All five queries touch returned nodes, driving graduation through temporal tiers. Knowledge that keeps getting queried earns permanence. One-off observations fade.
 
