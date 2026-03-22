@@ -40,6 +40,12 @@ export interface AuditConfig {
   hashChain?: boolean;
   /** 'standard' (mutations only) or 'full' (mutations + reads). Default: 'standard'. */
   verbosity?: 'standard' | 'full';
+  /**
+   * Encryption at rest. 'none' (default) or 'aes-256-gcm'.
+   * NOT YET IMPLEMENTED — v2 commitment for SOC2/enterprise compliance.
+   * Setting to anything other than 'none' throws an error.
+   */
+  encryption?: 'none' | 'aes-256-gcm';
   /** Optional callback invoked for every audit entry. Callback failure never blocks audit persistence. */
   onEvent?: (entry: AuditEntry) => void;
 }
@@ -239,6 +245,12 @@ export class AuditWriter {
   private _rotationCounter: number = 0;
 
   constructor(memoryPath: string, config?: AuditConfig) {
+    if (config?.encryption && config.encryption !== 'none') {
+      throw new Error(
+        `Encryption at rest ('${config.encryption}') is not yet implemented. ` +
+        "This is a documented v2 commitment. Currently only 'none' is supported."
+      );
+    }
     this._memoryPath = memoryPath;
     this._config = {
       rotation: config?.rotation ?? 'monthly',

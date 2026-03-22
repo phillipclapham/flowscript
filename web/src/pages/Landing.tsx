@@ -154,8 +154,8 @@ mem.query.tensions();{"\n"}
             </div>
             <div className="install-card">
               <h3>MCP Server (Claude Code / Cursor)</h3>
-              <div className="code-block install-cmd">npm install -g flowscript-core</div>
-              <p>15 reasoning tools, local file persistence, zero cloud dependency. Add one JSON block to your editor config and restart.</p>
+              <div className="code-block install-cmd">pip install flowscript-agents</div>
+              <p>13 reasoning tools with auto-extraction and contradiction handling. Add one JSON block to your editor config and restart.</p>
               <Link to="/get-started" className="install-link">
                 Setup guide &rarr;
               </Link>

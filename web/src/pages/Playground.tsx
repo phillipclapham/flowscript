@@ -14,67 +14,104 @@ import { useTheme } from "../lib/theme/useTheme";
 import { parseFlowScript } from "../utils/fullFlowScriptParser";
 import "./Playground.css";
 
-// Example FlowScript content
-const EXAMPLE_FLOWSCRIPT = `# Agent Memory — Platform Migration
+// Example FlowScript content — shows compound value over multiple sessions.
+// Each section represents decisions that accumulated over weeks, with
+// temporal evolution, resolved blockers, and tensions discovered over time.
+const EXAMPLE_FLOWSCRIPT = `# SaaS Project: 6 Weeks of Agent Memory
+# This is what your project's reasoning looks like after real use.
+# Decisions graduate through tiers. Tensions emerge over time.
+# Blockers get resolved. Knowledge compounds.
 
-? {decision: Which database for the new session service?}
+# ── Week 1: Architecture foundations ──────────────────
+
+? {decision: Primary database for user data?}
   || PostgreSQL
-     -> mature ecosystem and tooling
-     -> team already knows it
-     + strong ACID guarantees
-  || Redis
-     -> sub-millisecond reads
-     -> natural fit for session data (TTL built-in)
-     -> [decided(rationale: "session data is ephemeral, speed matters more than durability", on: "2026-03-10")]
+     -> ACID compliance for payments
+     -> team expertise
+     -> [decided(rationale: "payment transactions require strict consistency, team has 5 years PostgreSQL experience", on: "2026-02-03")]
+  || MongoDB
+     -> flexible schema for user profiles
+     -> faster iteration on data model
 
-? {decision: How should we handle the API versioning?}
-  || URL path versioning (/v1/, /v2/)
-     -> simple to understand
-     -> breaks caching across versions
-  || Header-based versioning
-     -> cleaner URLs
-     -> harder to test in browser
-     -> [decided(rationale: "API gateway handles header routing, keeps URLs stable for clients", on: "2026-03-12")]
+? {decision: Authentication approach?}
+  || Build custom JWT auth
+     -> full control over token lifecycle
+  || Auth0
+     -> faster to ship, SOC2 out of the box
+     -> [decided(rationale: "getting to market matters more than auth customization, can migrate later", on: "2026-02-05")]
 
-thought: sessions are fundamentally temporary — optimizing for durability is solving the wrong problem
-  -> Redis chosen for sessions
-     -> deploy Redis cluster by end of sprint
-        -> update connection pooling config
-           -> run load tests against staging
-              -> ! validate p99 latency under 5ms
+thought: "can migrate later" decisions should be tracked — they become technical debt if forgotten
+  -> Auth0 chosen for now
 
-* user preferences must remain in PostgreSQL
-  <- requires ACID for billing-linked settings
+✓ Auth0 tenant configured
+✓ social login working
 
-[blocked(reason: "waiting on Redis cluster provisioning", since: "2026-03-11")]
-! auth service depends on session store
-  -> blocks login flow rollout
-     -> delays beta launch
+# ── Week 2: New info challenges early choices ─────────
 
-[blocked(reason: "versioning strategy not yet implemented in gateway", since: "2026-03-13")]
-! API docs generation
-  -> blocks developer onboarding
-     -> delays partner integrations
+thought: user profile queries are getting complex — PostgreSQL JSON columns are clumsy for nested preferences
+  -> revisiting schema flexibility
 
-speed ><[performance vs consistency] data safety
-  -> Redis replication is async (small window of data loss possible)
-  -> ! never store payment data in Redis
+? {decision: Add a document store for profiles?}
+  || Keep everything in PostgreSQL (JSON columns)
+  || Add DynamoDB for profile data only
+     -> [decided(rationale: "profiles are read-heavy, rarely join with payment data — separate store is cleaner", on: "2026-02-12")]
 
-developer experience ><[simplicity vs flexibility] operational cost
-  -> simpler APIs = faster onboarding
-  -> flexible APIs = more support burden
+PostgreSQL for payments ><[consistency vs operational complexity] DynamoDB for profiles
+  -> now maintaining two databases instead of one
+  -> ! data sync between stores needs careful handling
+  -> deploy team needs DynamoDB expertise
 
-~ exploring: could Redis Streams replace our Kafka setup?
-  <- similar pub/sub model but simpler ops
-  -> worth prototyping after migration ships
-     -> would reduce infrastructure cost by 30%
+[blocked(reason: "DynamoDB IAM roles not provisioned yet", since: "2026-02-13")]
+! profile migration script
+  -> blocks user settings feature
+     -> delays beta invites
 
-✓ connection pooling library evaluated
-✓ staging environment provisioned
-✓ team aligned on migration approach
+# ── Week 3: Blockers resolved, new tensions ───────────
 
-action: write migration runbook before proceeding
-action: schedule downtime window with SRE team
+✓ DynamoDB IAM roles provisioned
+✓ profile migration script shipped — 50k users migrated
+✓ beta invites sent
+
+thought: Auth0 rate limits are hitting us at scale — 1000 req/min on the free tier
+  -> enterprise tier is $23k/year
+     -> ! contradicts "faster to market" rationale — now we're locked in AND paying enterprise rates
+
+Auth0 speed-to-market ><[short-term velocity vs long-term cost] custom auth independence
+  -> switching back to custom auth now would cost 3-4 weeks
+  -> staying means $23k/year and rate limit dependency
+  -> ! this is the "migrate later" debt from Week 1 materializing
+
+[blocked(reason: "Auth0 enterprise contract requires legal review", since: "2026-02-21")]
+! scaling beyond 1000 users
+  -> blocks public launch
+     -> delays revenue
+
+# ── Week 4-5: Patterns emerge, knowledge graduates ───
+
+thought: the "migrate later" pattern has burned us twice now (Auth0 + data layer)
+  -> * decision principle: if migration cost grows with usage, decide upfront
+     <- Auth0 lock-in + DynamoDB operational overhead both trace back to "ship fast, fix later"
+
+~ exploring: could we use Supabase to replace both PostgreSQL + Auth0?
+  <- PostgreSQL under the hood (preserves ACID)
+  <- built-in auth (eliminates Auth0 dependency)
+  <- row-level security (reduces custom auth code)
+  -> worth a proof-of-concept after public launch
+     -> would consolidate 3 services into 1
+
+✓ Auth0 enterprise contract signed (pragmatic, not ideal)
+✓ public launch shipped — 2,400 users first week
+✓ payment processing stable on PostgreSQL
+
+# ── Week 6: Current session ───────────────────────────
+
+thought: Supabase PoC results are promising — auth + database + realtime in one platform
+  -> migration path exists but timing matters
+     -> ! don't migrate during growth phase (learned from Week 2 disruption)
+
+action: schedule Supabase migration for Q3 (post-Series A)
+action: document Auth0 workarounds for rate limiting (knowledge base)
+action: review all "migrate later" decisions quarterly
 `;
 
 type EditorTab = 'editor' | 'convert';

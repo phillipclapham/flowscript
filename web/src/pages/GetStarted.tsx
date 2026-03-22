@@ -26,8 +26,8 @@ export function GetStarted() {
             <p className="decision-who">
               You use Claude Code, Cursor, or another MCP-compatible editor and want reasoning memory with zero code changes.
             </p>
-            <div className="code-block decision-install">npm install -g flowscript-core</div>
-            <p className="decision-result">15 reasoning tools. Local persistence. Your agent builds the graph through normal tool calls.</p>
+            <div className="code-block decision-install">pip install flowscript-agents</div>
+            <p className="decision-result">13 reasoning tools. Auto-extraction from plain text. Contradiction handling. Your agent builds the graph through natural conversation.</p>
           </div>
 
           <div className="decision-card">
@@ -60,50 +60,88 @@ export function GetStarted() {
       <section className="gs-section" id="mcp">
         <h2>MCP Server Setup</h2>
         <p>
-          The fastest path. Install globally, add to your editor config, restart. Your agent gets 15 reasoning tools immediately.
+          The fastest path. Install, add to your editor config, restart. Your agent gets 13 reasoning tools with auto-extraction and contradiction handling.
         </p>
 
         <h3>1. Install</h3>
-        <div className="code-block">npm install -g flowscript-core</div>
+        <div className="code-block">pip install flowscript-agents</div>
 
         <h3>2. Configure your editor</h3>
         <p>
-          Add to your MCP settings (<code>.claude/settings.json</code> for Claude Code, or your editor's MCP config):
+          Add to your MCP settings (<code>.mcp.json</code> in your project root, <code>.claude/settings.json</code> for Claude Code, or your editor's MCP config):
         </p>
         <div className="code-block">
 {`{
   "mcpServers": {
     "flowscript": {
       "command": "flowscript-mcp",
-      "args": ["./project-memory.json"]
+      "args": ["--memory", "./project-memory.json"],
+      "env": {
+        "OPENAI_API_KEY": "your-key"
+      }
     }
   }
 }`}
         </div>
+        <p>
+          Also supports <code>ANTHROPIC_API_KEY</code>. The server auto-detects your key and configures
+          vector search, typed extraction, and consolidation. No additional setup.
+        </p>
 
         <h3>3. Restart your editor</h3>
         <p>
-          Your agent now has 15 reasoning tools: <code>add_thought</code>, <code>add_question</code>,{" "}
-          <code>add_alternative</code>, <code>decide</code>, <code>block</code>, <code>add_tension</code>,{" "}
+          Your agent now has 13 reasoning tools: <code>search_memory</code>,{" "}
+          <code>add_memory</code>, <code>get_context</code>,{" "}
           <code>query_tensions</code>, <code>query_blocked</code>, <code>query_why</code>,{" "}
-          <code>query_what_if</code>, <code>query_alternatives</code>, and more.
+          <code>query_what_if</code>, <code>query_alternatives</code>,{" "}
+          <code>remove_memory</code>, <code>session_wrap</code>, <code>memory_stats</code>,{" "}
+          <code>query_audit</code>, <code>verify_audit</code>.
         </p>
 
-        <h3>4. (Optional) Add a CLAUDE.md snippet</h3>
+        <h3>4. Add the CLAUDE.md snippet</h3>
         <p>
-          Copy{" "}
-          <a href="https://github.com/phillipclapham/flowscript/blob/main/examples/CLAUDE.md.snippet" target="_blank" rel="noopener noreferrer">
-            this CLAUDE.md snippet
+          This is what turns tools into a workflow. Copy the{" "}
+          <a href="https://github.com/phillipclapham/flowscript-agents/blob/main/examples/CLAUDE.md.example" target="_blank" rel="noopener noreferrer">
+            CLAUDE.md snippet
           </a>{" "}
-          into your project to tell the agent when to record decisions, tensions, and blockers automatically.
-          Already using CLAUDE.md? Keep it. CLAUDE.md is the cheat sheet, FlowScript is the working memory.
+          into your project's CLAUDE.md. It tells your agent <em>when</em> to record decisions, surface tensions before new decisions, and check blockers at session start, automatically, without you asking. Without it, the tools are available but passive. With it, your agent proactively tracks your project's reasoning.
+        </p>
+
+        <h3>5. Try it: your first 5 minutes</h3>
+        <p>With the MCP server and CLAUDE.md snippet configured above, start a conversation with your agent:</p>
+        <div className="code-block">
+{`"I need to decide between PostgreSQL and MongoDB for our user data.
+We need ACID compliance for payments but flexibility for user profiles."`}
+        </div>
+        <p>
+          Your agent stores the decision context automatically. Now introduce a contradiction:
+        </p>
+        <div className="code-block">
+{`"Actually, I've been reading about DynamoDB. The scale
+requirements might matter more than I thought."`}
+        </div>
+        <p>Now ask:</p>
+        <div className="code-block">
+{`"What tensions do we have in our architecture decisions?"`}
+        </div>
+        <p>
+          FlowScript preserved both perspectives (PostgreSQL's ACID compliance vs DynamoDB's
+          scalability) as a queryable tension instead of deleting the first decision.
+          That's what <strong>RELATE &gt; DELETE</strong> means in practice.
+        </p>
+        <p>
+          After a few sessions, try <code>"What's blocking our progress?"</code> or{" "}
+          <code>"Why did we choose PostgreSQL originally?"</code>. Your agent can trace the full
+          reasoning chain. After 20 sessions, you have a curated knowledge base of your project's
+          decisions, not a pile of notes.
         </p>
 
         <div className="quickstart-note">
-          <strong>Want auto-extraction from plain text?</strong> The{" "}
-          <a href="https://github.com/phillipclapham/flowscript-agents" target="_blank" rel="noopener noreferrer">Python MCP server</a>{" "}
-          auto-detects your API key and configures vector search, typed extraction, and contradiction handling.
-          Same reasoning queries, automatic graph construction.
+          <strong>Want fine-grained programmatic control?</strong> The{" "}
+          <a href="https://github.com/phillipclapham/flowscript" target="_blank" rel="noopener noreferrer">TypeScript SDK</a>{" "}
+          (<code>npm install flowscript-core</code>) provides 15 builder tools via <code>asTools()</code> for constructing
+          reasoning graphs directly in your code: <code>add_thought</code>, <code>decide</code>, <code>add_tension</code>, and more.
+          Same query engine, manual graph construction.
         </div>
       </section>
 
@@ -192,15 +230,15 @@ pip install flowscript-agents[all]`}
         <div className="code-block">
 {`from flowscript_agents.langgraph import FlowScriptStore
 
-store = FlowScriptStore("./agent-memory.json")
+with FlowScriptStore("./agent-memory.json") as store:
+    # Standard LangGraph BaseStore operations
+    store.put(("agents", "planner"), "db_decision",
+              {"value": "chose Redis for speed"})
+    items = store.search(("agents", "planner"), query="Redis")
 
-# Use as LangGraph's BaseStore — drop-in replacement
-# Your agent's reasoning is now structured, queryable,
-# and graduates through temporal tiers
-
-# Query the reasoning graph
-tensions = store.search(("reasoning",), query="tensions")
-blocked = store.search(("reasoning",), query="blocked")`}
+    # What's new: typed reasoning queries on the same data
+    tensions = store.memory.query.tensions()
+    blockers = store.memory.query.blocked()`}
         </div>
 
         <h3>3. Auto-extraction (optional)</h3>
@@ -209,18 +247,19 @@ blocked = store.search(("reasoning",), query="blocked")`}
           plain conversation text. Contradictions automatically become tensions.
         </p>
         <div className="code-block">
-{`from flowscript_agents import UnifiedMemory
+{`from openai import OpenAI
+from flowscript_agents import UnifiedMemory
+from flowscript_agents.embeddings import OpenAIEmbeddings
 
-memory = UnifiedMemory(
-    path="./agent-memory.json",
-    embedder="openai",          # or "sentence-transformers", "ollama"
-    llm="openai",               # for typed extraction
-    consolidation_provider="openai"  # for RELATE > DELETE
-)
+client = OpenAI()
+llm = lambda prompt: (client.chat.completions.create(
+    model="gpt-4o-mini", messages=[{"role": "user", "content": prompt}]
+).choices[0].message.content or "")
 
-# Plain text in → typed reasoning graph out
-await memory.add("We chose Redis for speed but the cluster costs $200/mo")
-# → Automatically extracts nodes, detects tension, creates ><[performance vs cost]`}
+with UnifiedMemory("agent-memory.json", embedder=OpenAIEmbeddings(), llm=llm) as mem:
+    mem.add("We chose Redis for speed but the cluster costs $200/mo")
+    # Automatically extracts typed nodes, detects the cost contradiction,
+    # and creates a queryable tension`}
         </div>
 
         <p>
@@ -296,8 +335,8 @@ await memory.add("We chose Redis for speed but the cluster costs $200/mo")
               </tr>
               <tr>
                 <td>MCP (Claude Code, Cursor)</td>
-                <td><code>npm install -g flowscript-core</code></td>
-                <td>MCP Server</td>
+                <td><code>pip install flowscript-agents</code></td>
+                <td>MCP Server (auto-extraction)</td>
               </tr>
             </tbody>
           </table>
