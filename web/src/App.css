@@ -562,6 +562,7 @@ body {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: var(--space-3xl) var(--space-lg);
+  overflow-x: hidden;
 }
 
 .page h2 {
@@ -629,6 +630,7 @@ body {
   margin: var(--space-md) 0 var(--space-lg);
   white-space: pre;
   word-wrap: normal;
+  max-width: 100%;
 }
 
 .code-inline {
