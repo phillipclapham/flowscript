@@ -1,6 +1,6 @@
 # FlowScript
 
-**Structured reasoning memory for AI agents. Five queries no vector store can answer — `why()`, `tensions()`, `blocked()`, `alternatives()`, `whatIf()` — over decisions your agent builds during normal work.**
+**Structured reasoning memory for AI agents. Five queries no vector store can answer: `why()`, `tensions()`, `blocked()`, `alternatives()`, `whatIf()`. Your agent builds the graph during normal work. You query it.**
 
 [![Tests](https://img.shields.io/badge/tests-691%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
 
