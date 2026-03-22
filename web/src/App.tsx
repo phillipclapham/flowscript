@@ -3,6 +3,7 @@
  * Multi-page layout with shared navigation.
  */
 
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, NavLink, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { Landing } from "./pages/Landing";
@@ -14,6 +15,12 @@ import "./App.css";
 function Layout() {
   const location = useLocation();
   const isPlayground = location.pathname === "/playground";
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <div className={`app ${isPlayground ? 'app--playground' : 'app--page'}`}>
@@ -27,7 +34,18 @@ function Layout() {
             </h1>
           </NavLink>
 
-          <nav className="main-nav">
+          <button
+            className={`hamburger ${menuOpen ? 'open' : ''}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle navigation menu"
+            aria-expanded={menuOpen}
+          >
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
+          </button>
+
+          <nav className={`main-nav ${menuOpen ? 'main-nav--open' : ''}`}>
             <NavLink to="/learn" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
               Learn
             </NavLink>
@@ -37,7 +55,17 @@ function Layout() {
             <NavLink to="/playground" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
               Playground
             </NavLink>
+            <a
+              href="https://github.com/phillipclapham/flowscript"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link github-link--mobile"
+            >
+              GitHub
+            </a>
           </nav>
+
+          {menuOpen && <div className="nav-overlay" onClick={() => setMenuOpen(false)} />}
 
           <div className="header-actions">
             <a

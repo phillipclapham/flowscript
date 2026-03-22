@@ -145,3 +145,23 @@
 .graph-node-group:hover {
   opacity: 0.9;
 }
+
+@media (max-width: 768px) {
+  .graph-preview {
+    min-height: 300px;
+    height: 300px;
+  }
+
+  .graph-controls {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  .graph-controls label {
+    font-size: 12px;
+  }
+
+  .layout-select {
+    font-size: 12px;
+  }
+}

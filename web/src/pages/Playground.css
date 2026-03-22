@@ -37,7 +37,42 @@
 }
 
 @media (max-width: 768px) {
+  .playground {
+    overflow: visible;
+  }
+
   .playground-content {
-    grid-template-rows: 60vh 40vh;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  .playground-content .panel {
+    overflow: visible;
+    min-height: 50vh;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .playground-content .editor-panel {
+    height: 60vh;
+    min-height: 60vh;
+    overflow: hidden;
+  }
+
+  .playground-content .preview-panel {
+    min-height: auto;
+  }
+
+  .playground-content .preview-panel .panel-content {
+    overflow: visible;
+  }
+
+  .playground-content .preview-panel .preview-tabs {
+    gap: var(--space-lg);
+  }
+
+  .playground-toolbar {
+    padding: var(--space-xs) var(--space-md);
   }
 }

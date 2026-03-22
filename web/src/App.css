@@ -295,6 +295,51 @@ body {
   font-weight: 500;
 }
 
+.github-link--mobile {
+  display: none;
+}
+
+/* ========================================
+   Hamburger Menu Button (mobile only)
+   ======================================== */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-sm);
+  margin-left: auto;
+  z-index: 201;
+}
+
+.hamburger-line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background-color: var(--color-text);
+  border-radius: 1px;
+  transition: transform var(--transition-base), opacity var(--transition-base);
+}
+
+.hamburger.open .hamburger-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.open .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open .hamburger-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.nav-overlay {
+  display: none;
+}
+
 /* ========================================
    Main Content Area
    ======================================== */
@@ -600,14 +645,60 @@ body {
    Responsive
    ======================================== */
 @media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
   .main-nav {
-    margin-left: var(--space-sm);
+    display: none;
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    background-color: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-lg);
+    flex-direction: column;
+    padding: var(--space-sm) 0;
+    z-index: 200;
+    margin-left: 0;
     gap: 0;
   }
 
-  .nav-link {
-    padding: var(--space-sm) var(--space-sm);
-    font-size: 13px;
+  .main-nav--open {
+    display: flex;
+  }
+
+  .main-nav .nav-link {
+    padding: var(--space-md) var(--space-lg);
+    font-size: 16px;
+    border-radius: 0;
+  }
+
+  .main-nav .nav-link:hover {
+    background: var(--color-surface);
+  }
+
+  .main-nav .nav-link.active {
+    background: var(--color-primary-light);
+  }
+
+  .github-link--mobile {
+    display: block;
+    border-top: 1px solid var(--color-border);
+    margin-top: var(--space-xs);
+    padding-top: var(--space-sm);
+  }
+
+  .nav-overlay {
+    display: block;
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 199;
   }
 
   .logo {
@@ -625,15 +716,22 @@ body {
   .page h2 {
     font-size: 24px;
   }
+
+  /* Playground: unlock from viewport, allow scrolling */
+  .app--playground {
+    height: auto;
+    overflow: visible;
+    min-height: 100vh;
+  }
+
+  .app-main--playground {
+    overflow: visible;
+  }
 }
 
 @media (max-width: 480px) {
   .header-content {
     gap: var(--space-sm);
-  }
-
-  .main-nav {
-    margin-left: 0;
   }
 }
 
