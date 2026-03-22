@@ -1,6 +1,7 @@
 /**
  * FlowScript App Styles
- * Session 7a.5: Theme System with Light/Dark Mode Support
+ * Design system + shared layout (nav, footer).
+ * Page-specific styles live in pages/*.css
  */
 
 /* Reset and base styles */
@@ -10,7 +11,9 @@
   padding: 0;
 }
 
-/* Light Mode Colors (Default) */
+/* ========================================
+   Design Tokens — Light Mode (Default)
+   ======================================== */
 :root {
   /* FlowScript Marker Colors - Core Relations */
   --color-causal: #3b82f6;
@@ -61,9 +64,11 @@
   /* UI Elements */
   --color-background: #ffffff;
   --color-surface: #f9fafb;
+  --color-surface-alt: #f3f4f6;
   --color-border: #e5e7eb;
   --color-text: #111827;
   --text-muted: #6b7280;
+  --text-secondary: #374151;
 
   /* Editor Specific */
   --editor-bg: #ffffff;
@@ -78,6 +83,7 @@
   /* Brand */
   --color-primary: #3b82f6;
   --color-primary-dark: #2563eb;
+  --color-primary-light: #dbeafe;
 
   /* Spacing */
   --space-xs: 4px;
@@ -85,6 +91,8 @@
   --space-md: 16px;
   --space-lg: 24px;
   --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
 
   /* Typography */
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -100,11 +108,16 @@
   /* Transitions */
   --transition-fast: 150ms ease-in-out;
   --transition-base: 200ms ease-in-out;
+
+  /* Layout */
+  --max-width: 1200px;
+  --nav-height: 60px;
 }
 
-/* Dark Mode Colors */
+/* ========================================
+   Design Tokens — Dark Mode
+   ======================================== */
 [data-theme="dark"] {
-  /* FlowScript Marker Colors - Core Relations */
   --color-causal: #60a5fa;
   --color-temporal: #a78bfa;
   --color-reverse-causal: #38bdf8;
@@ -112,11 +125,9 @@
   --color-tension: #fbbf24;
   --color-axis-label: #fbbf24;
 
-  /* Definition Operators */
   --color-equivalent: #4ade80;
   --color-not-equivalent: #f87171;
 
-  /* State Markers */
   --color-decided: #4ade80;
   --color-decided-bg: rgba(74, 222, 128, 0.15);
   --color-exploring: #fbbf24;
@@ -126,38 +137,33 @@
   --color-parking: #94a3b8;
   --color-parking-bg: rgba(148, 163, 184, 0.15);
 
-  /* Insights & Questions */
   --color-thought: #c084fc;
   --color-question: #fb923c;
   --color-completed: #34d399;
   --color-alternative: #94a3b8;
 
-  /* Commands */
   --color-action: #38bdf8;
 
-  /* Modifiers */
   --color-urgent: #f87171;
   --color-positive: #4ade80;
   --color-confident: #a78bfa;
   --color-uncertain: #94a3b8;
 
-  /* Structure */
   --color-brace: #94a3b8;
   --color-bracket: #94a3b8;
   --color-scope: #22d3ee;
   --color-scope-bg: rgba(34, 211, 238, 0.15);
 
-  /* Comments */
   --color-comment: #64748b;
 
-  /* UI Elements */
   --color-background: #0f172a;
   --color-surface: #1e293b;
+  --color-surface-alt: #334155;
   --color-border: #334155;
   --color-text: #f1f5f9;
   --text-muted: #94a3b8;
+  --text-secondary: #cbd5e1;
 
-  /* Editor Specific */
   --editor-bg: #1e293b;
   --editor-gutter-bg: #0f172a;
   --editor-gutter-border: #334155;
@@ -167,21 +173,13 @@
   --editor-selection-focused: #1e3a8a;
   --editor-cursor: #ffffff;
 
-  /* Brand */
   --color-primary: #60a5fa;
   --color-primary-dark: #3b82f6;
+  --color-primary-light: rgba(59, 130, 246, 0.15);
 
-  /* Shadows (darker for dark mode) */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-}
-
-/* Smooth theme transitions */
-* {
-  transition: background-color var(--transition-base),
-              color var(--transition-base),
-              border-color var(--transition-base);
 }
 
 /* Respect reduced motion preference */
@@ -202,117 +200,119 @@ body {
   background-color: var(--color-surface);
 }
 
-/* App Layout */
+/* ========================================
+   App Layout
+   ======================================== */
 .app {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+}
+
+.app--playground {
   height: 100vh;
   overflow: hidden;
 }
 
-/* Header */
+/* ========================================
+   Navigation Header
+   ======================================== */
 .app-header {
   background-color: var(--color-background);
   border-bottom: 1px solid var(--color-border);
-  padding: var(--space-md) var(--space-lg);
+  padding: 0 var(--space-lg);
   box-shadow: var(--shadow-sm);
-  z-index: 10;
+  z-index: 100;
+  height: var(--nav-height);
+  flex-shrink: 0;
 }
 
 .header-content {
-  max-width: 1400px;
+  max-width: var(--max-width);
   margin: 0 auto;
   display: flex;
   align-items: center;
   gap: var(--space-lg);
+  height: 100%;
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
 }
 
 .logo {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--color-text);
   margin: 0;
+  white-space: nowrap;
 }
 
 .logo-icon {
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1;
 }
 
-.tagline {
+.main-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-left: var(--space-xl);
+}
+
+.nav-link {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 6px;
   font-size: 14px;
+  font-weight: 500;
   color: var(--text-muted);
-  margin: 0;
+  text-decoration: none;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-link:hover {
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+}
+
+.nav-link.active {
+  color: var(--color-primary);
+  background: var(--color-primary-light);
 }
 
 .header-actions {
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--space-sm);
 }
 
-.cursor-position {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-muted);
-  background-color: var(--color-surface);
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: 4px;
-  border: 1px solid var(--color-border);
+.github-link {
+  font-weight: 500;
 }
 
-/* Toggle Button Styles */
-.toggle-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-xs) var(--space-sm);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 16px;
-  transition: all var(--transition-fast);
-  min-width: 36px;
-  height: 32px;
-}
-
-.toggle-button:hover {
-  background-color: var(--color-border);
-  color: var(--color-text);
-}
-
-.toggle-button:active {
-  transform: scale(0.95);
-}
-
-.toggle-button:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-.toggle-button-text {
-  margin-left: var(--space-xs);
-  font-size: 12px;
-  font-family: var(--font-sans);
-}
-
-/* Main Content */
-.app-main {
+/* ========================================
+   Main Content Area
+   ======================================== */
+.app-main--page {
   flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
-  overflow: hidden;
-  background-color: var(--color-surface);
+  overflow-y: auto;
 }
 
-/* Panels */
+.app-main--playground {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ========================================
+   Shared Panel Styles (used by Playground)
+   ======================================== */
 .panel {
   display: flex;
   flex-direction: column;
@@ -369,7 +369,7 @@ body {
 }
 
 .editor-tab.active {
-  background: var(--color-accent, #4a9eff);
+  background: var(--color-primary);
   color: white;
 }
 
@@ -387,21 +387,76 @@ body {
   padding: var(--space-lg);
 }
 
-/* Preview Tabs */
 .preview-tabs {
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
 }
 
-/* Footer */
+.cursor-position {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  background-color: var(--color-surface);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+
+/* ========================================
+   Toggle Button Styles
+   ======================================== */
+.toggle-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  transition: all var(--transition-fast);
+  min-width: 36px;
+  height: 32px;
+}
+
+.toggle-button:hover {
+  background-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.toggle-button:active {
+  transform: scale(0.95);
+}
+
+.toggle-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.toggle-button-text {
+  margin-left: var(--space-xs);
+  font-size: 12px;
+  font-family: var(--font-sans);
+}
+
+/* ========================================
+   Footer
+   ======================================== */
 .app-footer {
   background-color: var(--color-background);
   border-top: 1px solid var(--color-border);
-  padding: var(--space-sm) var(--space-lg);
+  padding: var(--space-xl) var(--space-lg);
   text-align: center;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
+}
+
+.footer-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
 }
 
 .app-footer p {
@@ -426,36 +481,159 @@ body {
   text-decoration: underline;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .app-main {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+.footer-sep {
+  color: var(--color-border);
+}
+
+.footer-attribution {
+  margin-top: var(--space-sm) !important;
+}
+
+.footer-attribution a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.footer-attribution a:hover {
+  text-decoration: underline;
+}
+
+.app-footer--compact {
+  padding: var(--space-xs) var(--space-lg);
+  flex-shrink: 0;
+}
+
+.app-footer--compact .footer-links {
+  margin: 0;
+}
+
+.app-footer--compact p {
+  margin: 0;
+}
+
+/* ========================================
+   Shared Page Styles
+   ======================================== */
+.page {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-3xl) var(--space-lg);
+}
+
+.page h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin: var(--space-3xl) 0 var(--space-lg);
+  color: var(--color-text);
+}
+
+.page h2:first-child {
+  margin-top: 0;
+}
+
+.page h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: var(--space-2xl) 0 var(--space-md);
+  color: var(--color-text);
+}
+
+.page p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.page a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.page a:hover {
+  text-decoration: underline;
+}
+
+/* Buttons override page link styles */
+.page a.btn {
+  text-decoration: none;
+}
+
+.page a.btn-primary {
+  color: white;
+}
+
+.page a.btn-primary:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.page a.btn-secondary:hover {
+  text-decoration: none;
+}
+
+/* Code blocks in pages */
+.code-block {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: var(--space-lg);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: var(--space-md) 0 var(--space-lg);
+  white-space: pre;
+  word-wrap: normal;
+}
+
+.code-inline {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 768px) {
+  .main-nav {
+    margin-left: var(--space-sm);
+    gap: 0;
   }
 
-  .panel {
-    border-right: none;
-    border-bottom: 1px solid var(--color-border);
+  .nav-link {
+    padding: var(--space-sm) var(--space-sm);
+    font-size: 13px;
   }
 
-  .panel:last-child {
-    border-bottom: none;
+  .logo {
+    font-size: 18px;
+  }
+
+  .github-link {
+    display: none;
+  }
+
+  .page {
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .page h2 {
+    font-size: 24px;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 480px) {
   .header-content {
-    flex-wrap: wrap;
+    gap: var(--space-sm);
   }
 
-  .tagline {
-    flex-basis: 100%;
-    order: 3;
-    margin-top: var(--space-xs);
-  }
-
-  .app-main {
-    grid-template-rows: 60vh 40vh;
+  .main-nav {
+    margin-left: 0;
   }
 }
 
@@ -468,16 +646,7 @@ body {
 /* Print styles */
 @media print {
   .app-header,
-  .app-footer,
-  .preview-panel {
+  .app-footer {
     display: none;
-  }
-
-  .app-main {
-    grid-template-columns: 1fr;
-  }
-
-  .editor-panel {
-    border: none;
   }
 }

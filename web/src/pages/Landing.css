@@ -1,0 +1,451 @@
+/**
+ * Landing Page Styles
+ */
+
+.landing {
+  width: 100%;
+}
+
+/* ========================================
+   Hero Section
+   ======================================== */
+.hero {
+  background: linear-gradient(
+    180deg,
+    var(--color-background) 0%,
+    var(--color-surface) 100%
+  );
+  padding: var(--space-3xl) var(--space-lg);
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hero-inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--color-text);
+  margin-bottom: var(--space-lg);
+  letter-spacing: -0.02em;
+}
+
+.hero-highlight {
+  color: var(--color-primary);
+}
+
+.hero-subtitle {
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xl);
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ========================================
+   Buttons
+   ======================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  transform: translateY(-1px);
+  text-decoration: none;
+  color: white;
+}
+
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover {
+  background: var(--color-surface-alt);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+/* ========================================
+   Sections
+   ======================================== */
+.section {
+  padding: var(--space-3xl) var(--space-lg);
+}
+
+.section--alt {
+  background: var(--color-surface);
+}
+
+.section-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.01em;
+}
+
+.section-lead {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin-bottom: var(--space-xl);
+}
+
+/* ========================================
+   Problem Grid
+   ======================================== */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+.problem-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-xl);
+}
+
+.problem-icon {
+  font-size: 32px;
+  margin-bottom: var(--space-md);
+}
+
+.problem-card h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+}
+
+.problem-card p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ========================================
+   Query Grid
+   ======================================== */
+.query-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+.query-card {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-xl);
+  overflow: hidden;
+}
+
+.query-name {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin-bottom: var(--space-md);
+  word-break: break-all;
+  max-width: 100%;
+}
+
+.query-card p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.query-note {
+  margin-top: var(--space-xl);
+  font-size: 14px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ========================================
+   RELATE > DELETE Comparison
+   ======================================== */
+.relate-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xl);
+  margin-top: var(--space-xl);
+}
+
+.relate-side h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+}
+
+.relate-side--delete h3 {
+  color: var(--color-blocked);
+}
+
+.relate-side--tension h3 {
+  color: var(--color-decided);
+}
+
+.relate-side .code-block {
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.code-comment { color: var(--color-comment); }
+.code-kw { color: var(--color-causal); }
+.code-str { color: var(--color-decided); }
+
+/* ========================================
+   Framework Logos
+   ======================================== */
+.framework-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.framework-logo-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px 18px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+  transition: all var(--transition-fast);
+}
+
+.framework-logo-badge:hover {
+  border-color: var(--fw-color);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.framework-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fw-color);
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .framework-logo-icon {
+  color: var(--fw-dark-color);
+}
+
+[data-theme="dark"] .framework-logo-badge:hover {
+  border-color: var(--fw-dark-color);
+}
+
+.framework-logo-name {
+  white-space: nowrap;
+}
+
+/* ========================================
+   Install Grid
+   ======================================== */
+.install-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+.install-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-xl);
+}
+
+.install-card h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+}
+
+.install-cmd {
+  font-size: 14px;
+  padding: var(--space-md) !important;
+  margin: 0 0 var(--space-md) !important;
+  user-select: all;
+  cursor: text;
+}
+
+.install-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.install-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.install-link:hover {
+  text-decoration: underline;
+}
+
+/* ========================================
+   Comparison Table
+   ======================================== */
+.comparison-table-wrapper {
+  overflow-x: auto;
+  margin-top: var(--space-xl);
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: var(--space-md) var(--space-lg);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.comparison-table th {
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-background);
+  position: sticky;
+  top: 0;
+}
+
+.comparison-table td {
+  color: var(--text-secondary);
+}
+
+.comparison-table td:first-child {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.has-feature {
+  color: var(--color-decided) !important;
+  font-weight: 500;
+}
+
+.no-feature {
+  color: var(--text-muted) !important;
+}
+
+/* ========================================
+   CTA Section
+   ======================================== */
+.cta-section {
+  border-top: 1px solid var(--color-border);
+}
+
+.cta-section .section-title {
+  font-size: 28px;
+}
+
+.cta-section .section-lead {
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 1024px) {
+  .problem-grid,
+  .install-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .relate-comparison {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: var(--space-2xl) var(--space-md);
+  }
+
+  .hero-title {
+    font-size: 30px;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+  }
+
+  .section {
+    padding: var(--space-2xl) var(--space-md);
+  }
+
+  .section-title {
+    font-size: 24px;
+  }
+
+  .query-grid {
+    grid-template-columns: 1fr;
+  }
+}

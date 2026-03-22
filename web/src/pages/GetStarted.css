@@ -1,0 +1,242 @@
+/**
+ * Getting Started Page Styles
+ */
+
+.get-started-page {
+  padding-bottom: var(--space-3xl);
+}
+
+.gs-hero-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.02em;
+}
+
+.gs-hero-subtitle {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin-bottom: var(--space-2xl);
+}
+
+.gs-section {
+  margin-bottom: var(--space-3xl);
+  padding-bottom: var(--space-3xl);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.gs-section:last-child {
+  border-bottom: none;
+}
+
+.gs-section h2 {
+  margin-top: 0;
+}
+
+.gs-section h3 {
+  margin-top: var(--space-xl);
+}
+
+/* ========================================
+   Decision Tree
+   ======================================== */
+.decision-tree {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+.decision-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-xl);
+  transition: border-color var(--transition-fast);
+}
+
+.decision-card:hover {
+  border-color: var(--color-primary);
+}
+
+.decision-card--primary {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.decision-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.decision-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.decision-tag {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 3px 10px;
+  border-radius: 12px;
+}
+
+.decision-card--primary .decision-tag {
+  background: var(--color-background);
+}
+
+.decision-who {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.decision-install {
+  font-size: 14px;
+  padding: var(--space-md) !important;
+  margin: 0 0 var(--space-md) !important;
+  user-select: all;
+}
+
+.decision-result {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ========================================
+   Quickstart Note
+   ======================================== */
+.quickstart-note {
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  padding: var(--space-lg);
+  margin-top: var(--space-xl);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.quickstart-note strong {
+  color: var(--color-text);
+}
+
+/* ========================================
+   Framework Table
+   ======================================== */
+.framework-table-wrapper {
+  overflow-x: auto;
+  margin-top: var(--space-lg);
+}
+
+.framework-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.framework-table th,
+.framework-table td {
+  padding: var(--space-md) var(--space-lg);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.framework-table th {
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.framework-table td {
+  color: var(--text-secondary);
+}
+
+.framework-table td:first-child {
+  font-weight: 500;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.framework-table code {
+  font-size: 12px;
+  background: var(--color-surface-alt);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* ========================================
+   Bottom Links
+   ======================================== */
+.gs-cta {
+  text-align: center;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.gs-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+  text-align: left;
+}
+
+.gs-link-card {
+  display: block;
+  padding: var(--space-xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.gs-link-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+}
+
+.gs-link-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0 0 var(--space-sm);
+}
+
+.gs-link-card p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 1024px) {
+  .decision-tree {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .gs-hero-title {
+    font-size: 28px;
+  }
+
+  .framework-table code {
+    font-size: 11px;
+  }
+}

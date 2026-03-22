@@ -1,0 +1,43 @@
+/**
+ * Playground Page Styles
+ * Full-viewport editor layout — isolated from scrollable page layouts.
+ */
+
+.playground {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.playground-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-md);
+  padding: var(--space-xs) var(--space-lg);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.playground-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  overflow: hidden;
+  background-color: var(--color-surface);
+}
+
+@media (max-width: 1024px) {
+  .playground-content {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .playground-content {
+    grid-template-rows: 60vh 40vh;
+  }
+}
