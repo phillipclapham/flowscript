@@ -228,12 +228,24 @@
 @media (max-width: 1024px) {
   .decision-tree {
     grid-template-columns: 1fr;
+    max-width: 100%;
+    overflow: hidden;
   }
 }
 
 @media (max-width: 768px) {
   .gs-hero-title {
     font-size: 28px;
+  }
+
+  .decision-card {
+    padding: var(--space-md);
+    overflow: hidden;
+  }
+
+  .decision-install {
+    font-size: 12px;
+    padding: var(--space-sm) var(--space-md) !important;
   }
 
   .framework-table code {
