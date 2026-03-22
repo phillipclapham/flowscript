@@ -1,67 +1,105 @@
 # FlowScript
 
-**Your AI rewrites your auth system in 20 minutes flat. Two days later your senior engineer is still explaining what it broke — because it didn't know you rejected JWT three weeks ago, or why, or what that decision blocks.**
+**Structured reasoning memory for AI agents. Five queries no vector store can answer — `why()`, `tensions()`, `blocked()`, `alternatives()`, `whatIf()` — over decisions your agent builds during normal work.**
 
-[![Tests](https://img.shields.io/badge/tests-616%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
-
----
-
-FlowScript gives AI tools a structured reasoning graph — not text search over notes, but typed queries over actual decision logic: `why()`, `tensions()`, `blocked()`, `alternatives()`, `whatIf()`. Sub-ms local traversal on project-scale graphs.
-
-CLAUDE.md stores facts. FlowScript stores *reasoning* — why you chose Postgres, what tensions that creates, what's blocked, what breaks if you change your mind. They're complementary. Use both.
-
-This isn't competing with RAG either. RAG finds relevant documents. FlowScript answers "why did we decide against the alternatives?" Different operation entirely.
+[![Tests](https://img.shields.io/badge/tests-691%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
 
 ---
 
-## Try It
+```typescript
+import { Memory } from 'flowscript-core';
 
-**Use Claude Code or Cursor?** Install and add to MCP config:
+const mem = Memory.loadOrCreate('./agent-memory.json');
+const tools = mem.asTools(); // 15 tools, OpenAI function calling format
+// → pass to OpenAI, Anthropic, or any function-calling LLM as tool definitions
+// → your agent builds the reasoning graph during normal work
+
+mem.query.tensions();            // → tradeoffs with named axes
+mem.query.blocked();             // → what's stuck + downstream impact
+mem.query.why(nodeId);           // → causal chain backward from any decision
+mem.query.whatIf(nodeId);        // → what breaks if this changes
+mem.query.alternatives(nodeId);  // → what was considered + what was decided
+
+const wrap = mem.sessionWrap();  // prune dormant → audit trail, save
+```
+
+Sub-ms local traversal on project-scale graphs. No embeddings required, no LLM calls, no network. Hash-chained audit trail. And when memories contradict, we don't delete — we create a queryable *tension*.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/phillipclapham/flowscript/main/docs/flowscript-demo.png" alt="FlowScript — web editor with .fs syntax, D3 reasoning graph, and live query panel" width="800">
+</p>
+
+---
+
+## Get Started
+
+### MCP Server (Claude Code / Cursor)
 
 ```bash
 npm install -g flowscript-core
 ```
-
-In `~/.claude/settings.json` (Claude Code) or your Cursor MCP config:
 
 ```json
 {
   "mcpServers": {
     "flowscript": {
       "command": "flowscript-mcp",
-      "args": ["--demo", "./project-memory.json"]
+      "args": ["./project-memory.json"]
     }
   }
 }
 ```
 
-Restart your editor. You now have 12 reasoning tools. `--demo` seeds a sample project so you can explore immediately — ask about tensions, blockers, or why a decision was made. Remove `--demo` when you're ready for your own project.
+Restart your editor. 15 reasoning tools, local file persistence, zero cloud dependency. Add `--demo` before the file path to seed a sample project for exploration.
 
-Copy [this CLAUDE.md snippet](examples/CLAUDE.md.snippet) into your project to tell the agent when to record decisions, tensions, and blockers during normal coding.
+Copy [this CLAUDE.md snippet](examples/CLAUDE.md.snippet) into your project to tell the agent when to record decisions, tensions, and blockers automatically.
 
-**Use something else?** FlowScript is just an npm package:
+> **Already using CLAUDE.md?** Keep using it. CLAUDE.md tells your agent what to do. FlowScript tells it how to reason about what it's doing — they're complementary. CLAUDE.md is the cheat sheet, FlowScript is the working memory.
+
+> **Want auto-extraction from plain text?** The [Python MCP server](https://github.com/phillipclapham/flowscript-agents) auto-detects your API key and configures vector search, typed extraction, and contradiction handling — same reasoning queries, automatic graph construction.
+
+### TypeScript SDK
+
+```bash
+npm install flowscript-core
+```
 
 ```typescript
 import { Memory } from 'flowscript-core';
 
-const mem = new Memory();
+// Load or create (zero-friction first run)
+const mem = Memory.loadOrCreate('./agent-memory.json');
+
+// 15 agent tools in OpenAI function calling format
+const tools = mem.asTools();
+
+// Or build directly — typed nodes with explicit relationships
 const q = mem.question("Which database for agent memory?");
 mem.alternative(q, "Redis").decide({ rationale: "speed critical" });
 mem.alternative(q, "SQLite").block({ reason: "no concurrent writes" });
 mem.tension(mem.thought("sub-ms reads"), mem.thought("$200/mo cluster"), "performance vs cost");
 
-mem.query.tensions();   // structured tradeoffs with named axes
-mem.query.blocked();    // what's stuck + downstream impact
-mem.save("./memory.json");
+// Extract from existing conversations
+const extracted = await Memory.fromTranscript(conversationLog, {
+  extract: async (prompt) => await yourLLM(prompt)
+});
 ```
 
-**Building with agent frameworks?** Drop-in adapters for LangGraph, CrewAI, Google ADK, and OpenAI Agents SDK: `pip install flowscript-agents[langgraph]` — [details below](#works-with-your-stack).
+### Agent Frameworks (Python)
+
+Drop-in adapters for LangGraph, CrewAI, Google ADK, OpenAI Agents, Pydantic AI, smolagents, LlamaIndex, Haystack, and CAMEL-AI:
+
+```bash
+pip install flowscript-agents[langgraph]   # or crewai, google-adk, openai-agents, all
+```
+
+[See flowscript-agents →](https://github.com/phillipclapham/flowscript-agents)
 
 ---
 
-## What the Queries Actually Return
+## What the Queries Return
 
-These traverse a typed reasoning graph, not strings. Here's real output from the demo project:
+Typed graph traversal, not string matching. Real output from a project memory:
 
 **`tensions()`** — every tradeoff, with named axes:
 
@@ -69,10 +107,6 @@ These traverse a typed reasoning graph, not strings. Here's real output from the
 ><[performance vs cost]
   "Redis gives sub-ms reads but cluster costs $200/mo"
   vs "PostgreSQL on shared hosting is $15/mo and handles our scale"
-
-><[statelessness vs revocability]
-  "JWT with refresh tokens — stateless, scalable"
-  vs "JWT revocation needs a blocklist — server-side state anyway"
 ```
 
 **`blocked()`** — what's stuck and why:
@@ -99,7 +133,7 @@ Collapsed back to a modular monolith — same code boundaries, one deploy
   [blocked] SQLite — cannot handle concurrent writes
 ```
 
-**`whatIf("postgresql")`** — downstream impact if this changes:
+**`whatIf("postgresql")`** — downstream impact:
 
 ```
 If PostgreSQL is removed:
@@ -108,132 +142,48 @@ If PostgreSQL is removed:
   → ULID migration becomes irrelevant
 ```
 
-That last one is a `.fs` file — the human-readable format your PM can review without knowing code:
-
-```
-? Which database for user sessions and agent state?
-  [decided] || PostgreSQL — battle-tested, ACID, rich querying
-  || Redis — sub-ms reads, great for session cache
-  [blocked] || SQLite — zero ops, embedded, good enough for MVP
-
-thought: Started with microservices but overhead is killing velocity
-  -> thought: Collapsed back to modular monolith — same boundaries, one deploy
-    <- Premature distribution is worse than premature optimization
-```
+All five queries touch returned nodes, driving graduation through temporal tiers. Knowledge that keeps getting queried earns permanence. One-off observations fade.
 
 ---
 
-## But I Already Use CLAUDE.md
+## When Memories Contradict
 
-Good. Keep using it. CLAUDE.md tells your agent what to do. FlowScript tells it how to reason about what it's doing.
+FlowScript doesn't delete contradictions. Both sides are preserved as a queryable tension with a named axis:
 
-Facts: "we use Postgres, prefer functional style, run tests first."
-Reasoning: *why* Postgres, *what tensions* that creates, *what's blocked*, *what breaks* if you change your mind.
+```typescript
+const a = mem.thought("Redis gives sub-ms reads — critical for UX");
+const b = mem.thought("Redis cluster costs $200/mo for 3 nodes");
+mem.tension(a, b, "performance vs cost");
 
-They're complementary. CLAUDE.md is your agent's cheat sheet. FlowScript is its working memory.
+mem.query.tensions();
+// → ><[performance vs cost]
+//     "sub-ms reads critical for UX" vs "$200/mo for 3 nodes"
+```
 
-The difference matters when your agent hits a decision point. With just CLAUDE.md, it re-derives every tradeoff from scratch. With FlowScript, it queries `tensions()` and already knows the performance-vs-cost axis from three weeks ago. It queries `blocked()` and knows SQLite is off the table and why. It queries `why("postgres")` and gets the full causal chain without re-reading the codebase.
+The disagreement itself is knowledge. The [Python SDK](https://github.com/phillipclapham/flowscript-agents) automates this — its consolidation engine detects contradictions and creates tensions instead of deletions. You can't audit a deletion. You can query a tension.
 
 ---
 
-## Works With Your Stack
+## Memory That Evolves
 
-### MCP (Claude Code, Cursor)
-
-14 tools, local file persistence, zero cloud dependency. [Setup above](#try-it). Your reasoning stays on your machine — no cloud, no telemetry.
-
-### Agent Frameworks (Python)
-
-```bash
-pip install flowscript-agents[langgraph]   # or crewai, google-adk, openai-agents, all
-```
-
-Drop-in replacements for each framework's native memory interface. Same API your framework expects, but now `query.tensions()` works:
-
-```python
-from flowscript_agents.langgraph import FlowScriptStore
-
-store = FlowScriptStore("./agent-memory.json")
-
-# Standard LangGraph operations
-store.put(("agents", "planner"), "db_decision", {"value": "chose Redis for speed"})
-items = store.search(("agents", "planner"), query="Redis")
-
-# The part that's new — semantic queries on the same data
-blockers = store.memory.query.blocked()
-tensions = store.memory.query.tensions()
-why_chain = store.memory.query.why(node_id)
-```
-
-Also available: [CrewAI](https://pypi.org/project/flowscript-agents/) (`FlowScriptStorage`), [Google ADK](https://pypi.org/project/flowscript-agents/) (`FlowScriptMemoryService`), [OpenAI Agents SDK](https://pypi.org/project/flowscript-agents/) (`FlowScriptSession`). All expose `.memory.query` for FlowScript queries.
-
----
-
-## Temporal Intelligence
-
-Memory that gets smarter over time, not just bigger.
+Nodes graduate through four temporal tiers based on actual use:
 
 | Tier | Meaning | Behavior |
-|------|---------|----------|
+|:-----|:--------|:---------|
 | `current` | Recent observations | May be pruned if not reinforced |
 | `developing` | Emerging patterns (2+ touches) | Building confidence |
 | `proven` | Validated through use (3+ touches) | Protected from pruning |
-| `foundation` | Core truths | Always preserved, even under budget pressure |
+| `foundation` | Core truths | Always preserved |
 
-Nodes graduate automatically. `prune()` moves dormant nodes to an append-only audit trail (`.audit.jsonl`) — crash-safe, always recoverable. Proven and foundation tiers survive budget constraints. Your agent never loses hard-won knowledge.
-
-The memory *compresses itself*, and the compression reveals structure that verbosity obscures. A decision that keeps coming back up earns its place. One-off observations fade.
-
-### Session Lifecycle
-
-Queries keep knowledge alive. Every query — `why()`, `whatIf()`, `tensions()`, `blocked()`, `alternatives()` — touches the returned nodes, incrementing frequency and updating timestamps. This is what drives graduation: knowledge that keeps getting queried earns its place.
+Dormant nodes are pruned to the audit trail — archived with full provenance, never destroyed. After 20 sessions, your memory is a curated knowledge base, not a pile of notes.
 
 ```typescript
-// Start of session: orient with token-budgeted summary + active issues
+// Start: orient with token-budgeted summary
 const orientation = mem.sessionStart({ maxTokens: 4000 });
 // → summary, blockers, tensions, garden stats, tier distribution
 
-// During session: queries automatically touch returned nodes
-mem.query.tensions();     // nodes get frequency++
-mem.query.why(nodeId);    // causal chain nodes get frequency++
-
-// End of session: prune dormant, save, get before/after stats
+// End: prune dormant, save, get before/after stats
 const wrap = mem.sessionWrap();
-// → { nodesBefore, tiersBefore, pruned, gardenAfter, nodesAfter, tiersAfter, saved }
-```
-
-Touch-on-query is enabled by default. Disable with `{ touchOnQuery: false }` for read-only analysis.
-
----
-
-## The Complete Developer Loop
-
-```typescript
-import { Memory } from 'flowscript-core';
-
-// 1. Load or create (zero-friction first run)
-const mem = Memory.loadOrCreate('./agent-memory.json');
-
-// 2. Wire to your agent (14 tools, OpenAI function calling format)
-const tools = mem.asTools();
-
-// 3. Agent builds reasoning via tool calls during work
-//    (no FlowScript syntax needed — the agent handles it)
-
-// 4. Inject memory into prompts (respects token budget)
-const context = mem.toFlowScript({
-  maxTokens: 4000,
-  strategy: 'tier-priority'  // proven knowledge always included
-});
-
-// 5. Or extract from existing conversations
-const mem2 = await Memory.fromTranscript(agentLog, {
-  extract: async (prompt) => await yourLLM(prompt)
-});
-
-// 6. End of session — prune dormant, save, get stats
-const wrap = mem.sessionWrap();
-// → pruned dormant nodes to .audit.jsonl, saved to disk
 // → { nodesBefore, pruned, nodesAfter, tiersAfter, saved }
 ```
 
@@ -241,62 +191,82 @@ Four budget strategies: `tier-priority` (foundation first), `recency`, `frequenc
 
 ---
 
+## Audit Trail
+
+Every mutation is SHA-256 hash-chained, append-only, crash-safe:
+
+```typescript
+const mem = Memory.loadOrCreate('./agent.json', {
+  audit: { retentionMonths: 84 }
+});
+
+// ... agent builds reasoning ...
+
+// Verify chain integrity
+const result = Memory.verifyAudit('./agent.json');
+// → { valid: true, totalEntries: 42, filesVerified: 1 }
+
+// Query reasoning provenance
+const history = Memory.queryAudit('./agent.json', {
+  events: ['node_create', 'state_change', 'graduation'],
+  sessionId: 'session-abc'
+});
+```
+
+Framework attribution on every entry — `setAdapterContext('langgraph', 'FlowScriptStore', 'put')` tags all subsequent events. Monthly rotation with gzip compression. `onEvent` callback for SIEM integration. Configurable retention periods (default 7 years).
+
+Same audit format across both SDKs — canonical JSON serialization, cross-language chain verification.
+
+---
+
 ## Comparison
 
-| | FlowScript | Embedding stores | CLAUDE.md / state dicts |
-|---|---|---|---|
-| "Why did we decide X?" | `why(id)` — typed causal chain | No | No |
-| "What's blocking progress?" | `blocked()` — with impact scoring | No | Manual grep |
-| "What tradeoffs exist?" | `tensions()` — named axes | No | No |
-| "What alternatives were considered?" | `alternatives(id)` | No | If you wrote them down |
-| "What if we change this?" | `whatIf(id)` — downstream impact | No | No |
-| Human-readable export | `.fs` files | No | Yes (but flat) |
-| Token-budgeted injection | 4 strategies | No | Manual truncation |
-| Temporal tiers + graduation | Automatic | No | No |
-| Audit trail | `.audit.jsonl` (append-only) | No | Git history |
+| | FlowScript | Mem0 | Vector stores |
+|:---|:---|:---|:---|
+| Find similar content | Vector search (Python SDK) | Vector search | Vector search |
+| "Why did we decide X?" | `why()` — typed causal chain | — | — |
+| "What's blocking?" | `blocked()` — downstream impact | — | — |
+| "What tradeoffs?" | `tensions()` — named axes | — | — |
+| "What if we change this?" | `whatIf()` — impact analysis | — | — |
+| Contradictions | Preserved as tensions | Deleted | N/A |
+| Audit trail | SHA-256 hash chain | — | — |
+| Temporal graduation | Automatic 4-tier | — | — |
+| Token budgeting | 4 strategies | — | — |
 
-Under the hood: a local symbolic graph, not a vector database. Nodes are typed (thought, question, decision, insight, action, completion). Relationships are typed (causes, tension, derives_from, temporal, alternative). States are typed (decided, blocked, exploring, parked). Queries traverse this structure. No embeddings, no LLM calls, no network.
+Under the hood: a local symbolic graph with typed nodes, typed relationships, and typed states. Queries traverse structure — no embeddings required, no LLM calls, no network. Sub-ms on project-scale graphs. Vector search and reasoning queries are orthogonal — use both.
 
 ---
 
 ## Ecosystem
 
 | Package | What | Install |
-|---------|------|---------|
-| [flowscript-core](https://www.npmjs.com/package/flowscript-core) | TypeScript SDK + MCP server + CLI | `npm install flowscript-core` |
-| [flowscript-agents](https://pypi.org/project/flowscript-agents/) | Python — LangGraph, CrewAI, Google ADK, OpenAI Agents | `pip install flowscript-agents` |
-| [flowscript-ldp](https://pypi.org/project/flowscript-ldp/) | Python IR + query engine (foundation layer) | `pip install flowscript-ldp` |
-| [flowscript.org](https://flowscript.org) | Web editor + D3 visualization + live queries | Browser |
+|:--------|:-----|:--------|
+| [flowscript-core](https://www.npmjs.com/package/flowscript-core) | TypeScript SDK — Memory class, 15 agent tools, audit trail, token budgeting | `npm install flowscript-core` |
+| [flowscript-agents](https://pypi.org/project/flowscript-agents/) | Python SDK — 9 framework adapters, auto-extraction, consolidation, audit trail | `pip install flowscript-agents` |
+| [flowscript.org](https://flowscript.org) | Web editor, D3 visualization, live query panel | Browser |
 
-FlowScript is the first implementation of [LDP Mode 3](https://arxiv.org/abs/2603.08852) (Semantic Graphs). Three independent systems converged on symbolic notation for AI reasoning without cross-pollination — [SynthLang](https://github.com/ruvnet/SynthLang), FlowScript, [MetaGlyph](https://arxiv.org/abs/2601.07354). When independent builders converge, the insight is structural.
+**691 TypeScript tests** across 14 suites. **1,272 total** across both SDKs. Same audit trail format and canonical JSON serialization across both languages.
 
----
+### Docs
 
-## Documentation
-
-[FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md) — 21-marker spec | [QUERY_ENGINE.md](QUERY_ENGINE.md) — 5 queries, TypeScript API | [FLOWSCRIPT_LEARNING.md](FLOWSCRIPT_LEARNING.md) — beginner guide | [examples/](examples/) — demo memory, CLAUDE.md snippet, golden files
-
----
-
-## Governance
-
-FlowScript's `why()` produces typed explanatory chains and the append-only audit trail provides decision provenance — the kind of structured explainability that regulations like the EU AI Act (Articles 12, 13, 86) are starting to require for high-risk AI systems.
-
----
-
-## Contributing
-
-Use FlowScript. Report what's friction. Open issues with evidence from real use. Framework integration PRs welcome.
-
-[Issues](https://github.com/phillipclapham/flowscript/issues) | [Discussions](https://github.com/phillipclapham/flowscript/discussions)
+[FLOWSCRIPT_SYNTAX.md](FLOWSCRIPT_SYNTAX.md) — 21-marker spec | [QUERY_ENGINE.md](QUERY_ENGINE.md) — queries + TypeScript API | [FLOWSCRIPT_LEARNING.md](FLOWSCRIPT_LEARNING.md) — beginner guide | [examples/](examples/) — demo memory, CLAUDE.md snippet, golden files
 
 ---
 
 ## Known Limitations
 
-- **Single-agent access**: `save()` uses non-atomic `writeFileSync`. Two agents writing the same file concurrently will clobber each other. Use separate memory files per agent.
-- **`.fs` format is lossy**: Temporal metadata, config, and snapshots are not preserved in `.fs` files. Use `.json` for the full operational loop.
-- **CJS package**: Exports CommonJS. Works in ESM projects via Node.js CJS interop (`import { Memory } from 'flowscript-core'` works in Node 18+). Native ESM build planned.
+- **Single-file access**: `save()` uses `writeFileSync`. Two agents writing the same file will clobber. Use separate memory files per agent.
+- **Single-writer audit**: Two processes writing the same audit file will corrupt the hash chain. One writer per memory file.
+- **NodeRef persistence boundary**: After `Memory.loadOrCreate()`, old NodeRef objects point to the previous Memory instance. Using stale refs corrupts the audit chain. Always get fresh handles from the reloaded memory.
+- **CJS package**: Exports CommonJS. Works in ESM via Node.js interop (`import { Memory } from 'flowscript-core'` works in Node 18+).
+
+---
+
+## Contributing
+
+Issues with evidence from real use. Framework integration PRs welcome.
+
+[Issues](https://github.com/phillipclapham/flowscript/issues) | [Discussions](https://github.com/phillipclapham/flowscript/discussions)
 
 ---
 
