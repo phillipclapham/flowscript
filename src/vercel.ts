@@ -9,7 +9,7 @@
  * ```typescript
  * import { Memory } from 'flowscript-core';
  * import { toVercelTools } from 'flowscript-core/vercel';
- * import { tool, jsonSchema, generateText } from 'ai';
+ * import { tool, jsonSchema, generateText, stepCountIs } from 'ai';
  *
  * const mem = Memory.loadOrCreate('./agent-memory.json');
  * const fsTools = toVercelTools(mem);
@@ -20,13 +20,15 @@
  *     name,
  *     tool({
  *       description: def.description,
- *       parameters: jsonSchema(def.parameters),
+ *       // AI SDK v6: use inputSchema, not parameters (bug #13460)
+ *       inputSchema: jsonSchema(def.parameters),
  *       execute: def.execute,
  *     }),
  *   ])
  * );
  *
- * const result = await generateText({ model, tools, prompt: "..." });
+ * // AI SDK v6: use stopWhen, not maxSteps (maxSteps was removed)
+ * const result = await generateText({ model, tools, stopWhen: stepCountIs(10), prompt: "..." });
  * ```
  *
  * Usage with context injection (middleware pattern):

@@ -20,6 +20,14 @@ import * as path from 'path';
 import { hashContent } from './hash';
 import { serialize, SerializeOptions } from './serializer';
 import {
+  AuditWriter,
+  AuditConfig,
+  AuditEntry as AuditTrailEntry,
+  AuditQueryResult,
+  AuditVerifyResult,
+  AuditQueryOptions,
+} from './audit';
+import {
   FlowScriptQueryEngine,
   type WhyOptions,
   type WhatIfOptions,
@@ -73,6 +81,8 @@ export interface MemoryOptions {
   autoSnapshot?: boolean;  // default: true
   /** When true (default), query operations touch returned nodes (update lastTouched, increment frequency). */
   touchOnQuery?: boolean;  // default: true
+  /** Audit trail configuration. Active when Memory has a filePath. */
+  audit?: AuditConfig;
 }
 
 // ============================================================================
@@ -162,7 +172,10 @@ export interface SessionWrapResult {
 // Audit Log Types
 // ============================================================================
 
-/** A single entry in the append-only audit log. Captures full objects including provenance. */
+/**
+ * Legacy audit entry format (pre-v1 hash-chain). Used by readAuditLog() for backwards compat.
+ * New code should use AuditTrailEntry from ./audit.ts (the v1 hash-chained format).
+ */
 export interface AuditEntry {
   timestamp: string;
   event: 'prune';
@@ -524,6 +537,12 @@ export class Memory {
   private _config: MemoryOptions;
   private _defaultDormancy: DormancyConfig;
   private _filePath: string | null;
+  /** Hash-chained audit writer. Created when filePath is set and audit config provided. */
+  private _auditWriter: AuditWriter | null;
+  /** Current session ID for audit trail correlation. Set by sessionStart(). */
+  private _sessionId: string | null;
+  /** Adapter context for audit attribution. Set via setAdapterContext(). */
+  private _adapterContext: { framework: string; adapter_class: string; operation: string } | null;
   /**
    * Session-scoped touch deduplication set.
    * Each node gains at most +1 frequency per session, regardless of how many
@@ -558,7 +577,41 @@ export class Memory {
       archive: options?.temporal?.dormancy?.archive || '30d'
     };
     this._filePath = null;
+    this._auditWriter = null;
+    this._sessionId = null;
+    this._adapterContext = null;
     this._sessionTouchSet = new Set();
+  }
+
+  // ---------- Audit Trail ----------
+
+  /** Get or create the AuditWriter. Returns null if no filePath or no audit config. */
+  private _getAuditWriter(): AuditWriter | null {
+    if (!this._filePath || !this._config.audit) return null;
+    if (!this._auditWriter) {
+      this._auditWriter = new AuditWriter(this._filePath, this._config.audit);
+    }
+    return this._auditWriter;
+  }
+
+  /** Write an audit entry if audit trail is active. */
+  private _writeAudit(event: string, data: Record<string, unknown>): void {
+    const writer = this._getAuditWriter();
+    if (!writer) return;
+    writer.write(event, data, this._sessionId, this._adapterContext);
+  }
+
+  /**
+   * Set adapter context for audit attribution. All subsequent audit events will include
+   * this adapter information until cleared.
+   */
+  setAdapterContext(framework: string, adapterClass: string, operation: string): void {
+    this._adapterContext = { framework, adapter_class: adapterClass, operation };
+  }
+
+  /** Clear adapter context. */
+  clearAdapterContext(): void {
+    this._adapterContext = null;
   }
 
   // ---------- Static Constructors ----------
@@ -651,6 +704,11 @@ export class Memory {
       }
     }
     mem._filePath = filePath;
+    // Apply audit config from options even on load path — AuditConfig contains
+    // callbacks which can't be serialized, so it must be re-supplied by the caller.
+    if (options?.audit) {
+      mem._config.audit = options.audit;
+    }
     return mem;
   }
 
@@ -705,7 +763,22 @@ export class Memory {
       throw new Error(`Failed to parse LLM extraction response: ${(e as Error).message}\nResponse preview: ${preview}`);
     }
 
-    return Memory._buildFromExtraction(extraction, options.memoryOptions);
+    const mem = Memory._buildFromExtraction(extraction, options.memoryOptions);
+
+    // Audit: transcript_extract — fires on the new Memory if it has audit config.
+    // In practice, fromTranscript returns a fresh Memory (no filePath), so this only
+    // fires if the caller passed audit config via memoryOptions. The individual
+    // node_create events for each extracted node fire through _buildFromExtraction.
+    // When the consumer merges these nodes into their persisted Memory, those
+    // operations will be audited on the target Memory's audit trail.
+    mem._writeAudit('transcript_extract', {
+      transcript_length: transcript.length,
+      extracted_nodes: extraction.nodes.map(n => ({ id: n.id, type: n.type, content: n.content })),
+      extracted_relationships: extraction.relationships.length,
+      extracted_states: extraction.states.length,
+    });
+
+    return mem;
   }
 
   /** @internal Build the extraction prompt for the LLM */
@@ -948,6 +1021,36 @@ ${transcript}
     return entries;
   }
 
+  /**
+   * Query the hash-chained audit trail with filters.
+   * Works across rotated + active files. Returns matching entries.
+   *
+   * @param auditPath - Path to active .audit.jsonl file or .audit.manifest.json
+   * @param options - Query filters (time range, events, nodeId, sessionId, adapter, limit)
+   */
+  static queryAudit(auditPath: string, options?: AuditQueryOptions): AuditQueryResult {
+    // Allow passing the memory file path — derive audit path
+    let resolvedPath = auditPath;
+    if (!auditPath.endsWith('.jsonl') && !auditPath.endsWith('.manifest.json')) {
+      resolvedPath = Memory._deriveAuditPath(auditPath);
+    }
+    return AuditWriter.query(resolvedPath, options);
+  }
+
+  /**
+   * Verify hash chain integrity of the audit trail.
+   * Walks all rotated + active files and verifies SHA256 chain is unbroken.
+   *
+   * @param auditPath - Path to active .audit.jsonl file or .audit.manifest.json
+   */
+  static verifyAudit(auditPath: string): AuditVerifyResult {
+    let resolvedPath = auditPath;
+    if (!auditPath.endsWith('.jsonl') && !auditPath.endsWith('.manifest.json')) {
+      resolvedPath = Memory._deriveAuditPath(auditPath);
+    }
+    return AuditWriter.verify(resolvedPath);
+  }
+
   // ---------- Node Creation ----------
 
   /** Create a statement node */
@@ -1188,6 +1291,7 @@ ${transcript}
 
     // 5. Build pruned IR and serialize
     const includedSet = new Set(included);
+    const totalNodes = this.ir.nodes.filter(n => n.type !== 'block').length;
     let text = serialize(this._buildPrunedIR(includedSet), options);
     let actualTokens = estimator(text);
 
@@ -1200,6 +1304,17 @@ ${transcript}
       for (const id of included) includedSet.add(id);
       text = serialize(this._buildPrunedIR(includedSet), options);
       actualTokens = estimator(text);
+    }
+
+    // Audit: budget_apply — when budgeting actually excluded nodes
+    if (included.length < totalNodes) {
+      this._writeAudit('budget_apply', {
+        strategy,
+        budget_tokens: options.maxTokens,
+        nodes_before: totalNodes,
+        nodes_after: included.length,
+        excluded_count: totalNodes - included.length,
+      });
     }
 
     return text;
@@ -1267,11 +1382,11 @@ ${transcript}
    *
    * Categories:
    * - 'core': add_node, add_alternative, relate_nodes, set_state, remove_state
-   * - 'query': query_why, query_what_if, query_tensions, query_blocked, query_alternatives
+   * - 'query': query_why, query_what_if, query_tensions, query_blocked, query_alternatives, query_audit
    * - 'memory': get_memory, search_nodes
    * - 'lifecycle': session_start, session_end
    *
-   * 14 tools total.
+   * 15 tools total.
    */
   asTools(options?: AsToolsOptions): MemoryTool[] {
     const include = new Set(options?.include ?? ['core', 'query', 'memory', 'lifecycle']);
@@ -1753,6 +1868,52 @@ ${transcript}
       }
     );
 
+    // ---- Query: Audit Trail ----
+
+    tool('query', 'query_audit',
+      'Search the audit trail for reasoning provenance. Call this when asked to explain WHY a decision was made, WHEN a memory changed, or to show the reasoning history behind a specific piece of knowledge.',
+      {
+        after: { type: 'string', description: 'Only entries after this ISO timestamp (e.g. "2026-03-21T00:00:00Z")' },
+        before: { type: 'string', description: 'Only entries before this ISO timestamp' },
+        events: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Filter by event types (e.g. ["node_create", "state_change", "graduation", "prune"])'
+        },
+        nodeId: { type: 'string', description: 'Filter by node ID involvement' },
+        sessionId: { type: 'string', description: 'Filter by session ID' },
+        limit: { type: 'number', description: 'Maximum entries to return (default: 20)' },
+      },
+      [],
+      (args) => {
+        if (!mem.auditPath) {
+          return { success: false, error: 'No audit trail available (no file path set)' };
+        }
+        const result = Memory.queryAudit(mem.auditPath, {
+          after: args.after,
+          before: args.before,
+          events: args.events,
+          nodeId: args.nodeId,
+          sessionId: args.sessionId,
+          limit: args.limit ?? 20,
+        });
+        return {
+          success: true,
+          data: {
+            entries: result.entries.map(e => ({
+              timestamp: e.timestamp,
+              event: e.event,
+              session_id: e.session_id,
+              data: e.data,
+              adapter: e.adapter,
+            })),
+            totalScanned: result.totalScanned,
+            filesSearched: result.filesSearched,
+          }
+        };
+      }
+    );
+
     return tools;
   }
 
@@ -1896,10 +2057,19 @@ ${transcript}
       if (meta) prunedTemporal[id] = { ...meta };
     }
 
-    // Write audit log BEFORE removal — if process crashes after removal but before
-    // audit write, pruned data is permanently lost. Write-first means worst case is
-    // a duplicate audit entry on next prune (harmless for append-only).
-    if (this.auditPath) {
+    // Write audit BEFORE removal — crash after removal but before write means
+    // lost data. Write-first means worst case is duplicate entry (harmless for append-only).
+    // Hash-chained audit writer (if audit config set):
+    this._writeAudit('prune', {
+      nodes: prunedNodes.map(n => ({ id: n.id, type: n.type, content: n.content })),
+      relationships: prunedRels.map(r => ({ id: r.id, type: r.type, source: r.source, target: r.target })),
+      states: prunedStates.map(s => ({ id: s.id, type: s.type, node_id: s.node_id })),
+      temporal: prunedTemporal,
+      reason: `pruned ${dormantIds.size} dormant node(s)`,
+    });
+
+    // Legacy audit log (backwards compat — write to .audit.jsonl if no audit config but filePath set)
+    if (this.auditPath && !this._config.audit) {
       const entry: AuditEntry = {
         timestamp: new Date().toISOString(),
         event: 'prune',
@@ -1960,6 +2130,15 @@ ${transcript}
     // Each node can gain at most +1 frequency per session.
     this._sessionTouchSet = new Set();
 
+    // Generate session ID for audit trail correlation
+    this._sessionId = `ses_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+
+    // Audit: session_start
+    this._writeAudit('session_start', {
+      session_id: this._sessionId,
+      config: { touchOnQuery: this._config.touchOnQuery ?? true },
+    });
+
     const maxTokens = options?.maxTokens ?? 4000;
 
     // Token-budgeted summary (strategy: tier-priority for best orientation)
@@ -2010,6 +2189,13 @@ ${transcript}
     const pruned = this.prune();
     const gardenReport = this.garden();
 
+    // Audit: session_end
+    this._writeAudit('session_end', {
+      session_id: this._sessionId,
+      nodes_touched: Array.from(this._sessionTouchSet),
+      garden_report: gardenReport.stats,
+    });
+
     let saved = false;
     let savePath: string | null = null;
     if (this._filePath) {
@@ -2017,6 +2203,9 @@ ${transcript}
       saved = true;
       savePath = this._filePath;
     }
+
+    // Clear session ID after end
+    this._sessionId = null;
 
     return {
       pruned,
@@ -2040,16 +2229,35 @@ ${transcript}
     const nodesBefore = this.size;
     const tiersBefore = this._countTiers();
 
+    // Capture session ID before sessionEnd clears it
+    const sessionId = this._sessionId;
+
     // Delegate to sessionEnd for prune + garden + save
     const endResult = this.sessionEnd();
+
+    const nodesAfter = this.size;
+    const tiersAfter = this._countTiers();
+
+    // Audit: session_wrap (emitted after sessionEnd so we have final stats)
+    // Use writer directly since sessionEnd cleared _sessionId
+    const writer = this._getAuditWriter();
+    if (writer) {
+      writer.write('session_wrap', {
+        session_id: sessionId,
+        nodes_before: nodesBefore,
+        nodes_after: nodesAfter,
+        nodes_graduated: 0,  // TODO: track graduation count in session
+        nodes_pruned: endResult.pruned.count,
+      }, sessionId, this._adapterContext);
+    }
 
     return {
       nodesBefore,
       tiersBefore,
       pruned: endResult.pruned,
       gardenAfter: endResult.garden,
-      nodesAfter: this.size,
-      tiersAfter: this._countTiers(),
+      nodesAfter,
+      tiersAfter,
       saved: endResult.saved,
       path: endResult.path
     };
@@ -2078,6 +2286,14 @@ ${transcript}
       temporal: temporalObj
     });
 
+    // Audit: snapshot
+    this._writeAudit('snapshot', {
+      snapshot_id: id,
+      snapshot_name: reason,
+      node_count: this.ir.nodes.length,
+      relationship_count: this.ir.relationships.length,
+    });
+
     return id;
   }
 
@@ -2097,6 +2313,14 @@ ${transcript}
     if (!snap) {
       throw new Error(`Snapshot not found: ${snapshotId}`);
     }
+
+    // Audit: restore — WRITE-FIRST (replaces entire graph state)
+    this._writeAudit('restore', {
+      snapshot_id: snapshotId,
+      snapshot_reason: snap.reason,
+      nodes_before: this.ir.nodes.length,
+      nodes_after: snap.ir.nodes.length,
+    });
 
     // Auto-snapshot current state before restore
     if (this._config.autoSnapshot !== false) {
@@ -2157,6 +2381,15 @@ ${transcript}
       provenance: this._createProvenance()
     };
 
+    // Audit: node_create — WRITE-FIRST (before mutation, crash-safe)
+    // Payload matches Python: flat keys (node_id, node_type, content, source)
+    this._writeAudit('node_create', {
+      node_id: id,
+      node_type: type,
+      content,
+      source: 'api',
+    });
+
     this.ir.nodes.push(node);
     this.nodeMap.set(id, node);
 
@@ -2205,6 +2438,16 @@ ${transcript}
     if (options?.axis) rel.axis_label = options.axis;
     if (options?.feedback) rel.feedback = options.feedback;
 
+    // Audit: relationship_create — WRITE-FIRST (before mutation, crash-safe)
+    // Payload matches Python: flat keys (relationship_id, type, source, target, axis_label)
+    this._writeAudit('relationship_create', {
+      relationship_id: id,
+      type,
+      source: sourceId,
+      target: targetId,
+      axis_label: options?.axis ?? null,
+    });
+
     this.ir.relationships.push(rel);
     this._dirty = true;
   }
@@ -2225,6 +2468,16 @@ ${transcript}
       provenance: this._createProvenance()
     };
 
+    // Audit: state_change — WRITE-FIRST (before mutation, crash-safe)
+    // Payload matches Python: flat keys (state_id, state_type, node_id, fields, previous_state)
+    this._writeAudit('state_change', {
+      state_id: id,
+      state_type: type,
+      node_id: nodeId,
+      fields,
+      previous_state: null,
+    });
+
     this.ir.states.push(state);
     this._dirty = true;
   }
@@ -2238,11 +2491,29 @@ ${transcript}
     if (!this.nodeMap.has(nodeId)) {
       throw new Error(`Node not found: ${nodeId}`);
     }
+
+    // Capture states being removed for audit (before mutation)
+    const removedStates = this.ir.states.filter(s => {
+      if (s.node_id !== nodeId) return false;
+      if (type && s.type !== type) return false;
+      return true;
+    });
+
+    // Audit: state_change (removal) — WRITE-FIRST
+    if (removedStates.length > 0) {
+      this._writeAudit('state_change', {
+        action: 'remove',
+        node_id: nodeId,
+        type_filter: type ?? null,
+        removed_states: removedStates.map(s => ({ id: s.id, type: s.type, node_id: s.node_id })),
+      });
+    }
+
     const before = this.ir.states.length;
     this.ir.states = this.ir.states.filter(s => {
-      if (s.node_id !== nodeId) return true; // keep states on other nodes
-      if (type && s.type !== type) return true; // keep states of different type
-      return false; // remove this state
+      if (s.node_id !== nodeId) return true;
+      if (type && s.type !== type) return true;
+      return false;
     });
     const removed = before - this.ir.states.length;
     if (removed > 0) this._dirty = true;
@@ -2259,6 +2530,12 @@ ${transcript}
     }
 
     if (!node.modifiers.includes(modifier)) {
+      // Audit: modifier_add — WRITE-FIRST
+      this._writeAudit('modifier_add', {
+        node_id: nodeId,
+        modifier,
+      });
+
       node.modifiers.push(modifier);
       this._dirty = true;
     }
@@ -2485,10 +2762,18 @@ ${transcript}
 
   /** Emit graduation-candidate event */
   private _emitGraduation(id: string, meta: TemporalMeta): void {
+    const oldTier = meta.tier;
     const handlers = this._handlers.get('graduation-candidate');
     if (!handlers || handlers.size === 0) {
       // No handler registered — auto-promote
       meta.tier = this._nextTier(meta.tier);
+      // Audit: graduation
+      this._writeAudit('graduation', {
+        node_id: id,
+        old_tier: oldTier,
+        new_tier: meta.tier,
+        frequency: meta.frequency,
+      });
       return;
     }
 
@@ -2518,6 +2803,13 @@ ${transcript}
       if (result && typeof result === 'object' && 'graduate' in result) {
         if (result.graduate) {
           meta.tier = result.destination || this._nextTier(meta.tier);
+          // Audit: graduation
+          this._writeAudit('graduation', {
+            node_id: id,
+            old_tier: oldTier,
+            new_tier: meta.tier,
+            frequency: meta.frequency,
+          });
         }
         return;
       }

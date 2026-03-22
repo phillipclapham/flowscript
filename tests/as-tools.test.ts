@@ -13,11 +13,11 @@ import { Memory, MemoryTool, NodeRef } from '../src/memory';
 // ============================================================================
 
 describe('asTools — Schema Structure', () => {
-  test('returns all 14 tools by default (core + query + memory + lifecycle)', () => {
+  test('returns all 15 tools by default (core + query + memory + lifecycle)', () => {
     const mem = new Memory();
     const tools = mem.asTools();
 
-    expect(tools.length).toBe(14);
+    expect(tools.length).toBe(15);
   });
 
   test('each tool has valid schema structure', () => {
@@ -77,13 +77,14 @@ describe('asTools — include option', () => {
     const mem = new Memory();
     const tools = mem.asTools({ include: ['query'] });
 
-    expect(tools.length).toBe(5);
+    expect(tools.length).toBe(6);
     const names = tools.map(t => t.function.name);
     expect(names).toContain('query_why');
     expect(names).toContain('query_what_if');
     expect(names).toContain('query_tensions');
     expect(names).toContain('query_blocked');
     expect(names).toContain('query_alternatives');
+    expect(names).toContain('query_audit');
   });
 
   test('include memory only', () => {
@@ -100,7 +101,7 @@ describe('asTools — include option', () => {
     const mem = new Memory();
     const tools = mem.asTools({ include: ['core', 'query'] });
 
-    expect(tools.length).toBe(10);
+    expect(tools.length).toBe(11);  // 5 core + 6 query (including query_audit)
   });
 });
 

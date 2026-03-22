@@ -74,6 +74,20 @@ export {
   AuditEntry
 } from './memory';
 
+// Audit Trail (hash-chained, append-only)
+export {
+  AuditWriter,
+  AuditConfig,
+  AuditEntry as AuditTrailEntry,
+  AuditQueryResult,
+  AuditVerifyResult,
+  AuditQueryOptions,
+  canonicalStringify,
+  GENESIS_HASH,
+  LEGACY_BRIDGE_HASH,
+  SCHEMA_VERSION,
+} from './audit';
+
 // Hash utilities
 export { hashContent } from './hash';
 
