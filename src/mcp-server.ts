@@ -901,7 +901,10 @@ async function main() {
   console.error(`FlowScript MCP server v${VERSION} — memory: ${memoryPath}`);
 }
 
-main().catch((error) => {
-  console.error('FlowScript MCP server error:', error);
-  process.exit(1);
-});
+// Skip server startup when generating manifest — nextTick handles output + exit
+if (!args.includes('--generate-manifest')) {
+  main().catch((error) => {
+    console.error('FlowScript MCP server error:', error);
+    process.exit(1);
+  });
+}
