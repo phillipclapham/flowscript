@@ -261,7 +261,7 @@ body {
   display: flex;
   align-items: center;
   gap: var(--space-xs);
-  margin-left: var(--space-xl);
+  margin-left: auto;
 }
 
 .nav-link {
@@ -285,7 +285,6 @@ body {
 }
 
 .header-actions {
-  margin-left: auto;
   display: flex;
   align-items: center;
   gap: var(--space-sm);
