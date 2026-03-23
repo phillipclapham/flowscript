@@ -6,7 +6,7 @@
 
 <p align="center"><strong>Structured reasoning memory for AI agents. Five queries no vector store can answer: <code>why()</code>, <code>tensions()</code>, <code>blocked()</code>, <code>alternatives()</code>, <code>whatIf()</code>. Your agent builds the graph during normal work. You query it.</strong></p>
 
-[![Tests](https://img.shields.io/badge/tests-731%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
+[![Tests](https://github.com/phillipclapham/flowscript/actions/workflows/test.yml/badge.svg)](https://github.com/phillipclapham/flowscript/actions/workflows/test.yml) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
 
 ---
 
