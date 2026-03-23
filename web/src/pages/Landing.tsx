@@ -154,7 +154,7 @@ mem.query.tensions();{"\n"}
             </div>
             <div className="install-card">
               <h3>MCP Server (Claude Code / Cursor)</h3>
-              <div className="code-block install-cmd">pip install flowscript-agents</div>
+              <div className="code-block install-cmd">pip install flowscript-agents openai</div>
               <p>13 reasoning tools with auto-extraction and contradiction handling. Add one JSON block to your editor config and restart.</p>
               <Link to="/get-started" className="install-link">
                 Setup guide &rarr;

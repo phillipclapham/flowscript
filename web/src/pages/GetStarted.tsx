@@ -26,7 +26,7 @@ export function GetStarted() {
             <p className="decision-who">
               You use Claude Code, Cursor, or another MCP-compatible editor and want reasoning memory with zero code changes.
             </p>
-            <div className="code-block decision-install">pip install flowscript-agents</div>
+            <div className="code-block decision-install">pip install flowscript-agents openai</div>
             <p className="decision-result">13 reasoning tools. Auto-extraction from plain text. Contradiction handling. Your agent builds the graph through natural conversation.</p>
           </div>
 
@@ -64,12 +64,15 @@ export function GetStarted() {
         </p>
 
         <h3>1. Install</h3>
-        <div className="code-block">pip install flowscript-agents</div>
+        <div className="code-block">pip install flowscript-agents openai</div>
+        <p>
+          The <code>openai</code> package is required for extraction, consolidation, and vector search.
+          Without it, <code>add_memory</code> stores raw text and <code>query_tensions</code> won't find anything.
+        </p>
 
         <h3>2. Configure your editor</h3>
-        <p>
-          Add to your MCP settings (<code>.mcp.json</code> in your project root, <code>.claude/settings.json</code> for Claude Code, or your editor's MCP config):
-        </p>
+
+        <p><strong>Claude Code</strong> — add to <code>.claude/settings.json</code> in your project (or <code>~/.claude/settings.json</code> for global):</p>
         <div className="code-block">
 {`{
   "mcpServers": {
@@ -83,9 +86,38 @@ export function GetStarted() {
   }
 }`}
         </div>
+
+        <p><strong>Cursor / Windsurf / VS Code</strong> — add to <code>.mcp.json</code> in your project root:</p>
+        <div className="code-block">
+{`{
+  "mcpServers": {
+    "flowscript": {
+      "type": "stdio",
+      "command": "flowscript-mcp",
+      "args": ["--memory", "./project-memory.json"],
+      "env": {
+        "OPENAI_API_KEY": "your-key"
+      }
+    }
+  }
+}`}
+        </div>
         <p>
-          Also supports <code>ANTHROPIC_API_KEY</code>. The server auto-detects your key and configures
-          vector search, typed extraction, and consolidation. No additional setup.
+          The <code>env</code> block passes your API key to the server for auto-configuration.
+          Also supports <code>ANTHROPIC_API_KEY</code> (extraction + consolidation, no vector search).
+          If <code>env</code> passthrough doesn't work in your editor, export the key in your shell before launching: <code>export OPENAI_API_KEY=your-key</code>
+        </p>
+
+        <h4>Embedding providers</h4>
+        <p>
+          The default is OpenAI <code>text-embedding-3-small</code>. For free local embeddings, use Ollama or SentenceTransformers:
+        </p>
+        <div className="code-block">
+{`"args": ["--memory", "./project-memory.json", "--embedder", "ollama", "--embedding-model", "nomic-embed-text"]`}
+        </div>
+        <p>
+          You still need an LLM API key for typed extraction, even with local embeddings.
+          Use <code>--llm-model</code> to change the extraction model (default: <code>gpt-4o-mini</code>).
         </p>
 
         <h3>3. Restart your editor</h3>
@@ -335,7 +367,7 @@ with UnifiedMemory("agent-memory.json", embedder=OpenAIEmbeddings(), llm=llm) as
               </tr>
               <tr>
                 <td>MCP (Claude Code, Cursor)</td>
-                <td><code>pip install flowscript-agents</code></td>
+                <td><code>pip install flowscript-agents openai</code></td>
                 <td>MCP Server (auto-extraction)</td>
               </tr>
             </tbody>
