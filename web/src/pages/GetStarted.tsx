@@ -402,7 +402,7 @@ with UnifiedMemory("agent-memory.json", embedder=OpenAIEmbeddings(), llm=llm) as
         <div className="gs-links">
           <a href="https://github.com/phillipclapham/flowscript" target="_blank" rel="noopener noreferrer" className="gs-link-card">
             <h3>flowscript-core</h3>
-            <p>TypeScript SDK &mdash; npm package, full API, 691 tests</p>
+            <p>TypeScript SDK &mdash; npm package, full API, 731 tests</p>
           </a>
           <a href="https://github.com/phillipclapham/flowscript-agents" target="_blank" rel="noopener noreferrer" className="gs-link-card">
             <h3>flowscript-agents</h3>

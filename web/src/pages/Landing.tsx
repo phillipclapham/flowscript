@@ -250,9 +250,9 @@ mem.query.tensions();{"\n"}
       {/* Bottom CTA */}
       <section className="section cta-section">
         <div className="section-inner" style={{ textAlign: 'center' }}>
-          <h2 className="section-title">Open source. MIT licensed. 1,272 tests.</h2>
+          <h2 className="section-title">Open source. MIT licensed. 1,312 tests.</h2>
           <p className="section-lead">
-            691 TypeScript + 581 Python. Same audit trail format across both SDKs.
+            731 TypeScript + 581 Python. Same audit trail format across both SDKs.
           </p>
           <div className="hero-actions" style={{ justifyContent: 'center' }}>
             <Link to="/get-started" className="btn btn-primary">Get Started</Link>
