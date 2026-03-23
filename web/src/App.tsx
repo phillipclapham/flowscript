@@ -29,7 +29,7 @@ function Layout() {
         <div className="header-content">
           <NavLink to="/" className="logo-link">
             <h1 className="logo">
-              <span className="logo-icon">&#x26A1;</span>
+              <img className="logo-icon" src="/logo-48.png" alt="FlowScript" width="24" height="24" />
               FlowScript
             </h1>
           </NavLink>
