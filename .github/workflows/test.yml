@@ -14,6 +14,8 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         node-version: ['18', '20']
     runs-on: ${{ matrix.os }}
+    env:
+      NODE_OPTIONS: --max-old-space-size=2048
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,7 +29,7 @@ jobs:
         run: npm run build
 
       - name: Run tests
-        run: npm test
+        run: npx jest --no-coverage
 
   mcp-smoke:
     strategy:
@@ -35,58 +37,51 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      - name: Create test directory
+        run: |
+          mkdir smoke-test
+          cd smoke-test
+          npm init -y
+        shell: bash
+
       - name: Install from npm (simulates real user)
-        run: npm install flowscript-core
+        run: |
+          cd smoke-test
+          npm install flowscript-core
+        shell: bash
 
       - name: Verify import
-        run: node -e "const { Memory } = require('flowscript-core'); console.log('Import OK, Memory:', typeof Memory);"
+        run: |
+          cd smoke-test
+          node -e "const { Memory } = require('flowscript-core'); const m = new Memory(); console.log('Import OK, size:', m.size);"
+        shell: bash
 
       - name: MCP server stdio handshake
-        shell: node {0}
         run: |
+          cd smoke-test
+          node -e "
           const { spawn } = require('child_process');
           const path = require('path');
-
           const mcp = path.join('node_modules', 'flowscript-core', 'bin', 'flowscript-mcp');
-          const proc = spawn('node', [mcp, './test-memory.json'], {
-            stdio: ['pipe', 'pipe', 'pipe']
-          });
-
-          const msg = JSON.stringify({
-            jsonrpc: '2.0', id: 1, method: 'initialize',
-            params: {
-              protocolVersion: '2025-03-26',
-              capabilities: {},
-              clientInfo: { name: 'ci-test', version: '1.0' }
-            }
-          });
-
+          const proc = spawn(process.execPath, [mcp, './test-memory.json'], { stdio: ['pipe', 'pipe', 'pipe'] });
           let output = '';
-          proc.stdout.on('data', (data) => { output += data.toString(); });
-
+          proc.stdout.on('data', d => output += d);
           setTimeout(() => {
-            proc.stdin.write(msg + '\n');
+            proc.stdin.write(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'ci', version: '1' } } }) + '\n');
             setTimeout(() => {
               const lines = output.trim().split('\n').filter(Boolean);
-              if (lines.length === 0) {
-                console.error('No response from MCP server');
-                process.exit(1);
-              }
+              if (!lines.length) { console.error('No response'); process.exit(1); }
               const data = JSON.parse(lines[lines.length - 1]);
-              if (!data.result) {
-                console.error('Bad response:', JSON.stringify(data));
-                process.exit(1);
-              }
+              if (!data.result) { console.error('Bad response:', JSON.stringify(data)); process.exit(1); }
               const info = data.result.serverInfo || {};
-              console.log(`MCP server OK: ${info.name} v${info.version}`);
-              console.log(`Platform: ${process.platform}`);
-              console.log(`Node: ${process.version}`);
+              console.log('MCP OK:', info.name, 'v' + info.version, '| Platform:', process.platform, '| Node:', process.version);
               proc.kill();
-              console.log('PASS: MCP stdio handshake works');
+              console.log('PASS');
             }, 2000);
           }, 1000);
+          "
+        shell: bash
