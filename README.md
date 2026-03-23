@@ -264,6 +264,28 @@ Same audit format across both SDKs — canonical JSON serialization, cross-langu
 
 ---
 
+## Description Integrity — SRI for LLM Tool Descriptions
+
+MCP tool descriptions are the prompts your LLM actually reads. If a malicious dependency, middleware, or monkey-patch mutates them in-process, the LLM silently follows poisoned instructions. FlowScript's MCP servers include a three-layer integrity verification system — a reference implementation of [deterministic description integrity for MCP](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/2402):
+
+**Layer 1 — In-process verification** (`verify_integrity` tool): SHA-256 hashes of all tool definitions computed at startup, deep-frozen in memory. The LLM can call `verify_integrity` to confirm no in-process mutation has occurred. Detects: malicious npm/pip dependencies, monkey-patching, middleware that modifies tool objects.
+
+**Layer 2 — Host-verifiable manifest** (`flowscript://integrity/manifest` resource): Exposes the integrity manifest as an MCP Resource so the *host application* (Claude Code, Cursor) can verify descriptions without LLM involvement — moving the security boundary to the correct architectural layer.
+
+**Layer 3 — Build-time root of trust** (`tool-integrity.json`): Generated at build time (`--generate-manifest`), ships in the package. Provides a hash baseline independent of the running process. Startup verification compares against both runtime and build-time manifests.
+
+```bash
+# Generate build-time manifest
+flowscript-mcp --generate-manifest
+
+# LLM calls verify_integrity → PASS/FAIL verdict with per-tool hashes
+# Host reads flowscript://integrity/manifest → client-side verification
+```
+
+**Honest threat model:** This detects in-process mutation. It does not detect supply chain attacks (poisoned before startup), transport-layer MITM (hashes don't leave the process), or client-side injection. Full ecosystem integrity requires client-side verification against out-of-band manifests. Both the [TypeScript](https://www.npmjs.com/package/flowscript-core) and [Python](https://pypi.org/project/flowscript-agents/) MCP servers implement this architecture.
+
+---
+
 ## Comparison
 
 | | FlowScript | Mem0 | Vector stores |
