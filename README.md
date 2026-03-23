@@ -232,7 +232,7 @@ Under the hood: a local symbolic graph with typed nodes, typed relationships, an
 | Package | What | Install |
 |:--------|:-----|:--------|
 | [flowscript-core](https://www.npmjs.com/package/flowscript-core) | TypeScript SDK — Memory class, 15 agent tools, audit trail, token budgeting | `npm install flowscript-core` |
-| [flowscript-agents](https://pypi.org/project/flowscript-agents/) | Python SDK — 9 framework adapters, auto-extraction, consolidation, audit trail | `pip install flowscript-agents` |
+| [flowscript-agents](https://pypi.org/project/flowscript-agents/) | Python SDK — 9 framework adapters, auto-extraction, consolidation, audit trail | `pip install flowscript-agents openai` |
 | [flowscript.org](https://flowscript.org) | Web editor, D3 visualization, live query panel | Browser |
 
 **691 TypeScript tests** across 14 suites. **1,272 total** across both SDKs. Same audit trail format and canonical JSON serialization across both languages.
