@@ -174,7 +174,7 @@ export function toVercelTools(memory: Memory): Record<string, VercelToolDefiniti
     query_tensions: {
       description:
         'Find active tradeoffs and tensions in memory. Returns tensions ' +
-        'grouped by axis. Requires relationships built via resolve().',
+        'grouped by axis, if any exist.',
       parameters: {
         type: 'object' as const,
         properties: {},

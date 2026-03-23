@@ -139,7 +139,7 @@ mem.query.tensions();{"\n"}
         <div className="section-inner">
           <h2 className="section-title">Works with your stack</h2>
           <p className="section-lead">
-            Drop-in adapters for 9 Python agent frameworks plus MCP support for Claude Code and Cursor. Your agent gets reasoning memory without changing how it works.
+            Drop-in adapters for 9 Python agent frameworks, Vercel AI SDK (TypeScript), and MCP support for Claude Code and Cursor. Your agent gets reasoning memory without changing how it works.
           </p>
           <FrameworkLogos />
         </div>
@@ -153,7 +153,7 @@ mem.query.tensions();{"\n"}
             <div className="install-card">
               <h3>TypeScript SDK</h3>
               <div className="code-block install-cmd">npm install flowscript-core</div>
-              <p>Memory class, 15 agent tools, audit trail, token budgeting. Works with any LLM that supports function calling.</p>
+              <p>Memory class, 15 agent tools, Vercel AI SDK adapter, audit trail, token budgeting. Works with any LLM that supports function calling.</p>
               <a href="https://www.npmjs.com/package/flowscript-core" target="_blank" rel="noopener noreferrer" className="install-link">
                 View on npm &rarr;
               </a>

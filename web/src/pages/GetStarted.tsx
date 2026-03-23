@@ -39,7 +39,7 @@ export function GetStarted() {
               You're building a TypeScript/JavaScript application and want to programmatically construct and query reasoning graphs.
             </p>
             <div className="code-block decision-install">npm install flowscript-core</div>
-            <p className="decision-result">Memory class, 15 agent tools (OpenAI format), audit trail, token budgeting, 4 budget strategies.</p>
+            <p className="decision-result">Memory class, 15 agent tools (OpenAI format), Vercel AI SDK adapter, audit trail, token budgeting, 4 budget strategies.</p>
           </div>
 
           <div className="decision-card">
@@ -226,6 +226,27 @@ const orientation = mem.sessionStart({ maxTokens: 4000 });
 // ... agent works, building the graph ...
 const wrap = mem.sessionWrap(); // prune dormant → audit trail, save`}
         </div>
+
+        <h3>5. Vercel AI SDK</h3>
+        <p>
+          Building with the Vercel AI SDK? Use <code>flowscript-core/vercel</code> for
+          tool definitions that wrap directly with <code>tool()</code> + <code>jsonSchema()</code>:
+        </p>
+        <div className="code-block">
+{`import { toVercelTools } from 'flowscript-core/vercel';
+
+const fsTools = toVercelTools(mem);
+const tools = Object.fromEntries(
+  Object.entries(fsTools).map(([name, def]) => [
+    name,
+    tool({ description: def.description, inputSchema: jsonSchema(def.parameters), execute: def.execute }),
+  ])
+);`}
+        </div>
+        <p>
+          5 tools (store, recall, tensions, blocked, context) plus a <code>getFlowScriptContext()</code> helper
+          for system prompt injection. No <code>ai</code> dependency required — you bring your own.
+        </p>
 
         <p>
           Full API reference:{" "}

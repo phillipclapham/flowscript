@@ -2,7 +2,7 @@
  * FlowScript asTools() Tests
  *
  * Tests the auto-generated function calling tool definitions from the Memory API.
- * Covers: tool schema structure, all 14 tools (core + query + memory + lifecycle),
+ * Covers: tool schema structure, all 15 tools (core + query + memory + lifecycle),
  * handler execution, error handling, options (include, prefix), and integration.
  */
 

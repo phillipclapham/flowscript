@@ -6,7 +6,7 @@
 
 <p align="center"><strong>Structured reasoning memory for AI agents. Five queries no vector store can answer: <code>why()</code>, <code>tensions()</code>, <code>blocked()</code>, <code>alternatives()</code>, <code>whatIf()</code>. Your agent builds the graph during normal work. You query it.</strong></p>
 
-[![Tests](https://img.shields.io/badge/tests-691%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
+[![Tests](https://img.shields.io/badge/tests-731%20passing-brightgreen)](https://github.com/phillipclapham/flowscript) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
 
 ---
 
@@ -102,6 +102,47 @@ const extracted = await Memory.fromTranscript(conversationLog, {
   extract: async (prompt) => await yourLLM(prompt)
 });
 ```
+
+### Vercel AI SDK
+
+```typescript
+import { Memory } from 'flowscript-core';
+import { toVercelTools, getFlowScriptContext } from 'flowscript-core/vercel';
+import { tool, jsonSchema, generateText, stepCountIs } from 'ai';
+
+const mem = Memory.loadOrCreate('./agent-memory.json');
+const fsTools = toVercelTools(mem); // 5 tools: store, recall, tensions, blocked, context
+
+// Wrap with Vercel's tool() + jsonSchema() helpers
+const tools = Object.fromEntries(
+  Object.entries(fsTools).map(([name, def]) => [
+    name,
+    tool({
+      description: def.description,
+      inputSchema: jsonSchema(def.parameters), // AI SDK v6: inputSchema, not parameters
+      execute: def.execute,
+    }),
+  ])
+);
+
+// AI SDK v6: use stopWhen, not maxSteps
+const result = await generateText({
+  model: yourModel,
+  tools,
+  stopWhen: stepCountIs(10),
+  prompt: "Analyze the database options we discussed",
+});
+
+// Or inject memory as system context (middleware pattern)
+const context = getFlowScriptContext(mem, { maxTokens: 4000 });
+const result2 = await generateText({
+  model: yourModel,
+  system: `You are an assistant.\n\n${context}`,
+  prompt: "What tradeoffs are we facing?",
+});
+```
+
+Does NOT require `ai` as a dependency — you bring your own Vercel AI SDK. FlowScript provides tool definitions that wrap with `tool()` + `jsonSchema()`.
 
 ### Agent Frameworks (Python)
 
@@ -245,11 +286,11 @@ Under the hood: a local symbolic graph with typed nodes, typed relationships, an
 
 | Package | What | Install |
 |:--------|:-----|:--------|
-| [flowscript-core](https://www.npmjs.com/package/flowscript-core) | TypeScript SDK — Memory class, 15 agent tools, audit trail, token budgeting | `npm install flowscript-core` |
+| [flowscript-core](https://www.npmjs.com/package/flowscript-core) | TypeScript SDK — Memory class, 15 agent tools, Vercel AI SDK adapter, audit trail, token budgeting | `npm install flowscript-core` |
 | [flowscript-agents](https://pypi.org/project/flowscript-agents/) | Python SDK — 9 framework adapters, auto-extraction, consolidation, audit trail | `pip install flowscript-agents openai` |
 | [flowscript.org](https://flowscript.org) | Web editor, D3 visualization, live query panel | Browser |
 
-**691 TypeScript tests** across 14 suites. **1,272 total** across both SDKs. Same audit trail format and canonical JSON serialization across both languages.
+**731 TypeScript tests** across 15 suites. **1,312 total** across both SDKs. Same audit trail format and canonical JSON serialization across both languages.
 
 ### Docs
 
