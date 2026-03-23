@@ -270,6 +270,46 @@ mem.query.alternatives(dbQuestion);{"\n"}
         </p>
       </section>
 
+      {/* Description Integrity */}
+      <section className="learn-section">
+        <h2>Description integrity</h2>
+        <p>
+          MCP tool descriptions are prompts. Your LLM reads them to decide what each tool does.
+          If a malicious dependency, middleware, or monkey-patch mutates those descriptions in-process,
+          the LLM silently follows poisoned instructions. Nobody in the MCP ecosystem addresses this.
+        </p>
+        <p>
+          FlowScript's MCP servers include a three-layer integrity verification system — a reference
+          implementation of{" "}
+          <a href="https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/2402" target="_blank" rel="noopener noreferrer">
+            deterministic description integrity for MCP
+          </a>:
+        </p>
+        <ul className="audit-features">
+          <li>
+            <strong>Layer 1 — In-process verification:</strong> All tool definitions are deep-frozen at
+            startup (immutable). SHA-256 hashes computed per tool. The <code>verify_integrity</code> tool
+            lets the LLM check that nothing has been mutated since startup.
+          </li>
+          <li>
+            <strong>Layer 2 — Host-verifiable manifest:</strong> The{" "}
+            <code>flowscript://integrity/manifest</code> MCP Resource exposes hashes so the <em>host
+            application</em> (Claude Code, Cursor) can verify descriptions without LLM involvement — moving
+            the security boundary to the correct architectural layer.
+          </li>
+          <li>
+            <strong>Layer 3 — Build-time root of trust:</strong> <code>tool-integrity.json</code> is
+            generated at build time (<code>--generate-manifest</code>) and ships in the package. Provides
+            a hash baseline independent of the running process.
+          </li>
+        </ul>
+        <p>
+          Think of it as SRI (Subresource Integrity) for LLM tool descriptions. Both the TypeScript
+          and Python MCP servers implement this architecture with honest threat models — documenting
+          exactly what it detects and what requires ecosystem-level changes.
+        </p>
+      </section>
+
       {/* The Consolidation Engine (Python SDK) */}
       <section className="learn-section">
         <h2>The consolidation engine</h2>
