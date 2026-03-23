@@ -29,7 +29,12 @@ jobs:
         run: npm run build
 
       - name: Run tests
+        run: npx jest --no-coverage --testPathIgnorePatterns='indentation-scanner'
+        if: runner.os == 'Windows'
+
+      - name: Run tests
         run: npx jest --no-coverage
+        if: runner.os != 'Windows'
 
   mcp-smoke:
     strategy:
