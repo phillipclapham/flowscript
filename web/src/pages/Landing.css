@@ -132,6 +132,20 @@
   text-underline-offset: 3px;
 }
 
+.accent-inner {
+  text-align: center;
+}
+
+.accent-lead {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.accent-subtext {
+  opacity: 0.8;
+  margin-top: 0.5rem;
+}
+
 .section-inner {
   max-width: var(--max-width);
   margin: 0 auto;
