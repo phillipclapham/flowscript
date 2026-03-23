@@ -35,6 +35,16 @@ Sub-ms local traversal on project-scale graphs. No embeddings required, no LLM c
 
 ---
 
+## Why FlowScript
+
+Agent memory stores what happened. FlowScript stores why.
+
+Most agent infrastructure is converging on authorization — identity, access control, audit trails for *who did what*. That's necessary. But it leaves a gap: your agent can prove it was *allowed* to make a decision, but not *why* it made it. Researchers call this "[strategic blindness](https://arxiv.org/abs/2603.18718)" — memory that tracks content without tracking reasoning.
+
+FlowScript sits above your memory store, not instead of it. Google Memory Bank, LangGraph checkpointers, Mem0 — they remember what your agent stored. FlowScript remembers why it decided, what it traded off, and what breaks if you change your mind.
+
+---
+
 ## Get Started
 
 ### MCP Server (Claude Code / Cursor)

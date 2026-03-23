@@ -109,6 +109,29 @@
   background: var(--color-surface);
 }
 
+.section--accent {
+  background: var(--color-primary);
+  color: var(--color-background);
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.section--accent .section-title {
+  color: var(--color-background);
+}
+
+.section--accent .section-lead {
+  color: var(--color-background);
+  opacity: 0.95;
+}
+
+.section--accent em {
+  font-style: normal;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
 .section-inner {
   max-width: var(--max-width);
   margin: 0 auto;

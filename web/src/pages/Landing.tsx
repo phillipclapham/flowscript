@@ -52,6 +52,20 @@ export function Landing() {
         </div>
       </section>
 
+      {/* The Missing Layer */}
+      <section className="section section--accent">
+        <div className="section-inner" style={{ textAlign: 'center' }}>
+          <h2 className="section-title">The missing layer</h2>
+          <p className="section-lead" style={{ maxWidth: '640px', margin: '0 auto' }}>
+            Agent memory answers <em>what</em>. Authorization answers <em>who</em>.
+            Nobody answers <em>why</em>.
+          </p>
+          <p style={{ opacity: 0.8, marginTop: '0.5rem' }}>
+            FlowScript is the reasoning layer &mdash; above your memory store, not instead of it.
+          </p>
+        </div>
+      </section>
+
       {/* The Queries — the product */}
       <section className="section section--alt">
         <div className="section-inner">
