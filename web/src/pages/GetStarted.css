@@ -56,6 +56,8 @@
   border-radius: 12px;
   padding: var(--space-xl);
   transition: border-color var(--transition-fast);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .decision-card:hover {
@@ -71,7 +73,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-sm);
   margin-bottom: var(--space-md);
+  min-width: 0;
 }
 
 .decision-header h3 {
@@ -88,6 +92,8 @@
   background: var(--color-primary-light);
   padding: 3px 10px;
   border-radius: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .decision-card--primary .decision-tag {
@@ -105,6 +111,7 @@
   padding: var(--space-md) !important;
   margin: 0 0 var(--space-md) !important;
   user-select: all;
+  overflow-x: auto;
 }
 
 .decision-result {
