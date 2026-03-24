@@ -68,7 +68,7 @@ npm install -g flowscript-core
 }
 ```
 
-Restart your editor. 15 reasoning tools, local file persistence, zero cloud dependency. Add `--demo` before the file path to seed a sample project for exploration.
+Restart your editor. 18 reasoning tools, local file persistence, zero cloud dependency. Add `--demo` before the file path to seed a sample project for exploration.
 
 Copy [this CLAUDE.md snippet](examples/CLAUDE.md.snippet) into your project to tell the agent when to record decisions, tensions, and blockers automatically.
 
@@ -316,7 +316,7 @@ Under the hood: a local symbolic graph with typed nodes, typed relationships, an
 | [flowscript-agents](https://pypi.org/project/flowscript-agents/) | Python SDK — 9 framework adapters, auto-extraction, consolidation, audit trail | `pip install flowscript-agents openai` |
 | [flowscript.org](https://flowscript.org) | Web editor, D3 visualization, live query panel | Browser |
 
-**731 TypeScript tests** across 15 suites. **1,312 total** across both SDKs. Same audit trail format and canonical JSON serialization across both languages.
+**731 TypeScript tests** across 15 suites. **1,315 total** across both SDKs. Same audit trail format and canonical JSON serialization across both languages.
 
 ### Docs
 
