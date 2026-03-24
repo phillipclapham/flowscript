@@ -146,14 +146,19 @@ const memory = isDemo ? seedDemoMemory(memoryPath) : Memory.loadOrCreate(memoryP
 
 // Graceful shutdown: attempt a full session wrap (consolidation) on exit.
 // Falls back to save-only if wrap throws (crash safety > data loss).
+let _hasWrapped = false;
 function gracefulShutdown() {
+  if (_hasWrapped) return;
+  _hasWrapped = true;
   try { memory.sessionWrap(); } catch {
     try { memory.save(); } catch { /* best effort */ }
   }
-  process.exit(0);
 }
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
+process.on('SIGTERM', () => { gracefulShutdown(); process.exit(0); });
+process.on('SIGINT', () => { gracefulShutdown(); process.exit(0); });
+// Safety net for natural event loop drain or editor disconnect without signal
+process.on('beforeExit', gracefulShutdown);
+process.on('exit', gracefulShutdown);
 
 // Helper: validate required args exist
 function requireArgs(args: Record<string, unknown> | undefined, ...keys: string[]): string | null {

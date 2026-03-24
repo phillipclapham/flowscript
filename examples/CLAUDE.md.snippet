@@ -37,6 +37,9 @@ like sleep for memory. It prunes dormant nodes to the audit trail, graduates
 frequently-used knowledge through temporal tiers (current → developing →
 proven → foundation), and saves. Without regular wraps, knowledge
 accumulates as noise instead of maturing. Each wrap makes the graph smarter.
+NOTE: A final consolidation also runs automatically on process exit (editor
+close, signal), but explicit wraps produce the best results because you can
+review and store final reasoning before consolidation happens.
 
 Queries keep knowledge alive — every `query_tensions`, `query_blocked`, etc.
 touches the returned nodes, driving graduation. Knowledge that keeps coming
