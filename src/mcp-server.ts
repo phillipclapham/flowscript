@@ -144,15 +144,16 @@ for (const arg of args) {
 // Load or create memory
 const memory = isDemo ? seedDemoMemory(memoryPath) : Memory.loadOrCreate(memoryPath);
 
-// Auto-save on exit signals — save only, no prune.
-// Pruning mutates IR in-place; if it throws mid-execution, save() would persist
-// inconsistent state. Let sessionEnd() handle pruning in the normal lifecycle.
-function gracefulSave() {
-  try { memory.save(); } catch { /* best effort */ }
+// Graceful shutdown: attempt a full session wrap (consolidation) on exit.
+// Falls back to save-only if wrap throws (crash safety > data loss).
+function gracefulShutdown() {
+  try { memory.sessionWrap(); } catch {
+    try { memory.save(); } catch { /* best effort */ }
+  }
   process.exit(0);
 }
-process.on('SIGTERM', gracefulSave);
-process.on('SIGINT', gracefulSave);
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
 
 // Helper: validate required args exist
 function requireArgs(args: Record<string, unknown> | undefined, ...keys: string[]): string | null {
@@ -495,6 +496,62 @@ const toolDefinitions: Array<Record<string, unknown>> = [
         additionalProperties: false,
       },
     },
+    {
+      name: 'session_wrap',
+      description:
+        'Run memory lifecycle maintenance — the reasoning graph\'s consolidation cycle. ' +
+        'Captures before/after statistics, prunes dormant nodes to audit trail, graduates ' +
+        'frequently-accessed knowledge through temporal tiers, saves to disk. Call this at ' +
+        'the end of a work session or when the user says to wrap up. Just like sleep ' +
+        'consolidates human memory, session wraps let the reasoning graph mature: knowledge ' +
+        'that keeps getting queried earns its place, one-off observations fade naturally. ' +
+        'Archived nodes are preserved in the audit trail with full provenance — never destroyed.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {},
+        additionalProperties: false,
+      },
+    },
+    {
+      name: 'query_audit',
+      description:
+        'Search the audit trail for reasoning provenance. Call this to understand how memory ' +
+        'evolved — what was extracted, what consolidation decided, which adapter made changes, ' +
+        'or what happened in a specific session. Returns hash-chained audit entries matching ' +
+        'the filters.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          after: { type: 'string', description: 'Only entries after this ISO timestamp' },
+          before: { type: 'string', description: 'Only entries before this ISO timestamp' },
+          events: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Filter by event types (e.g. ["node_create", "state_change", "graduation", "prune", "session_wrap"])',
+          },
+          nodeId: { type: 'string', description: 'Filter by node ID involvement' },
+          sessionId: { type: 'string', description: 'Filter by session ID' },
+          limit: { type: 'number', description: 'Maximum entries to return (default: 100)' },
+          verifyChain: {
+            type: 'boolean',
+            description: 'Also verify hash chain integrity of matched entries (default: false)',
+          },
+        },
+        additionalProperties: false,
+      },
+    },
+    {
+      name: 'verify_audit',
+      description:
+        'Verify hash chain integrity of the entire audit trail. Call this to confirm the ' +
+        'audit trail has not been tampered with. Returns chain validity status, total entries ' +
+        'verified, and location of any break.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {},
+        additionalProperties: false,
+      },
+    },
 ];
 
 // Deep-freeze all tool definitions — any in-process mutation will throw in strict mode
@@ -815,6 +872,113 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           saved: result.saved,
           path: result.path,
         });
+      }
+      case 'session_wrap': {
+        const result = memory.sessionWrap();
+        return toolSuccess({
+          success: true,
+          nodes_before: result.nodesBefore,
+          tiers_before: result.tiersBefore,
+          nodes_after: result.nodesAfter,
+          tiers_after: result.tiersAfter,
+          pruned_count: result.pruned.count,
+          pruned_nodes: result.pruned.archived.map(ref => ({
+            node_id: ref.id,
+            type: ref.type,
+            content: ref.content,
+          })),
+          garden_after: {
+            growing: result.gardenAfter.stats.growing,
+            resting: result.gardenAfter.stats.resting,
+            dormant: result.gardenAfter.stats.dormant,
+            total: result.gardenAfter.stats.total,
+          },
+          saved: result.saved,
+          path: result.path,
+        });
+      }
+
+      // === Audit trail handlers ===
+      case 'query_audit': {
+        if (!memory.filePath) {
+          return toolError('No memory file path — audit trail requires file-based persistence');
+        }
+        try {
+          const result = Memory.queryAudit(memory.filePath, {
+            after: args?.after as string | undefined,
+            before: args?.before as string | undefined,
+            events: args?.events as string[] | undefined,
+            nodeId: args?.nodeId as string | undefined,
+            sessionId: args?.sessionId as string | undefined,
+            limit: (args?.limit as number | undefined) ?? 100,
+            verifyChain: (args?.verifyChain as boolean | undefined) ?? false,
+          });
+          const resp: Record<string, unknown> = {
+            success: true,
+            entries: result.entries.map(e => ({
+              event: e.event,
+              timestamp: e.timestamp,
+              data: e.data,
+              session_id: e.session_id,
+              adapter: e.adapter,
+              seq: e.seq,
+            })),
+            total_scanned: result.totalScanned,
+            files_searched: result.filesSearched,
+            count: result.entries.length,
+          };
+          if (result.chainValid !== undefined) {
+            resp.chain_valid = result.chainValid;
+            if (result.chainBreakAt !== undefined) {
+              resp.chain_break_at = result.chainBreakAt;
+            }
+          }
+          return toolSuccess(resp);
+        } catch (e: unknown) {
+          if (e instanceof Error && e.message.includes('ENOENT')) {
+            return toolSuccess({
+              success: true,
+              entries: [],
+              total_scanned: 0,
+              files_searched: 0,
+              count: 0,
+              note: 'No audit trail file found — audit may not be configured',
+            });
+          }
+          throw e;
+        }
+      }
+      case 'verify_audit': {
+        if (!memory.filePath) {
+          return toolError('No memory file path — audit trail requires file-based persistence');
+        }
+        try {
+          const result = Memory.verifyAudit(memory.filePath);
+          const resp: Record<string, unknown> = {
+            success: true,
+            valid: result.valid,
+            total_entries: result.totalEntries,
+            files_verified: result.filesVerified,
+            legacy_entries: result.legacyEntries,
+          };
+          if (!result.valid) {
+            if (result.chainBreakAt !== undefined) resp.chain_break_at = result.chainBreakAt;
+            if (result.chainBreakFile) resp.chain_break_file = result.chainBreakFile;
+          }
+          return toolSuccess(resp);
+        } catch (e: unknown) {
+          if (e instanceof Error && e.message.includes('ENOENT')) {
+            return toolSuccess({
+              success: true,
+              valid: null,
+              total_entries: 0,
+              files_verified: 0,
+              status: 'no_audit_trail',
+              note: 'No audit trail file found — auditing may not be configured',
+            });
+          }
+          throw e;
+        }
       }
 
       // === Integrity verification handler ===

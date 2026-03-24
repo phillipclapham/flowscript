@@ -209,9 +209,11 @@ The disagreement itself is knowledge. The [Python SDK](https://github.com/philli
 
 ---
 
-## Memory That Evolves
+## Session Lifecycle — How Memory Gets Smarter
 
-Nodes graduate through four temporal tiers based on actual use:
+Just like a mind needs sleep to consolidate memories, your agent's reasoning graph needs regular session wraps to develop intelligence over time. Without consolidation cycles, knowledge accumulates as noise instead of maturing.
+
+**Temporal tiers** — nodes graduate based on actual use:
 
 | Tier | Meaning | Behavior |
 |:-----|:--------|:---------|
@@ -220,19 +222,21 @@ Nodes graduate through four temporal tiers based on actual use:
 | `proven` | Validated through use (3+ touches) | Protected from pruning |
 | `foundation` | Core truths | Always preserved |
 
-Dormant nodes are pruned to the audit trail — archived with full provenance, never destroyed. After 20 sessions, your memory is a curated knowledge base, not a pile of notes.
+Every query touches returned nodes — knowledge that keeps getting queried earns its place. Dormant nodes are pruned to the audit trail — archived with full provenance, never destroyed.
 
 ```typescript
 // Start: orient with token-budgeted summary
 const orientation = mem.sessionStart({ maxTokens: 4000 });
 // → summary, blockers, tensions, garden stats, tier distribution
 
-// End: prune dormant, save, get before/after stats
+// End: consolidate — prune dormant, graduate active, audit trail, save
 const wrap = mem.sessionWrap();
 // → { nodesBefore, pruned, nodesAfter, tiersAfter, saved }
 ```
 
-Four budget strategies: `tier-priority` (foundation first), `recency`, `frequency`, `relevance` (topic match). ~3:1 compression ratio vs prose.
+**MCP users:** The `session_wrap` tool is available alongside `session_start` and `session_end`. Call it when wrapping up a session, or let the MCP server handle it on process exit. The `query_audit` and `verify_audit` tools let you inspect the full provenance history.
+
+After 20 sessions, your memory is a curated knowledge base, not a pile of notes. Four budget strategies: `tier-priority` (foundation first), `recency`, `frequency`, `relevance` (topic match). ~3:1 compression ratio vs prose.
 
 ---
 

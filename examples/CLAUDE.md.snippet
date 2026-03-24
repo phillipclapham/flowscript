@@ -31,11 +31,22 @@ Call `session_start` at the beginning of every conversation. It returns:
 - Active blockers and tensions (what needs attention)
 - Garden stats (what's growing, resting, dormant)
 
-Call `session_end` when the session is done. It prunes dormant nodes to an audit trail and saves.
+Call `session_wrap` when the user says "wrap up", "let's wrap", or signals
+the session is ending. This is the reasoning graph's consolidation cycle —
+like sleep for memory. It prunes dormant nodes to the audit trail, graduates
+frequently-used knowledge through temporal tiers (current → developing →
+proven → foundation), and saves. Without regular wraps, knowledge
+accumulates as noise instead of maturing. Each wrap makes the graph smarter.
 
-Queries keep knowledge alive — every `query_tensions`, `query_blocked`, etc. touches the returned nodes, driving graduation from current → developing → proven → foundation. Knowledge that keeps coming up earns permanence.
+Queries keep knowledge alive — every `query_tensions`, `query_blocked`, etc.
+touches the returned nodes, driving graduation. Knowledge that keeps coming
+up earns permanence. One-off observations fade naturally.
+
+Use `query_audit` to inspect how memory evolved over time, and `verify_audit`
+to confirm the hash chain hasn't been tampered with.
 
 ## Persistence
 
-Memory persists across sessions automatically. `session_end` handles save + prune.
+Memory persists across sessions automatically. Mutations auto-save.
+`session_wrap` adds the consolidation step (pruning + graduation).
 Use `get_memory` to see the current state. Format "flowscript" for human-readable, "json" for structured.

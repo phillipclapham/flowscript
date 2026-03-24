@@ -247,6 +247,28 @@ mem.query.alternatives(dbQuestion);{"\n"}
           destroyed. Four budget strategies (<code>tier-priority</code>, <code>recency</code>,{" "}
           <code>frequency</code>, <code>relevance</code>) control what surfaces when token budget is limited.
         </p>
+
+        <h3>Session wraps: sleep for the reasoning graph</h3>
+        <p>
+          Just like a mind needs sleep to consolidate memories, the reasoning graph needs regular session
+          wraps to develop intelligence over time. Without consolidation cycles, knowledge accumulates
+          as noise instead of maturing through the temporal tiers above.
+        </p>
+        <p>
+          A session wrap prunes dormant nodes to the audit trail, saves the graph, and triggers the
+          graduation cycle. Three mechanisms ensure consolidation happens:
+        </p>
+        <ul className="audit-features">
+          <li><strong>Explicit wrap:</strong> The LLM calls <code>session_wrap</code> when you say
+            "let's wrap up" (best results — allows final reasoning capture before consolidation).</li>
+          <li><strong>Auto-wrap:</strong> The Python MCP server auto-consolidates after 5 minutes of
+            inactivity (configurable via <code>FLOWSCRIPT_AUTO_WRAP_MINUTES</code>, set to <code>0</code> to disable).</li>
+          <li><strong>Process exit:</strong> Final consolidation runs automatically when the server shuts down.</li>
+        </ul>
+        <p>
+          For SDK users, all adapters support <code>close()</code> and context managers (<code>with</code> blocks)
+          that auto-wrap on exit. After 20 sessions, your memory is a curated knowledge base, not a pile of notes.
+        </p>
       </section>
 
       {/* Audit Trail */}
