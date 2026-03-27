@@ -1,7 +1,8 @@
 /**
  * FlowScript Learn / Concepts Page
- * Educational content: what is decision intelligence, how the graph works,
- * the five queries, temporal tiers, audit trail.
+ * Educational content: what is typed reasoning, how the graph works,
+ * the five queries, temporal tiers, audit trail, advanced patterns,
+ * metaprogramming, and the deeper structure.
  */
 
 import { Link } from "react-router-dom";
@@ -12,12 +13,13 @@ export function Learn() {
     <div className="page learn-page">
       <h1 className="learn-hero-title">Understanding FlowScript</h1>
       <p className="learn-hero-subtitle">
-        The typed reasoning layer for AI agents: what it is, why it matters, and how the reasoning graph works.
+        The typed reasoning layer for AI agents: what it is, why it matters, how the reasoning graph works,
+        and what becomes possible when you push the notation to its limits.
       </p>
 
-      {/* What is Decision Intelligence */}
+      {/* What is Typed Reasoning */}
       <section className="learn-section">
-        <h2>What is decision intelligence?</h2>
+        <h2>What is typed reasoning?</h2>
         <p>
           Most agent memory systems store <em>what was said</em>. FlowScript stores <em>why things were decided,
           what they conflicted with, and what they unblock</em>.
@@ -267,7 +269,7 @@ mem.query.alternatives(dbQuestion);{"\n"}
         </ul>
         <p>
           For SDK users, all adapters support <code>close()</code> and context managers (<code>with</code> blocks)
-          that auto-wrap on exit. After 20 sessions, your memory is a curated knowledge base, not a pile of notes.
+          that auto-wrap on exit.
         </p>
       </section>
 
@@ -423,36 +425,304 @@ speed ><[performance vs cost] infrastructure cost
           You can query it: what's blocked? What tradeoffs exist? Why did we choose Redis? The notation
           is the engine that makes the queries possible.
         </p>
+      </section>
 
-        <h3>Using notation in prompts</h3>
+      {/* Advanced Patterns */}
+      <section className="learn-section">
+        <h2>Advanced patterns</h2>
         <p>
-          Add FlowScript blocks to your system prompts or CLAUDE.md files to give your agent structured
-          context it can reason over:
+          These patterns weren't designed up front. They were discovered through extended use as the
+          notation's compositional structure revealed new capabilities. Every pattern emerges from
+          composing existing markers — no new syntax required.
+        </p>
+
+        <h3>Recursive nesting: multi-dimensional thinking space</h3>
+        <p>
+          FlowScript's most powerful capability is recursive nesting. Complex thinking isn't atomic —
+          it's recursive, self-referential, multi-layered. Nesting creates explicit thought hierarchy,
+          context at multiple depths, sidebar commentary without breaking flow, and meta-observations
+          about observations.
         </p>
         <div className="code-block">
-{`# In CLAUDE.md or a system prompt:
-# Project context — current state of the migration
+{`{
+  decision: ship minimal version now
+  -> faster launch
+  -> {earlier user feedback
+       -> {course corrections sooner
+            -> {better product-market fit
+                 -> higher likelihood of success
+               }
+          }
+     }
+  -> [decided] minimal version wins
+}
 
-? Which cache layer for the API gateway?
-  || Cloudflare Workers KV
-     -> global edge distribution
-     -> [decided(rationale: "already on CF, zero cold start", on: "2026-03-15")]
-  || Redis Cloud
-     -> more control over eviction
-
-[blocked(reason: "KV write limits in free tier", since: "2026-03-16")]
-! rate limiting depends on cache layer
-
-thought: edge caching makes regional failover unnecessary
-  -> simplifies the architecture significantly
-  -> ! but debugging edge issues is harder than centralized`}
+# First-order through fourth-order effects,
+# all structurally visible and queryable.`}
         </div>
+
+        <h3>Meta-thoughts: reasoning about reasoning</h3>
         <p>
-          Your agent reads this as structured reasoning, not just text. It understands what's decided,
-          what's blocked, and what tradeoffs exist, without you explaining any of it in prose.
-          The{" "}
-          <Link to="/playground">playground</Link> lets you experiment with the notation
-          interactively and see the reasoning graph it produces.
+          Nesting enables recursive self-reference — thoughts about thoughts, analysis of analysis.
+          This creates a structure impossible in linear prose: a thought that examines its own
+          reasoning process while reasoning.
+        </p>
+        <div className="code-block">
+{`thought: {
+  analyzing our adoption pattern
+  <- {
+       observation: all 6 AI systems converged on same insights
+       <- {meta: convergence itself is evidence
+            <- {meta-meta: our confidence comes from this convergence
+                 <- which is itself a pattern we're converging on
+               }
+          }
+     }
+  -> cross-architecture validation = strong evidence
+  -> {
+       but: we're biased observers
+       <- {we created FlowScript
+            <- our analysis might be self-confirming
+            <- need external validation
+          }
+     }
+}
+
+# Captures both the observation AND the critical
+# examination of the observation. The bias check
+# is structurally embedded, not an afterthought.`}
+        </div>
+
+        <h3>Multi-dimensional analysis</h3>
+        <p>
+          When a decision has technical, business, and personal dimensions, FlowScript keeps them
+          isolated for independent analysis, then synthesizes across dimensions with explicit tensions.
+        </p>
+        <div className="code-block">
+{`{
+  decision: when to launch?
+
+  -> {technical:
+       <- {86% complete <- hardest 14% remaining}
+       -> need 2-4 more weeks minimum
+     }
+
+  -> {business:
+       <- {competitive pressure <- market timing: AI tools hot now}
+       -> pressure to launch sooner
+     }
+
+  -> {personal:
+       <- {burnout: severe <- energy: limited, unreliable}
+       -> can't sustain current pace
+     }
+
+  -> synthesis: {
+       technical ><[quality vs speed] business
+       business ><[pressure vs capacity] personal
+       -> all three must align
+       -> [decided] launch when technical ready AND personal sustainable
+       != calendar-driven launch
+     }
+}`}
+        </div>
+
+        <h3>Evidence chains with confidence markers</h3>
+        <p>
+          Track evidence and confidence at each step using FlowScript's emphasis markers.
+          Build arguments where certainty is explicit, not assumed.
+        </p>
+        <div className="code-block">
+{`* thought: {
+  FlowScript enables dimensional expansion of thinking
+
+  <- {evidence: threshold effect observed
+       <- {* observation: voluntary continued use despite friction
+            <- experienced user, after 4 days intensive use
+          }
+       <- {* observation: thinking IN FlowScript, not translating
+            <- self-reported cognitive shift
+          }
+       <- {~ observation: structures impossible in pure NL emerge
+            <- hard to quantify <- need external validation
+          }
+       -> * conclusion: threshold crossed (n=1)
+     }
+
+  -> * finding: effect is real for at least one user
+  -> ~ hypothesis: might generalize broadly
+  -> ! action: need more data before claiming universality
+}
+
+# * = high confidence, ~ = low confidence, ! = urgent
+# Certainty is tracked structurally, not assumed.`}
+        </div>
+      </section>
+
+      {/* Metaprogramming */}
+      <section className="learn-section">
+        <h2>Metaprogramming patterns</h2>
+        <p>
+          FlowScript enables executable conversation protocols — patterns that go beyond
+          notation into something closer to programming. These emerge from composing existing
+          markers without adding new syntax.
+        </p>
+
+        <h3>Branching decisions</h3>
+        <p>
+          Conditional logic using composition of <code>?</code>, <code>{'{ }'}</code>, <code>=</code>,
+          and <code>||</code> markers:
+        </p>
+        <div className="code-block">
+{`? convert remaining system files to FlowScript?
+  || yes = action: execute conversion + test
+  || no = action: discuss why we shouldn't
+
+[decided(rationale: "systematic conversion improves continuity")]
+yes -> proceed with conversion
+
+# Branching logic with rationale — no new syntax needed.
+# The decision is queryable: alternatives() returns both paths.`}
+        </div>
+
+        <h3>Workflow definitions</h3>
+        <p>
+          Multi-step processes using temporal chains (<code>=&gt;</code>) with explicit
+          inputs and outputs at each step:
+        </p>
+        <div className="code-block">
+{`{spec sync verification}
+=> {add new content sections <- verified against source}
+=> {update GitHub + flow files}
+=> {test fresh load -> validates OR reveals drift}
+=> {validate OR revert}
+
+# Each step's output feeds the next step's input.
+# The full workflow is a queryable graph —
+# whatIf() on any step shows downstream impact.`}
+        </div>
+
+        <h3>State machines</h3>
+        <p>
+          Track progression through lifecycle states using state markers.
+          The full state history is captured in the audit trail.
+        </p>
+        <div className="code-block">
+{`[exploring] initial investigation
+-> evidence gathered
+-> [decided(rationale: "data supports direction")] commit to direction
+-> [blocked(reason: "waiting on API keys", since: "2026-03-22")] stalled
+-> API keys arrived
+-> ✓ execution complete
+
+# Every state transition is a typed, auditable event.
+# blocked() finds current blockers. why() traces how we got here.`}
+        </div>
+
+        <h3>Compression through hierarchy</h3>
+        <p>
+          Complex information compressed via nesting — same information, ~75% reduction,
+          structure explicit and queryable:
+        </p>
+        <div className="code-block">
+{`# Before (verbose prose):
+"We discussed whether to buy the flowscript.org domain. The cost
+would be about $12 per year which is minimal. However, it signals
+premature commitment before we've validated the idea publicly. We
+could register it later if traction. For now, we decided to hold
+off until after we share publicly and see if anyone cares."
+
+# After (FlowScript — 75% smaller, queryable):
+{
+  ? flowscript.org domain
+  <- {$12/year minimal cost
+       >< premature commitment signal
+     }
+  -> [decided] hold off until public validation
+  <- {can register later <- if traction
+       no risk of losing it now
+     }
+}`}
+        </div>
+      </section>
+
+      {/* The Deeper Structure */}
+      <section className="learn-section">
+        <h2>The deeper structure</h2>
+        <p>
+          Everything above describes what FlowScript <em>does</em>. This section is about
+          what it <em>is</em>, and why that matters beyond any single application.
+        </p>
+
+        <h3>Notation expands the space of possible thought</h3>
+        <p>
+          Musical notation didn't record what musicians were already playing. Before staff notation,
+          European music was monophonic — single melodies, loosely coordinated. Notation made polyphony
+          possible. Bach's fugues are literally unthinkable without it — not "hard to remember" but
+          impossible to <em>compose</em>, because the simultaneous interaction of independent voices
+          requires a representational system precise enough to reason about counterpoint.
+        </p>
+        <p>
+          FlowScript does the same thing for AI cognition. It doesn't record what agents are already
+          thinking. It makes a new category of reasoning possible — the kind where you can have multiple
+          reasoning chains interacting, query across causal paths, and turn contradictions into structured
+          tensions instead of silent overwrites. This category of reasoning is impossible in the
+          vector-search paradigm because vector search has no representation for <em>why</em>.
+        </p>
+
+        <h3>Types make malformed reasoning unrepresentable</h3>
+        <p>
+          Every decision in a FlowScript graph traces to a question through alternatives. Every
+          contradiction becomes a typed tension with a named axis. Every state change gets an audited
+          reason. These constraints give FlowScript a property familiar from type theory: <strong>well-typedness
+          implies safety.</strong> A well-formed graph can always be queried — no stuck states, no
+          silent contradictions, no untraceable decisions. The type system makes certain classes of
+          malformed reasoning structurally unrepresentable.
+        </p>
+
+        <h3>Compression reveals structure that verbosity hides</h3>
+        <p>
+          When you force reasoning through typed encoding, you force the extraction of structure that
+          would otherwise remain implicit in natural language. This maps to a deep result in information
+          theory: the minimum description of a dataset <em>is</em> its structure. Optimal compression
+          and genuine understanding are the same operation.
+        </p>
+        <p>
+          FlowScript's temporal tiers implement this: each consolidation cycle distills signal from
+          noise, and the resulting structure is more useful than the verbose original. After enough
+          cycles, what remains is a compressed knowledge base where the <em>shape</em> of the
+          reasoning is the value, not the raw content.
+        </p>
+
+        <h3>The metacognitive loop</h3>
+        <p>
+          When an AI agent writes FlowScript, queries its own reasoning graph, discovers tensions
+          or gaps, and generates new reasoning informed by that structure — it's not just remembering.
+          It's reasoning about its own reasoning through a typed, queryable substrate. This is
+          metacognition, and it's the category of thought that FlowScript makes possible that no
+          vector store can touch.
+        </p>
+
+        <h3>Deletion is irrational</h3>
+        <p>
+          <a href="https://arxiv.org/abs/2603.17244" target="_blank" rel="noopener noreferrer">Recent work in formal epistemology</a>{" "}
+          applied AGM belief revision postulates — the mathematical framework for rational belief
+          change — and proved that deletion violates core rationality requirements. When you delete
+          a contradicted memory, you destroy information that the formal framework says a rational
+          agent must preserve. FlowScript's RELATE &gt; DELETE approach satisfies these postulates.
+          The formal result says deletion is irrational. FlowScript is the implementation that takes
+          that seriously.
+        </p>
+
+        <h3>Infrastructure, not a tool</h3>
+        <p>
+          SQL gave us queryable data. TCP/IP gave us addressable communication. Git gave us
+          trackable changes. FlowScript gives AI agents queryable reasoning. Everything
+          else — compliance, security, memory, observability — is an application of
+          that infrastructure.
+        </p>
+        <p style={{ fontWeight: 600 }}>
+          The applications are what you install FlowScript for. The infrastructure is why it matters.
         </p>
       </section>
 
