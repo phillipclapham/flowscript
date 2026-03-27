@@ -4,7 +4,9 @@
 
 <h1 align="center">FlowScript</h1>
 
-<p align="center"><strong>Structured reasoning memory for AI agents. Five queries no vector store can answer: <code>why()</code>, <code>tensions()</code>, <code>blocked()</code>, <code>alternatives()</code>, <code>whatIf()</code>. Your agent builds the graph during normal work. You query it.</strong></p>
+<p align="center"><strong>Your AI agents make decisions they can't explain. FlowScript makes those decisions queryable.</strong></p>
+
+<p align="center">Five typed queries no vector store can answer: <code>why()</code>, <code>tensions()</code>, <code>blocked()</code>, <code>alternatives()</code>, <code>whatIf()</code>.<br>Hash-chained audit trail. Structural compliance. MIT licensed.</p>
 
 [![Tests](https://github.com/phillipclapham/flowscript/actions/workflows/test.yml/badge.svg)](https://github.com/phillipclapham/flowscript/actions/workflows/test.yml) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
 
@@ -15,8 +17,7 @@ import { Memory } from 'flowscript-core';
 
 const mem = Memory.loadOrCreate('./agent-memory.json');
 const tools = mem.asTools(); // 15 tools, OpenAI function calling format
-// → pass to OpenAI, Anthropic, or any function-calling LLM as tool definitions
-// → your agent builds the reasoning graph during normal work
+// → pass to any function-calling LLM — your agent builds the reasoning graph during normal work
 
 // Five typed queries over the reasoning your agent built:
 mem.query.tensions();            // structured tradeoffs with named axes
@@ -31,7 +32,7 @@ console.log(mem.toFlowScript());
 const wrap = mem.sessionWrap();  // prune dormant → audit trail, save
 ```
 
-Sub-ms local traversal on project-scale graphs. No embeddings required, no LLM calls, no network. Hash-chained audit trail. And when memories contradict, we don't delete — we create a queryable *tension*.
+Sub-ms local graph traversal. No embeddings required, no LLM calls, no network. And when memories contradict, FlowScript doesn't delete — it creates a queryable *tension*.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/phillipclapham/flowscript/main/docs/flowscript-demo.png" alt="FlowScript — web editor with .fs syntax, D3 reasoning graph, and live query panel" width="800">
@@ -41,11 +42,11 @@ Sub-ms local traversal on project-scale graphs. No embeddings required, no LLM c
 
 ## Why FlowScript
 
-Agent memory stores what happened. FlowScript stores why.
+Every agent framework gives AI agents memory. None of them make that memory queryable.
 
-Most agent infrastructure is converging on authorization — identity, access control, audit trails for *who did what*. That's necessary. But it leaves a gap: your agent can prove it was *allowed* to make a decision, but not *why* it made it. Researchers call this "[strategic blindness](https://arxiv.org/abs/2603.18718)" — memory that tracks content without tracking reasoning.
+Vector stores retrieve content that looks similar. That's useful, but it's not reasoning. When an auditor asks "why did your agent deny that claim?" or a developer asks "what breaks if we change this decision?" — similarity search returns a guess. FlowScript returns the actual typed reasoning chain.
 
-FlowScript sits above your memory store, not instead of it. Google Memory Bank, LangGraph checkpointers, Mem0 — they remember what your agent stored. FlowScript remembers why it decided, what it traded off, and what breaks if you change your mind.
+This is the gap researchers call "[strategic blindness](https://arxiv.org/abs/2603.18718)" — memory that tracks content without tracking reasoning. FlowScript sits above your memory store, not instead of it. Mem0, LangGraph checkpointers, Google Memory Bank — they remember what your agent stored. FlowScript remembers *why it decided*, what it traded off, and what breaks if you change your mind.
 
 ---
 
@@ -68,7 +69,7 @@ npm install -g flowscript-core
 }
 ```
 
-Restart your editor. 18 reasoning tools, local file persistence, zero cloud dependency. Add `--demo` before the file path to seed a sample project for exploration.
+Restart your editor. 18 MCP tools (15 reasoning + 3 lifecycle/audit), local file persistence, zero cloud dependency. Add `--demo` before the file path to seed a sample project for exploration.
 
 Copy [this CLAUDE.md snippet](examples/CLAUDE.md.snippet) into your project to tell the agent when to record decisions, tensions, and blockers automatically.
 
@@ -292,6 +293,8 @@ flowscript-mcp --generate-manifest
 
 ## Comparison
 
+Every agent framework gives AI agents memory. None make that memory auditable, typed, or queryable at the reasoning level. That's the layer FlowScript occupies.
+
 | | FlowScript | Mem0 | Vector stores |
 |:---|:---|:---|:---|
 | Find similar content | Vector search (Python SDK) | Vector search | Vector search |
@@ -304,7 +307,83 @@ flowscript-mcp --generate-manifest
 | Temporal graduation | Automatic 4-tier | — | — |
 | Token budgeting | 4 strategies | — | — |
 
-Under the hood: a local symbolic graph with typed nodes, typed relationships, and typed states. Queries traverse structure — no embeddings required, no LLM calls, no network. Sub-ms on project-scale graphs. Vector search and reasoning queries are orthogonal — use both.
+Under the hood: a local symbolic graph with typed nodes, typed relationships, and typed states. Queries traverse structure — no embeddings required, no LLM calls, no network. Sub-ms on project-scale graphs.
+
+Vector search and reasoning queries are orthogonal — use both. Mem0 for retrieval, FlowScript for reasoning. They're different architectural layers.
+
+---
+
+## Enterprise & Compliance
+
+FlowScript's typed reasoning chains are also compliance-ready audit infrastructure. This isn't a separate product — it's a structural property of how FlowScript works.
+
+**EU AI Act (Articles 12, 13, 86):**
+
+| Requirement | Article | How FlowScript satisfies it |
+|:---|:---|:---|
+| Record-keeping | Art. 12 | Hash-chained audit trail, append-only, tamper-evident, 7yr default retention |
+| Transparency | Art. 13 | `why()` queries return typed causal chains — not reconstructions, actual reasoning records |
+| Right to explanation | Art. 86 | `alternatives()` reconstructs what was considered, what was chosen, and the rationale |
+
+**Enforcement begins August 2026.** Audit trails can't be backdated. Organizations using FlowScript today have unbroken reasoning records from day one. You can turn on logging tomorrow — you can't manufacture the last 18 months of decision provenance.
+
+**Architecture:**
+
+```
+┌─────────────────────────────────────────────────────┐
+│  Your Agent Framework (LangGraph, CrewAI, ADK, ...) │
+├─────────────────────────────────────────────────────┤
+│  FlowScript SDK — Typed Reasoning Layer             │
+│  ┌──────────┐ ┌──────────┐ ┌──────────────────────┐ │
+│  │  Memory   │ │ Queries  │ │ Audit Trail          │ │
+│  │  (graph)  │ │ (5 ops)  │ │ (SHA-256 hash chain) │ │
+│  └──────────┘ └──────────┘ └──────────────────────┘ │
+├─────────────────────────────────────────────────────┤
+│  Your Storage (files, database, cloud)              │
+└─────────────────────────────────────────────────────┘
+```
+
+FlowScript doesn't replace your stack. It sits between your agent framework and your storage, adding typed reasoning and audit to whatever you already use.
+
+---
+
+## Security
+
+Three independent CVE clusters dropped in the same week — MCPwned (SSRF via MCP trust boundaries), ClawHub (1,100+ malicious skills in agent marketplaces), and ClawJacked (CVE-2026-25253, CVSS 8.8, 15,200 affected instances). All share the same structural root cause: **unvalidated content flowing through agent invocation paths.**
+
+You can't patch this at the application layer. The invocation path itself is untyped.
+
+FlowScript's typed intermediate representation doesn't prevent every attack class — SSRF and transport-layer poisoning need different tools. What it makes structurally impossible is the deeper problem: **reasoning corruption.** Untraceable decisions, silent contradictions, unaudited state changes — these can't exist in a well-typed FlowScript graph. The type system makes them unrepresentable.
+
+This is the same architectural insight behind [CHERI](https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/): Cambridge proved that making unsafe states hardware-inexpressible eliminates 70% of memory-safety CVEs — structural prevention beats behavioral detection. FlowScript applies this insight at the cognitive layer. The enforcement boundary is different (SDK type system vs. hardware capabilities), but the principle is identical: make the violation unrepresentable rather than hoping to catch it after the fact.
+
+The Description Integrity system (above) is a concrete implementation of this principle for MCP tool descriptions — the natural language text your LLM actually consumes.
+
+---
+
+## What FlowScript Actually Is
+
+If you've read this far, you're ready for the deeper structure.
+
+The five queries and the audit trail are what FlowScript *does*. Here's what it *is*, and why it matters beyond any single application.
+
+**Musical notation didn't record what musicians were already playing.** Before staff notation, European music was monophonic — single melodies, loosely coordinated. Notation made polyphony possible. Bach's fugues are literally unthinkable without it — not "hard to remember," but impossible to *compose*, because the simultaneous interaction of independent voices requires a representational system precise enough to reason about counterpoint.
+
+Notation expanded the space of possible musical thought.
+
+**FlowScript does the same thing for AI cognition.** It doesn't record what agents are already thinking. It makes a new category of AI reasoning possible — the kind where you can have multiple reasoning chains interacting, where you can query across causal paths, where contradictions become structured tensions instead of silent overwrites. This category of reasoning is impossible in the vector-search paradigm because vector search has no representation for *why*.
+
+**FlowScript's type system makes malformed reasoning unrepresentable.** Every decision traces to a question through alternatives. Every contradiction becomes a typed tension with a named axis. Every state change gets an audited reason. These constraints give FlowScript a property familiar from [type theory](https://en.wikipedia.org/wiki/Type_theory): well-typedness implies safety. A well-formed FlowScript graph can always be queried — no stuck states, no silent contradictions, no untraceable decisions. The type structure doesn't constitute formal proofs in the Curry-Howard sense, but it does what good type systems do: make certain classes of malformed state structurally unrepresentable.
+
+**Compression reveals structure that verbosity hides.** When you force AI reasoning through typed encoding, you force the extraction of structure that would otherwise remain implicit in natural language. This maps to a deep result in information theory: the minimum description of a dataset *is* its structure. Optimal compression and genuine understanding are the same operation. FlowScript's temporal tiers — where knowledge graduates from observation to principle through use — implement this: each compression cycle distills signal from noise, and the resulting structure is *more useful* than the verbose original.
+
+**The metacognitive loop.** When an AI agent writes FlowScript, queries its own reasoning graph, discovers tensions or gaps, and generates new reasoning informed by that structure — it's not just remembering. It's *reasoning about its own reasoning* through a typed, queryable substrate. This is metacognition, and it's the category of thought that FlowScript makes possible that no vector store can touch.
+
+**This isn't just good engineering — there's math behind it.** [Recent work in formal epistemology](https://arxiv.org/abs/2603.17244) applied AGM belief revision postulates — the mathematical framework for rational belief change — and proved that deletion violates core rationality requirements. When you delete a contradicted memory, you destroy information that the formal framework says a rational agent must preserve. FlowScript's RELATE > DELETE approach satisfies these postulates: preserve contradictions as tensions, maintain provenance chains, never destroy reasoning history. The formal result says deletion is irrational. FlowScript is the implementation that takes that seriously.
+
+**FlowScript is infrastructure.** Not a tool. Not a framework. Not a compliance product. Infrastructure — like SQL gave us queryable data, TCP/IP gave us addressable communication, and Git gave us trackable changes. FlowScript gives AI agents queryable reasoning. Everything else — compliance, security, memory, observability — is an application of that infrastructure.
+
+The applications are what you install FlowScript for. The infrastructure is why it matters.
 
 ---
 
