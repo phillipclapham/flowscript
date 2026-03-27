@@ -12,7 +12,7 @@ export function Learn() {
     <div className="page learn-page">
       <h1 className="learn-hero-title">Understanding FlowScript</h1>
       <p className="learn-hero-subtitle">
-        Decision intelligence for AI agents: what it is, why it matters, and how the reasoning graph works.
+        The typed reasoning layer for AI agents: what it is, why it matters, and how the reasoning graph works.
       </p>
 
       {/* What is Decision Intelligence */}

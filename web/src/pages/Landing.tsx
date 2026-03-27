@@ -14,12 +14,12 @@ export function Landing() {
       <section className="hero">
         <div className="hero-inner">
           <h1 className="hero-title">
-            Your agent forgets why it decided.<br />
-            <span className="hero-highlight">FlowScript remembers.</span>
+            Your AI agents make decisions they can't explain.<br />
+            <span className="hero-highlight">FlowScript makes those decisions queryable.</span>
           </h1>
           <p className="hero-subtitle">
-            Structured reasoning memory for AI agents. Five typed queries no vector store can answer.
-            When memories contradict, we don't delete. We create a queryable <em>tension</em>.
+            Five typed queries no vector store can answer: <code>why()</code>, <code>tensions()</code>, <code>blocked()</code>, <code>alternatives()</code>, <code>whatIf()</code>.
+            Hash-chained audit trail. Structural compliance. MIT licensed.
           </p>
           <div className="hero-actions">
             <Link to="/get-started" className="btn btn-primary">Get Started</Link>
@@ -55,13 +55,12 @@ export function Landing() {
       {/* The Missing Layer */}
       <section className="section section--accent">
         <div className="section-inner accent-inner">
-          <h2 className="section-title">The missing layer</h2>
+          <h2 className="section-title">The typed reasoning layer</h2>
           <p className="section-lead accent-lead">
-            Agent memory answers <em>what</em>. Authorization answers <em>who</em>.
-            Nobody answers <em>why</em>.
+            Every agent framework gives AI agents memory. None make that memory <em>queryable</em>.
           </p>
           <p className="accent-subtext">
-            FlowScript is the reasoning layer &mdash; above your memory store, not instead of it.
+            FlowScript sits above your memory store, not instead of it. It's the layer between what your agent does and why.
           </p>
         </div>
       </section>
@@ -76,7 +75,7 @@ export function Landing() {
           <div className="query-grid">
             <div className="query-card">
               <code className="query-name">tensions()</code>
-              <p>Find tradeoffs with named axes. "Performance vs cost", "simplicity vs flexibility" . Preserved as queryable structure, not buried in chat logs.</p>
+              <p>Find tradeoffs with named axes. "Performance vs cost", "simplicity vs flexibility". Preserved as queryable structure, not buried in chat logs.</p>
             </div>
             <div className="query-card">
               <code className="query-name">blocked()</code>
@@ -244,15 +243,80 @@ mem.query.tensions();{"\n"}
               </tbody>
             </table>
           </div>
+          <p className="query-note" style={{ marginTop: '1rem' }}>
+            Vector search and reasoning queries are orthogonal. Use both. Mem0 for retrieval, FlowScript for reasoning. They're different architectural layers.
+          </p>
+        </div>
+      </section>
+
+      {/* Enterprise & Compliance */}
+      <section className="section">
+        <div className="section-inner">
+          <h2 className="section-title">Enterprise &amp; Compliance</h2>
+          <p className="section-lead">
+            FlowScript's typed reasoning chains are compliance-ready audit infrastructure. Not a separate product &mdash; a structural property of how it works.
+          </p>
+          <div className="problem-grid">
+            <div className="problem-card">
+              <h3>EU AI Act Art. 12</h3>
+              <p>Record-keeping. Hash-chained audit trail, append-only, tamper-evident, 7-year default retention.</p>
+            </div>
+            <div className="problem-card">
+              <h3>EU AI Act Art. 13</h3>
+              <p>Transparency. <code>why()</code> queries return typed causal chains &mdash; not reconstructions, actual reasoning records.</p>
+            </div>
+            <div className="problem-card">
+              <h3>EU AI Act Art. 86</h3>
+              <p>Right to explanation. <code>alternatives()</code> reconstructs what was considered, what was chosen, and the rationale.</p>
+            </div>
+          </div>
+          <p className="query-note" style={{ marginTop: '1.5rem' }}>
+            Enforcement begins August 2026. Audit trails can't be backdated. Organizations using FlowScript today have unbroken reasoning records from day one. You can turn on logging tomorrow &mdash; you can't manufacture the last 18 months of decision provenance.
+          </p>
+        </div>
+      </section>
+
+      {/* Security */}
+      <section className="section section--alt">
+        <div className="section-inner">
+          <h2 className="section-title">Security: Can't Patch, Must Architect</h2>
+          <p className="section-lead">
+            Three independent CVE clusters dropped in the same week &mdash; MCPwned, ClawHub, and ClawJacked (CVSS 8.8, 15,200 affected instances). Same structural root cause: unvalidated content flowing through agent invocation paths.
+          </p>
+          <p className="section-lead">
+            FlowScript doesn't prevent every attack class. What it makes structurally impossible is <strong>reasoning corruption</strong> &mdash; untraceable decisions, silent contradictions, unaudited state changes. The type system makes them unrepresentable. Same architectural insight as <a href="https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>CHERI</a>: structural prevention over behavioral detection.
+          </p>
+        </div>
+      </section>
+
+      {/* What FlowScript Actually Is — Layer 1 (condensed for web) */}
+      <section className="section">
+        <div className="section-inner">
+          <h2 className="section-title">What FlowScript actually is</h2>
+          <p className="section-lead">
+            The five queries and the audit trail are what FlowScript <em>does</em>. Here's what it <em>is</em>.
+          </p>
+          <p className="section-lead">
+            Musical notation didn't record what musicians were already playing. It made polyphony <em>possible</em>. Bach's fugues are literally unthinkable without it &mdash; not "hard to remember" but impossible to compose, because the interaction of independent voices requires a representational system precise enough to reason about counterpoint.
+          </p>
+          <p className="section-lead">
+            FlowScript does the same thing for AI cognition. It doesn't record what agents are already thinking. It makes a new category of reasoning possible &mdash; the kind where you can have multiple reasoning chains interacting, query across causal paths, and turn contradictions into structured tensions. This is impossible in the vector-search paradigm because vector search has no representation for <em>why</em>.
+          </p>
+          <p className="section-lead">
+            FlowScript is infrastructure. Not a tool. Not a framework. Infrastructure &mdash; like SQL gave us queryable data, TCP/IP gave us addressable communication, and Git gave us trackable changes. FlowScript gives AI agents queryable reasoning. Everything else &mdash; compliance, security, memory, observability &mdash; is an application of that infrastructure.
+          </p>
+          <p className="section-lead" style={{ fontWeight: 600, color: 'var(--color-text)' }}>
+            The applications are what you install FlowScript for. The infrastructure is why it matters.
+          </p>
         </div>
       </section>
 
       {/* Bottom CTA */}
       <section className="section cta-section">
         <div className="section-inner" style={{ textAlign: 'center' }}>
-          <h2 className="section-title">Open source. MIT licensed. 1,312 tests.</h2>
+          <h2 className="section-title">Open source. MIT licensed. 1,315 tests.</h2>
           <p className="section-lead">
-            731 TypeScript + 581 Python. Same audit trail format across both SDKs.
+            731 TypeScript + 584 Python. Same audit trail format across both SDKs.
           </p>
           <div className="hero-actions" style={{ justifyContent: 'center' }}>
             <Link to="/get-started" className="btn btn-primary">Get Started</Link>

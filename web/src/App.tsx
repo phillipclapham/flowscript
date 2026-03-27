@@ -97,7 +97,7 @@ function Layout() {
         <div className="footer-content">
           {!isPlayground && (
             <p>
-              FlowScript &mdash; Decision Intelligence for AI Agents
+              FlowScript &mdash; The Typed Reasoning Layer for AI Agents
             </p>
           )}
           <p className="footer-links">
