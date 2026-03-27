@@ -273,9 +273,9 @@ mem.query.alternatives(dbQuestion);{"\n"}
         </p>
       </section>
 
-      {/* Audit Trail */}
+      {/* Audit Trail & Compliance */}
       <section className="learn-section">
-        <h2>Audit trail</h2>
+        <h2>Audit trail &amp; compliance</h2>
         <p>
           Every mutation to the reasoning graph is recorded in a SHA-256 hash-chained, append-only audit trail.
           Each entry links to the previous via cryptographic hash. Tampering with history breaks the chain.
@@ -286,11 +286,25 @@ mem.query.alternatives(dbQuestion);{"\n"}
           <li><strong>Framework attribution:</strong> Every entry tagged with which adapter (LangGraph, CrewAI, etc.) made the change.</li>
           <li><strong>Cross-language:</strong> Same canonical JSON serialization in TypeScript and Python. Chains verify across languages.</li>
           <li><strong>Configurable retention:</strong> Default 7 years (SOX). Monthly rotation with gzip compression.</li>
-          <li><strong>SIEM integration:</strong> <code>onEvent</code> callback for streaming audit events to external systems.</li>
+          <li><strong>SIEM integration:</strong> <code>onEvent</code> / <code>on_event_async</code> callbacks stream audit events to external systems. Async mode uses a background thread so slow webhooks never block agent operations.</li>
         </ul>
+
+        <h3>EU AI Act &mdash; Article 86 (Right to Explanation)</h3>
         <p>
-          You can't audit a deletion. You can query a tension. This is the structural argument for RELATE &gt; DELETE
-          . FlowScript preserves the full reasoning record, not just the latest version.
+          The Python SDK includes <code>explain()</code> &mdash; a deterministic, no-LLM function that converts{" "}
+          <code>why()</code> results into formal compliance documents. Three audience modes: plain English for
+          affected individuals, formal compliance language for regulatory submissions (with Article 86 citation
+          and hash-chain verification reference), and structured output for developers. Same input always produces
+          the same output. Also available as the <code>explain_decision</code> MCP tool.
+        </p>
+        <p>
+          Enforcement begins August 2026. Audit trails can't be backdated. Organizations using FlowScript today
+          have unbroken reasoning records from day one.
+        </p>
+
+        <p>
+          You can't audit a deletion. You can query a tension. This is the structural argument for RELATE &gt; DELETE.
+          FlowScript preserves the full reasoning record, not just the latest version.
         </p>
       </section>
 

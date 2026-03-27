@@ -317,13 +317,16 @@ Vector search and reasoning queries are orthogonal — use both. Mem0 for retrie
 
 FlowScript's typed reasoning chains are also compliance-ready audit infrastructure. This isn't a separate product — it's a structural property of how FlowScript works.
 
-**EU AI Act (Articles 12, 13, 86):**
+**EU AI Act coverage:**
 
 | Requirement | Article | How FlowScript satisfies it |
 |:---|:---|:---|
 | Record-keeping | Art. 12 | Hash-chained audit trail, append-only, tamper-evident, 7yr default retention |
 | Transparency | Art. 13 | `why()` queries return typed causal chains — not reconstructions, actual reasoning records |
-| Right to explanation | Art. 86 | `alternatives()` reconstructs what was considered, what was chosen, and the rationale |
+| Right to explanation | Art. 86 | `explain()` generates deterministic compliance documents (Python SDK) |
+| Monitoring | Art. 72 | `onEvent` / `on_event_async` callbacks stream audit events to SIEM/monitoring |
+
+**Article 86 — Right to Explanation:** The [Python SDK](https://pypi.org/project/flowscript-agents/) provides `explain()` — a deterministic, no-LLM function that converts `why()` results into formal compliance documents with Article 86 citation, hash-chain reference, and three audience modes (general/legal/technical). Also available as the `explain_decision` MCP tool. TypeScript port planned for v1.2.
 
 **Enforcement begins August 2026.** Audit trails can't be backdated. Organizations using FlowScript today have unbroken reasoning records from day one. You can turn on logging tomorrow — you can't manufacture the last 18 months of decision provenance.
 
@@ -337,6 +340,7 @@ FlowScript's typed reasoning chains are also compliance-ready audit infrastructu
 │  ┌──────────┐ ┌──────────┐ ┌──────────────────────┐ │
 │  │  Memory   │ │ Queries  │ │ Audit Trail          │ │
 │  │  (graph)  │ │ (5 ops)  │ │ (SHA-256 hash chain) │ │
+│  │         explain()      │ │  on_event_async      │ │
 │  └──────────┘ └──────────┘ └──────────────────────┘ │
 ├─────────────────────────────────────────────────────┤
 │  Your Storage (files, database, cloud)              │
