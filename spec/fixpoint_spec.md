@@ -68,7 +68,7 @@ Each iteration of `@fix`:
 
 **Definition — Semi-naive evaluation:** Each iteration processes only the delta from the previous iteration, not the entire graph. Iteration *i+1* evaluates `match` only against elements in δᵢ and their immediate graph neighborhood. This is the standard optimization from Datalog that reduces per-iteration cost from O(|G|) to O(|δ|).
 
-**Zero-match case:** If `match` produces zero results on the first iteration, the computation converges immediately with `iterations: 0` and `delta_sequence: [0]`. A fixpoint node is still created to record that the computation was attempted and trivially converged.
+**Zero-match case:** If `match` produces zero results on the first iteration, the computation converges immediately with `iterations: 0` and `delta_sequence: []` (empty — no iterations occurred, so no deltas were produced). A fixpoint node is still created to record that the computation was attempted and trivially converged. This is distinct from a computation that runs one iteration and derives nothing (`delta_sequence: [0]`).
 
 **NOT a loop.** `@fix` is not "do X until Y" in the imperative sense. It is a declarative specification of a convergence goal. The iteration is the mechanism, not the meaning. The meaning is the fixpoint.
 
@@ -111,7 +111,7 @@ Datalog with value invention (Skolemization) is Turing-complete (Abiteboul, Hull
 L2 `@fix` MUST include an explicit termination bound:
 - `max_iterations: N` — hard bound on iteration count
 - `timeout: duration` — wall-clock bound
-- `measure: function` — user-provided decreasing measure (proof of termination)
+- `measure: function` — user-provided decreasing measure. The function maps graph state to a non-negative integer that strictly decreases with each iteration. When the measure reaches 0, the computation terminates. If the measure does not decrease on an iteration, the computation halts with status `bounded`. This is the well-founded recursion approach from proof assistants (Coq's `Program Fixpoint`): the developer provides an explicit proof of termination in the form of a decreasing quantity.
 
 **When L2 converges:** Every Skolem constant is either identified with an existing node (the hypothesis was about something already known under a different name) or instantiated as a concrete new node with full provenance (the hypothesis generated genuine new structure). The converged result is fully grounded — auditable, queryable, L1-compatible.
 
@@ -153,7 +153,7 @@ The metamaterial property emerges from nesting. An L1 computation can CONTAIN bo
 
 The constraint radius varies spatially: the outer computation is decidable, the inner sub-computation is Turing-complete (but bounded). The audit trail records the constraint at every level, so compliance verification can distinguish L1 regions from L2 regions within the same computation.
 
-**Constraint monotonicity rule:** A nested `@fix` MUST have a constraint level ≥ its parent. An L2 computation cannot contain an L1 sub-computation that it treats as decidable — L1 guarantees only hold when the entire environment is L1. The reverse is safe: L1 can contain bounded L2 because the L1 discipline governs overall termination. (Formally: constraint levels form a total order L0 < L1 < L2, and nesting escalates or preserves, never de-escalates.)
+**Constraint monotonicity rule:** Nesting can only **escalate** computational power — inner `@fix` constraint ≥ outer `@fix` constraint (where L1 < L2). An L1 parent can contain a bounded L2 child (safe: the L1 discipline governs overall termination). An L2 parent CANNOT contain an L1 child that claims L1 guarantees (unsound: L1's closed-world assumption is violated by the L2 environment modifying the graph concurrently). In short: escalate or preserve, never de-escalate.
 
 ### 1.3 Key Properties
 
@@ -171,7 +171,7 @@ Formally: partition the match/yield rules by negation dependency. If rule R₁'s
 
 If no valid stratification exists (cyclic negation dependency), the program is rejected (E010).
 
-**Composition.** Multiple `@fix` computations can operate on the same graph, including nested. Constraint levels form a total order (L0 < L1 < L2). The effective constraint of a composition is the join (maximum) of its components: L1 composed with L2 has effective constraint L2. Sequential @fix computations within the same constraint level compose — the fixpoint of the composition equals the fixpoint of the union of their rules (by the modularity of Datalog evaluation on shared domains).
+**Composition.** Multiple `@fix` computations can operate on the same graph, including nested. Constraint levels form a total order (L0 < L1 < L2). The effective constraint of a composition is the join (maximum) of its components: L1 composed with L2 has effective constraint L2. For positive programs (no negation patterns), sequential @fix computations within the same constraint level compose cleanly — the fixpoint of the composition equals the fixpoint of the union of their rules. For programs with negation, composition may require re-stratification: the combined rule set must have a valid stratification (E010), which may differ from the individual stratifications.
 
 **Idempotency.** Running an L1 @fix computation on a graph that already contains its fixpoint is idempotent: the least fixpoint is already reached, so the first iteration produces δ = ∅ and the computation converges immediately with `iterations: 0`. This follows directly from the definition of fixpoint.
 
@@ -298,6 +298,8 @@ duration             ::= integer time_unit
 time_unit            ::= "ms" | "s" | "m"
 measure_ref          ::= "measure" ":" identifier
 compound_condition   ::= termination_condition ("or" termination_condition)+
+(* compound_condition is flat OR — all conditions checked, computation stops
+   when ANY condition is satisfied. No precedence or grouping needed. *)
 
 (* Primitives *)
 variable             ::= uppercase_letter (letter | digit | "_")*
