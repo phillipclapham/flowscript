@@ -749,8 +749,14 @@ Because sequential L1-then-L2 is two separate computations sharing a graph. Nest
 **Implementation priority:**
 1. Python SDK: Generalize ConsolidationEngine → FixpointEngine with constraint parameter
 2. TypeScript: Add @fix to parser, IR types, Memory class
-3. Audit trail: Three new event types
+3. Audit trail: Three new event types (fixpoint_start, fixpoint_iteration, fixpoint_end)
 4. Linter: E007-E011, W004
+5. Extend `explain.py` (Article 86 module) for @fix awareness:
+   - Handle `fixpoint_derived` relationships in why() causal chains
+   - General mode: "This conclusion was reached through iterative convergence (N iterations)"
+   - Legal mode: constraint level disclosure (L1 = deterministic certificate, L2 = bounded computation history)
+   - Add `as_of: datetime` parameter for temporal explanation queries (reconstruct historical reasoning state from audit trail — point-in-time compliance)
+6. Extend `query.py`: why() traversal through fixpoint_derived → fixpoint node → original match sources
 
 ---
 
