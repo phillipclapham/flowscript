@@ -130,7 +130,25 @@ export function GetStarted() {
           <code>query_audit</code>, <code>verify_audit</code>, <code>verify_integrity</code>.
         </p>
 
-        <h3>4. Add the CLAUDE.md snippet</h3>
+        <h3>4. (Optional) Stream to FlowScript Cloud</h3>
+        <p>
+          Add one environment variable to stream audit events to{" "}
+          <a href="https://api.flowscript.org" target="_blank" rel="noopener noreferrer">FlowScript Cloud</a>{" "}
+          for independent cryptographic witnessing:
+        </p>
+        <div className="code-block">
+{`"env": {
+  "OPENAI_API_KEY": "your-key",
+  "FLOWSCRIPT_API_KEY": "your-cloud-key"
+}`}
+        </div>
+        <p>
+          Every audit event &mdash; including convergence certificates &mdash; streams automatically.
+          Chain verification and witness attestation happen server-side. Your local audit trail remains
+          the source of truth.
+        </p>
+
+        <h3>5. Add the CLAUDE.md snippet</h3>
         <p>
           This is what turns tools into a workflow. Copy the{" "}
           <a href="https://github.com/phillipclapham/flowscript-agents/blob/main/examples/CLAUDE.md.example" target="_blank" rel="noopener noreferrer">
@@ -139,7 +157,7 @@ export function GetStarted() {
           into your project's CLAUDE.md. It tells your agent <em>when</em> to record decisions, surface tensions before new decisions, and check blockers at session start, automatically, without you asking. Without it, the tools are available but passive. With it, your agent proactively tracks your project's reasoning.
         </p>
 
-        <h3>5. Try it: your first 5 minutes</h3>
+        <h3>6. Try it: your first 5 minutes</h3>
         <p>With the MCP server and CLAUDE.md snippet configured above, start a conversation with your agent:</p>
         <div className="code-block">
 {`"I need to decide between PostgreSQL and MongoDB for our user data.
@@ -402,11 +420,11 @@ with UnifiedMemory("agent-memory.json", embedder=OpenAIEmbeddings(), llm=llm) as
         <div className="gs-links">
           <a href="https://github.com/phillipclapham/flowscript" target="_blank" rel="noopener noreferrer" className="gs-link-card">
             <h3>flowscript-core</h3>
-            <p>TypeScript SDK &mdash; npm package, full API, 731 tests</p>
+            <p>TypeScript SDK &mdash; npm package, full API, 779 tests</p>
           </a>
           <a href="https://github.com/phillipclapham/flowscript-agents" target="_blank" rel="noopener noreferrer" className="gs-link-card">
             <h3>flowscript-agents</h3>
-            <p>Python SDK &mdash; 9 adapters, consolidation, 581 tests</p>
+            <p>Python SDK &mdash; 9 adapters, CloudClient, 586 tests</p>
           </a>
           <Link to="/playground" className="gs-link-card">
             <h3>Playground</h3>

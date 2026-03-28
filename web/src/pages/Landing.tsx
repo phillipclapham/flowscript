@@ -19,7 +19,11 @@ export function Landing() {
           </h1>
           <p className="hero-subtitle">
             Five typed queries no vector store can answer: <code>why()</code>, <code>tensions()</code>, <code>blocked()</code>, <code>alternatives()</code>, <code>whatIf()</code>.
-            Hash-chained audit trail. Structural compliance. MIT licensed.
+            Hash-chained audit trail. Convergence certificates. Cloud witnessing. MIT licensed.
+          </p>
+          <p className="hero-compliance">
+            EU AI Act enforcement begins August 2026. Audit trails can't be backdated.
+            FlowScript is the compliance engine that makes your agents audit-ready from day one.
           </p>
           <div className="hero-actions">
             <Link to="/get-started" className="btn btn-primary">Get Started</Link>
@@ -267,7 +271,7 @@ mem.query.tensions();{"\n"}
             </div>
             <div className="problem-card">
               <h3>EU AI Act Art. 86</h3>
-              <p>Right to explanation. <code>alternatives()</code> reconstructs what was considered, what was chosen, and the rationale.</p>
+              <p>Right to explanation. <code>explain()</code> generates deterministic compliance documents from <code>why()</code> results &mdash; three audience modes, no LLM in the loop, reproducible.</p>
             </div>
           </div>
           <p className="query-note" style={{ marginTop: '1.5rem' }}>
@@ -286,6 +290,61 @@ mem.query.tensions();{"\n"}
           <p className="section-lead">
             FlowScript doesn't prevent every attack class. What it makes structurally impossible is <strong>reasoning corruption</strong> &mdash; untraceable decisions, silent contradictions, unaudited state changes. The type system makes them unrepresentable. Same architectural insight as <a href="https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>CHERI</a>: structural prevention over behavioral detection.
           </p>
+        </div>
+      </section>
+
+      {/* @fix — Convergence Certificates */}
+      <section className="section">
+        <div className="section-inner">
+          <h2 className="section-title">@fix &mdash; Convergence certificates</h2>
+          <p className="section-lead">
+            When FlowScript resolves contradictions, it doesn't just update the graph. It produces a <strong>convergence certificate</strong> &mdash; a hash-chained attestation proving how the reasoning changed and that the transformation hasn't been tampered with.
+          </p>
+          <div className="problem-grid">
+            <div className="problem-card">
+              <h3>L0 &mdash; Pure Description</h3>
+              <p>No computation. Static knowledge and observations. Always terminates.</p>
+            </div>
+            <div className="problem-card">
+              <h3>L1 &mdash; Bounded Fixpoint</h3>
+              <p>Consistency enforcement, belief propagation. Closed domain, inflationary. Always terminates (Knaster-Tarski).</p>
+            </div>
+            <div className="problem-card">
+              <h3>L2 &mdash; General Fixpoint</h3>
+              <p>Abductive reasoning, hypothesis generation. Turing-complete, bounded. For when you need full computational power.</p>
+            </div>
+          </div>
+          <p className="query-note" style={{ marginTop: '1.5rem' }}>
+            Each certificate records: <code>initial_graph_hash</code> &rarr; <code>delta_sequence</code> &rarr; <code>final_graph_hash</code> &rarr; <code>certificate_hash</code>. An auditor can verify not just what your agent decided, but how it got there.
+          </p>
+        </div>
+      </section>
+
+      {/* FlowScript Cloud */}
+      <section className="section section--alt">
+        <div className="section-inner">
+          <h2 className="section-title">FlowScript Cloud &mdash; Independent witnessing</h2>
+          <p className="section-lead">
+            Local audit trails are tamper-evident but self-attested. <a href="https://api.flowscript.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>FlowScript Cloud</a> adds independent third-party witnessing: your SDK streams hash-chained events to the Cloud service, which verifies chain continuity and stores witness attestations.
+          </p>
+          <div className="install-grid">
+            <div className="install-card">
+              <h3>One environment variable</h3>
+              <div className="code-block install-cmd">export FLOWSCRIPT_API_KEY=your-key</div>
+              <p>Every audit event &mdash; including convergence certificates &mdash; streams to api.flowscript.org automatically. Chain verification and witness attestation happen server-side.</p>
+            </div>
+            <div className="install-card">
+              <h3>Three deployment tiers</h3>
+              <p><strong>SaaS</strong> at api.flowscript.org. <strong>Self-hosted Cloudflare</strong> &mdash; deploy to your own account. <strong>Docker on-premise</strong> for regulated industries. One codebase, three deployment models.</p>
+            </div>
+            <div className="install-card">
+              <h3>Source-available</h3>
+              <p>BSL 1.1 licensed. Full source on GitHub. Converts to Apache 2.0 after 4 years. Audit the code that audits your agents.</p>
+              <a href="https://github.com/phillipclapham/flowscript-cloud" target="_blank" rel="noopener noreferrer" className="install-link">
+                View on GitHub &rarr;
+              </a>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -314,9 +373,9 @@ mem.query.tensions();{"\n"}
       {/* Bottom CTA */}
       <section className="section cta-section">
         <div className="section-inner" style={{ textAlign: 'center' }}>
-          <h2 className="section-title">Open source. MIT licensed. 1,315 tests.</h2>
+          <h2 className="section-title">Open source. MIT licensed. ~1,400 tests.</h2>
           <p className="section-lead">
-            731 TypeScript + 584 Python. Same audit trail format across both SDKs.
+            779 TypeScript + 586 Python + 68 Cloud. Same audit trail format across all three.
           </p>
           <div className="hero-actions" style={{ justifyContent: 'center' }}>
             <Link to="/get-started" className="btn btn-primary">Get Started</Link>

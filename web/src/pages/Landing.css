@@ -42,8 +42,19 @@
   font-size: 19px;
   line-height: 1.6;
   color: var(--text-secondary);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-md);
   max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-compliance {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--color-primary);
+  font-style: italic;
+  margin-bottom: var(--space-xl);
+  max-width: 560px;
   margin-left: auto;
   margin-right: auto;
 }

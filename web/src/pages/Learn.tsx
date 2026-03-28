@@ -385,6 +385,95 @@ mem.query.alternatives(dbQuestion);{"\n"}
         </p>
       </section>
 
+      {/* @fix — Stratified Fixpoint Computation */}
+      <section className="learn-section">
+        <h2>@fix &mdash; Stratified fixpoint computation</h2>
+        <p>
+          FlowScript includes <code>@fix</code>, a formal fixpoint operator over typed reasoning graphs.
+          When an agent needs to reason iteratively &mdash; resolving contradictions, propagating beliefs,
+          converging on decisions &mdash; <code>@fix</code> provides three computational levels with
+          guaranteed termination properties.
+        </p>
+
+        <div className="tier-list">
+          <div className="tier tier--current">
+            <div className="tier-label">L0</div>
+            <div className="tier-desc">
+              <strong>Pure description</strong> &mdash; no <code>@fix</code>. Static knowledge, observations. Always terminates.
+            </div>
+          </div>
+          <div className="tier tier--developing">
+            <div className="tier-label">L1</div>
+            <div className="tier-desc">
+              <strong>Bounded fixpoint</strong> &mdash; closed domain, inflationary. Always terminates (Knaster-Tarski). Consistency enforcement, belief propagation.
+            </div>
+          </div>
+          <div className="tier tier--proven">
+            <div className="tier-label">L2</div>
+            <div className="tier-desc">
+              <strong>General fixpoint</strong> &mdash; Turing-complete, bounded. Abductive reasoning, hypothesis generation.
+            </div>
+          </div>
+        </div>
+
+        <p>
+          L1 can contain bounded L2 sub-computations &mdash; constraint escalates, never de-escalates.
+          This is a <em>computational metamaterial</em>: tunable constraint radius within a single
+          reasoning structure. The consolidation engine is a degenerate L1 fixpoint (single iteration).
+        </p>
+
+        <h3>Convergence certificates</h3>
+        <p>
+          When consolidation resolves contradictions, FlowScript produces a <strong>convergence
+          certificate</strong> &mdash; a hash-chained attestation: <code>initial_graph_hash</code> &rarr;{" "}
+          <code>delta_sequence</code> &rarr; <code>final_graph_hash</code> &rarr; <code>certificate_hash</code>.
+          This is concrete Article 86 compliance infrastructure. An auditor can verify not just <em>what</em>{" "}
+          your agent decided, but <em>how it got there</em> &mdash; and prove the record hasn't been altered.
+        </p>
+        <p>
+          Every other agent memory system treats contradiction resolution as a black box. FlowScript
+          makes the resolution process itself auditable.
+        </p>
+        <p>
+          Formal grounding: Datalog stratification (Abiteboul-Hull-Vianu 1995), Knaster-Tarski
+          fixed-point theory, and OWL's three-layer decidability model (Baader et al. 2003). Full spec:{" "}
+          <a href="https://github.com/phillipclapham/flowscript/blob/main/spec/fixpoint_spec.md" target="_blank" rel="noopener noreferrer">
+            fixpoint_spec.md
+          </a>.
+        </p>
+      </section>
+
+      {/* FlowScript Cloud */}
+      <section className="learn-section">
+        <h2>FlowScript Cloud &mdash; Independent witnessing</h2>
+        <p>
+          Local audit trails are tamper-evident but self-attested. <a href="https://api.flowscript.org" target="_blank" rel="noopener noreferrer">FlowScript Cloud</a>{" "}
+          adds independent third-party witnessing: your SDK streams hash-chained events to the Cloud
+          service, which verifies chain continuity and stores witness attestations. A compliance officer
+          can't get this from your own database &mdash; independent verification requires an independent party.
+        </p>
+        <div className="code-block">
+{`# One environment variable. That's it.
+export FLOWSCRIPT_API_KEY=your-key
+
+# In your Python code:
+from flowscript_agents.cloud import CloudClient
+
+cloud = CloudClient()  # reads FLOWSCRIPT_API_KEY from env
+mem = Memory.load_or_create("agent.json", options=MemoryOptions(
+    audit=AuditConfig(on_event=cloud.queue_event)
+))
+# Every audit event streams to api.flowscript.org automatically`}
+        </div>
+        <ul className="audit-features">
+          <li><strong>Chain verification on ingestion:</strong> Cloud verifies hash chain continuity. Breaks trigger immediate alerts.</li>
+          <li><strong>Witness attestations:</strong> Independent proof your chain was intact at time T.</li>
+          <li><strong>Batch buffering:</strong> Events accumulate and flush in batches. Lock-free I/O &mdash; network never blocks your agent.</li>
+          <li><strong>Three deployment tiers:</strong> SaaS at api.flowscript.org, self-hosted Cloudflare, or Docker on-premise. One codebase.</li>
+          <li><strong>Source-available:</strong> BSL 1.1 (converts to Apache 2.0 after 4 years). <a href="https://github.com/phillipclapham/flowscript-cloud" target="_blank" rel="noopener noreferrer">Full source on GitHub</a>.</li>
+        </ul>
+      </section>
+
       {/* FlowScript as Notation */}
       <section className="learn-section">
         <h2>FlowScript as a notation</h2>
