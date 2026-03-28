@@ -8,6 +8,8 @@
 
 <p align="center">Five typed queries no vector store can answer: <code>why()</code>, <code>tensions()</code>, <code>blocked()</code>, <code>alternatives()</code>, <code>whatIf()</code>.<br>Hash-chained audit trail. Structural compliance. MIT licensed.</p>
 
+<p align="center"><em>EU AI Act enforcement begins August 2026. Audit trails can't be backdated.<br>FlowScript is the compliance engine that makes your agents audit-ready from day one.</em></p>
+
 [![Tests](https://github.com/phillipclapham/flowscript/actions/workflows/test.yml/badge.svg)](https://github.com/phillipclapham/flowscript/actions/workflows/test.yml) [![npm](https://img.shields.io/npm/v/flowscript-core)](https://www.npmjs.com/package/flowscript-core) [![PyPI](https://img.shields.io/pypi/v/flowscript-agents)](https://pypi.org/project/flowscript-agents/) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![Website](https://img.shields.io/badge/demo-flowscript.org-purple)](https://flowscript.org)
 
 ---
@@ -147,7 +149,7 @@ Does NOT require `ai` as a dependency — you bring your own Vercel AI SDK. Flow
 
 ### Agent Frameworks (Python)
 
-Drop-in adapters for LangGraph, CrewAI, Google ADK, OpenAI Agents, Pydantic AI, smolagents, LlamaIndex, Haystack, and CAMEL-AI:
+Drop-in adapters for LangGraph, CrewAI, Google ADK, OpenAI Agents, Pydantic AI, smolagents, LlamaIndex, Haystack, and CAMEL-AI. Plus CloudClient for streaming audit events to [FlowScript Cloud](https://api.flowscript.org):
 
 ```bash
 pip install flowscript-agents[langgraph]   # or crewai, google-adk, openai-agents, all
@@ -269,6 +271,73 @@ Same audit format across both SDKs — canonical JSON serialization, cross-langu
 
 ---
 
+## @fix — Stratified Fixpoint Computation
+
+FlowScript includes `@fix`, a formal fixpoint operator over typed reasoning graphs. When an agent needs to reason iteratively — resolving contradictions, propagating beliefs, converging on decisions — `@fix` provides three computational levels with guaranteed termination properties:
+
+| Level | What it does | Termination | Use case |
+|:------|:-------------|:------------|:---------|
+| **L0** | No `@fix`. Pure description. | Always | Static knowledge, observations |
+| **L1** | Bounded fixpoint. Closed domain, inflationary. | Always (Knaster-Tarski) | Consistency enforcement, belief propagation |
+| **L2** | General fixpoint. Turing-complete, bounded. | Bounded | Abductive reasoning, hypothesis generation |
+
+L1 can contain bounded L2 sub-computations — constraint escalates, never de-escalates. This is a *computational metamaterial*: tunable constraint radius within a single reasoning structure.
+
+**Convergence certificates.** When consolidation resolves contradictions, FlowScript produces a hash-chained attestation: `initial_graph_hash → delta_sequence → final_graph_hash → certificate_hash`. This is concrete Article 86 compliance infrastructure — a tamper-evident record of how your agent's reasoning converged.
+
+```python
+from flowscript_agents import Memory, MemoryOptions, AuditConfig
+
+mem = Memory.load_or_create("agent.json", options=MemoryOptions(
+    audit=AuditConfig(retention_months=84)
+))
+
+# Consolidation produces convergence certificates automatically
+# Each certificate records: what changed, what the graph looked like before
+# and after, and a hash proving the transformation is tamper-evident
+```
+
+**Why this matters:** Every other agent memory system treats contradiction resolution as a black box — the old memory disappears, replaced by the new one. FlowScript's convergence certificates make the resolution process itself auditable. An auditor can verify not just *what* your agent decided, but *how it got there* — and prove the record hasn't been altered.
+
+**Formal grounding:** The `@fix` architecture draws on Datalog stratification (Abiteboul-Hull-Vianu 1995), Knaster-Tarski fixed-point theory, and OWL's three-layer decidability model (Baader et al. 2003). Full spec: [`fixpoint_spec.md`](spec/fixpoint_spec.md).
+
+---
+
+## FlowScript Cloud — Independent Cryptographic Witnessing
+
+**[api.flowscript.org](https://api.flowscript.org)** — your agent's audit trail, independently witnessed.
+
+Local audit trails are tamper-evident but self-attested. FlowScript Cloud adds independent third-party witnessing: your SDK streams hash-chained events to the Cloud service, which verifies chain continuity and stores witness attestations. A compliance officer can't get this from your own database — independent verification requires an independent party.
+
+```bash
+# One environment variable. That's it.
+export FLOWSCRIPT_API_KEY=your-key
+```
+
+```python
+from flowscript_agents import Memory, MemoryOptions, AuditConfig
+from flowscript_agents.cloud import CloudClient
+
+cloud = CloudClient()  # reads FLOWSCRIPT_API_KEY from env
+mem = Memory.load_or_create("agent.json", options=MemoryOptions(
+    audit=AuditConfig(on_event=cloud.queue_event)
+))
+# Every audit event streams to api.flowscript.org automatically
+# Chain verification + witness attestation happen server-side
+```
+
+**What Cloud does:**
+- Receives hash-chained audit events from your SDK
+- Verifies chain continuity on ingestion (breaks = immediate alert)
+- Stores witness attestations (independent proof your chain was intact at time T)
+- Provides backfill endpoint for recovery (local audit trail is always the source of truth)
+
+**Architecture:** Cloudflare Workers + D1 (SQLite at edge). Three deployment tiers from one codebase: SaaS at api.flowscript.org, self-hosted Cloudflare (deploy to your own account), or Docker on-premise for regulated industries. BSL 1.1 licensed (source-available, converts to Apache 2.0 after 4 years).
+
+[FlowScript Cloud repo →](https://github.com/phillipclapham/flowscript-cloud) | [Python CloudClient docs →](https://github.com/phillipclapham/flowscript-agents)
+
+---
+
 ## Description Integrity — SRI for LLM Tool Descriptions
 
 MCP tool descriptions are the prompts your LLM actually reads. If a malicious dependency, middleware, or monkey-patch mutates them in-process, the LLM silently follows poisoned instructions. FlowScript's MCP servers include a three-layer integrity verification system — a reference implementation of [deterministic description integrity for MCP](https://github.com/modelcontextprotocol/modelcontextprotocol/discussions/2402):
@@ -340,14 +409,14 @@ FlowScript's typed reasoning chains are also compliance-ready audit infrastructu
 │  ┌──────────┐ ┌──────────┐ ┌──────────────────────┐ │
 │  │  Memory   │ │ Queries  │ │ Audit Trail          │ │
 │  │  (graph)  │ │ (5 ops)  │ │ (SHA-256 hash chain) │ │
-│  │         explain()      │ │  on_event_async      │ │
-│  └──────────┘ └──────────┘ └──────────────────────┘ │
+│  │  @fix     │ │explain() │ │  on_event_async ─────────→ FlowScript Cloud
+│  └──────────┘ └──────────┘ └──────────────────────┘ │  (independent witness)
 ├─────────────────────────────────────────────────────┤
 │  Your Storage (files, database, cloud)              │
 └─────────────────────────────────────────────────────┘
 ```
 
-FlowScript doesn't replace your stack. It sits between your agent framework and your storage, adding typed reasoning and audit to whatever you already use.
+FlowScript doesn't replace your stack. It sits between your agent framework and your storage, adding typed reasoning and audit to whatever you already use. Optionally stream audit events to [FlowScript Cloud](https://api.flowscript.org) for independent cryptographic witnessing.
 
 ---
 
@@ -396,10 +465,11 @@ The applications are what you install FlowScript for. The infrastructure is why 
 | Package | What | Install |
 |:--------|:-----|:--------|
 | [flowscript-core](https://www.npmjs.com/package/flowscript-core) | TypeScript SDK — Memory class, 15 agent tools, Vercel AI SDK adapter, audit trail, token budgeting | `npm install flowscript-core` |
-| [flowscript-agents](https://pypi.org/project/flowscript-agents/) | Python SDK — 9 framework adapters, auto-extraction, consolidation, audit trail | `pip install flowscript-agents openai` |
+| [flowscript-agents](https://pypi.org/project/flowscript-agents/) | Python SDK — 9 framework adapters, CloudClient, auto-extraction, consolidation, audit trail | `pip install flowscript-agents openai` |
+| [flowscript-cloud](https://github.com/phillipclapham/flowscript-cloud) | Cloud witnessing service — chain verification, witness attestations, RBAC | [api.flowscript.org](https://api.flowscript.org) |
 | [flowscript.org](https://flowscript.org) | Web editor, D3 visualization, live query panel | Browser |
 
-**731 TypeScript tests** across 15 suites. **1,315 total** across both SDKs. Same audit trail format and canonical JSON serialization across both languages.
+**779 TypeScript tests** across 15 suites. **~1,400+ total** across both SDKs and Cloud. Same audit trail format and canonical JSON serialization across both languages.
 
 ### Docs
 
