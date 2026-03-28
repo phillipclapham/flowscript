@@ -87,7 +87,8 @@ export type NodeType =
   | 'completion'
   | 'alternative'
   | 'exploring'
-  | 'parking';
+  | 'parking'
+  | 'fixpoint';
 
 export interface Node {
   id: string;  // content-hash (SHA-256)
@@ -109,7 +110,8 @@ export type RelationType =
   | 'different'
   | 'alternative'
   | 'alternative_worse'
-  | 'alternative_better';
+  | 'alternative_better'
+  | 'fixpoint_derived';
 
 export interface Relationship {
   id: string;  // content-hash (SHA-256)
@@ -141,6 +143,90 @@ export interface GraphInvariants {
   all_nodes_reachable?: boolean;
   tension_axes_labeled?: boolean;
   state_fields_present?: boolean;
+  fixpoint_constraint_valid?: boolean;
+  fixpoint_convergence_valid?: boolean;
+  fixpoint_bound_present?: boolean;
+  fixpoint_nesting_monotone?: boolean;
+  fixpoint_derivation_complete?: boolean;
+}
+
+// ============================================================================
+// Fixpoint Types (@fix operator)
+// ============================================================================
+
+export type ConstraintLevel = 'L1' | 'L2';
+export type FixpointStatus = 'declared' | 'converged' | 'bounded';
+
+export interface FixpointMatchPattern {
+  type: 'node' | 'path' | 'negation' | 'query_ref';
+  variable?: string;
+  node_type?: string;
+  conditions?: FixpointPredicate[];
+  // Path pattern fields
+  steps?: FixpointPathStep[];
+  // Negation fields
+  negated?: FixpointMatchPattern;
+  // Query reference fields
+  query_name?: string;
+  args?: string[];
+}
+
+export interface FixpointPathStep {
+  type: 'node' | 'edge';
+  variable?: string;
+  node_type?: string;
+  conditions?: FixpointPredicate[];
+  edge_label?: string;
+}
+
+export interface FixpointPredicate {
+  name: string;
+  args: string[];
+}
+
+export interface FixpointYieldElement {
+  type: 'relationship' | 'node' | 'node_relationship' | 'state' | 'builtin' | 'nested_fix';
+  // Relationship production
+  source_var?: string;
+  edge_label?: string;
+  target_var?: string;
+  // Node production
+  node_kind?: string;
+  args?: string[];
+  // State production
+  action?: 'resolve' | 'annotate';
+  variable?: string;
+  // Annotations
+  annotations?: Record<string, string>;
+  // Nested fixpoint (stored as full FixpointExt)
+  nested?: FixpointExt;
+}
+
+export interface FixpointTermination {
+  type: 'stable' | 'max_iterations' | 'timeout' | 'measure' | 'compound';
+  value?: number;
+  unit?: string;
+  measure_name?: string;
+  conditions?: FixpointTermination[];
+}
+
+export interface FixpointExt {
+  name: string | null;
+  constraint: ConstraintLevel | null;
+  status: FixpointStatus;
+  match: FixpointMatchPattern[];
+  yield: FixpointYieldElement[];
+  until: FixpointTermination;
+  // Populated after execution (not during parsing)
+  iterations?: number;
+  delta_sequence?: number[];
+  initial_graph_hash?: string;
+  final_graph_hash?: string;
+  bound_type?: string;
+  bound_value?: number;
+  skolem_constants_created?: number;
+  skolem_constants_grounded?: number;
+  skolem_constants_unresolved?: number;
 }
 
 export interface IR {

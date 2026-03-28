@@ -147,6 +147,22 @@ export class Parser {
     return rel;
   }
 
+  /**
+   * Parse fixpoint annotation iterations into a key-value record.
+   */
+  private _parseAnnotations(annotationsNode: any): Record<string, string> {
+    const result: Record<string, string> = {};
+    if (annotationsNode && annotationsNode.children) {
+      for (const child of annotationsNode.children) {
+        const data = child.toIR();
+        if (data && data.key) {
+          result[data.key] = data.value;
+        }
+      }
+    }
+    return result;
+  }
+
   private createSemantics() {
     const self = this;
 
@@ -1132,6 +1148,388 @@ export class Parser {
           const node = self.createNode('statement', text, self.currentModifiers, this);
           self.nodes.push(node);
         }
+      },
+
+      // =====================================================================
+      // Fixpoint Expression (@fix) semantic actions
+      // =====================================================================
+
+      fixpointExpression(expr: any) {
+        return expr.toIR();
+      },
+
+      fixpointExpression_named(_atfix: any, _sp: any, name: any, _ws1: any, _lbrace: any, _ws2: any, clauses: any, _ws3: any, _rbrace: any) {
+        const fixName = name.sourceString.trim();
+        const clauseData = clauses.toIR();
+
+        const ext: any = {
+          fix: {
+            name: fixName || null,
+            constraint: clauseData.constraint || null,
+            status: 'declared',
+            match: clauseData.match || [],
+            yield: clauseData.yield || [],
+            until: clauseData.until || null
+          }
+        };
+
+        const content = `${fixName}: ${clauseData.constraint || '?'} fixpoint (declared)`;
+        const node = self.createNode('fixpoint', content, self.currentModifiers, this);
+        node.ext = ext;
+        self.nodes.push(node);
+        self.currentModifiers = [];
+        return node;
+      },
+
+      fixpointExpression_anon(_atfix: any, _ws1: any, _lbrace: any, _ws2: any, clauses: any, _ws3: any, _rbrace: any) {
+        const clauseData = clauses.toIR();
+
+        const ext: any = {
+          fix: {
+            name: null,
+            constraint: clauseData.constraint || null,
+            status: 'declared',
+            match: clauseData.match || [],
+            yield: clauseData.yield || [],
+            until: clauseData.until || null
+          }
+        };
+
+        const content = `anonymous: ${clauseData.constraint || '?'} fixpoint (declared)`;
+        const node = self.createNode('fixpoint', content, self.currentModifiers, this);
+        node.ext = ext;
+        self.nodes.push(node);
+        self.currentModifiers = [];
+        return node;
+      },
+
+      fixpointClauses(first: any, _ws: any, rest: any) {
+        const result: any = {};
+        const firstData = first.toIR();
+        Object.assign(result, firstData);
+        for (const child of rest.children) {
+          const data = child.toIR();
+          Object.assign(result, data);
+        }
+        return result;
+      },
+
+      fixpointClause(clause: any) {
+        return clause.toIR();
+      },
+
+      fixMatchClause(_match: any, _ws1: any, _colon: any, _ws2: any, body: any) {
+        return { match: body.toIR() };
+      },
+
+      fixYieldClause(_yield: any, _ws1: any, _colon: any, _ws2: any, body: any) {
+        return { yield: body.toIR() };
+      },
+
+      fixUntilClause(_until: any, _ws1: any, _colon: any, _ws2: any, cond: any) {
+        return { until: cond.toIR() };
+      },
+
+      fixConstraintClause(_constraint: any, _ws1: any, _colon: any, _ws2: any, level: any) {
+        return { constraint: level.sourceString.trim() };
+      },
+
+      constraintLevel(_: any) {
+        return this.sourceString.trim();
+      },
+
+      // Match patterns
+      fixMatchBody(body: any) {
+        return body.toIR();
+      },
+
+      fixMatchBody_braced(_lbrace: any, _ws1: any, list: any, _ws2: any, _rbrace: any) {
+        return list.toIR();
+      },
+
+      fixMatchBody_query(ref: any) {
+        return [ref.toIR()];
+      },
+
+      fixPatternList(first: any, _ws: any, _commas: any, _ws2: any, rest: any) {
+        const patterns = [first.toIR()];
+        for (const child of rest.children) {
+          patterns.push(child.toIR());
+        }
+        return patterns;
+      },
+
+      fixPatternElement(elem: any) {
+        return elem.toIR();
+      },
+
+      fixPathPattern(firstNode: any, _ws1: any, _arrow1: any, _ws2: any, edgeLabelIter: any, _ws3: any, _arrow2: any, _ws4: any, targetNodeIter: any) {
+        // Build path: node -> edge -> node -> edge -> node ...
+        const pathSteps: any[] = [];
+        const firstNodeData = firstNode.toIR();
+        pathSteps.push({ type: 'node', ...firstNodeData });
+
+        // Iterations have same length — one per path step
+        const edgeLabels = edgeLabelIter.children;
+        const targetNodes = targetNodeIter.children;
+        for (let i = 0; i < edgeLabels.length; i++) {
+          pathSteps.push({ type: 'edge', edge_label: edgeLabels[i].sourceString.trim() });
+          pathSteps.push({ type: 'node', ...targetNodes[i].toIR() });
+        }
+
+        return { type: 'path', steps: pathSteps };
+      },
+
+      fixNodePattern(variable: any, _ws1: any, _colon: any, _ws2: any, nodeType: any, condition: any) {
+        const result: any = {
+          type: 'node',
+          variable: variable.sourceString.trim(),
+          node_type: nodeType.sourceString.trim()
+        };
+        const condData = condition.children;
+        if (condData.length > 0) {
+          result.conditions = condData[0].toIR();
+        }
+        return result;
+      },
+
+      fixMatchCondition(_lparen: any, _ws1: any, list: any, _ws2: any, _rparen: any) {
+        return list.toIR();
+      },
+
+      fixPredicateList(first: any, _ws: any, _commas: any, _ws2: any, rest: any) {
+        const preds = [first.toIR()];
+        for (const child of rest.children) {
+          preds.push(child.toIR());
+        }
+        return preds;
+      },
+
+      fixPredicate(name: any, _lparen: any, _ws1: any, args: any, _ws2: any, _rparen: any) {
+        const argData = args.children.length > 0 ? args.children[0].toIR() : [];
+        return { name: name.sourceString.trim(), args: argData };
+      },
+
+      fixNegationPattern(neg: any) {
+        return neg.toIR();
+      },
+
+      fixNegationPattern_node(_not: any, _sp: any, pattern: any) {
+        return { type: 'negation', negated: pattern.toIR() };
+      },
+
+      fixNegationPattern_query(_not: any, _sp: any, query: any) {
+        return { type: 'negation', negated: query.toIR() };
+      },
+
+      fixQueryRef(name: any, _lparen: any, _ws1: any, args: any, _ws2: any, _rparen: any) {
+        const argData = args.children.length > 0 ? args.children[0].toIR() : [];
+        return { type: 'query_ref', query_name: name.sourceString.trim(), args: argData };
+      },
+
+      fixQueryName(_: any) {
+        return this.sourceString.trim();
+      },
+
+      fixArgList(first: any, _ws: any, _commas: any, _ws2: any, rest: any) {
+        const args = [first.toIR()];
+        for (const child of rest.children) {
+          args.push(child.toIR());
+        }
+        return args;
+      },
+
+      fixArg(arg: any) {
+        const text = arg.sourceString.trim();
+        // Remove quotes from strings
+        if (text.startsWith('"') && text.endsWith('"')) {
+          return text.slice(1, -1);
+        }
+        return text;
+      },
+
+      fixEdgeLabel(_first: any, _rest: any) {
+        return this.sourceString.trim();
+      },
+
+      fixPredicateName(_first: any, _rest: any) {
+        return this.sourceString.trim();
+      },
+
+      // Yield productions
+      fixYieldBody(body: any) {
+        return body.toIR();
+      },
+
+      fixYieldBody_braced(_lbrace: any, _ws1: any, list: any, _ws2: any, _rbrace: any) {
+        return list.toIR();
+      },
+
+      fixYieldBody_nested(fix: any) {
+        const node = fix.toIR();
+        return [{ type: 'nested_fix', nested: node.ext?.fix }];
+      },
+
+      fixYieldBody_builtin(action: any) {
+        return [action.toIR()];
+      },
+
+      fixYieldList(first: any, _ws: any, _commas: any, _ws2: any, rest: any) {
+        const elems = [first.toIR()];
+        for (const child of rest.children) {
+          elems.push(child.toIR());
+        }
+        return elems;
+      },
+
+      fixYieldElement(elem: any) {
+        const result = elem.toIR();
+        // If a nested fixpoint was matched inside a yield list, wrap it
+        if (result && result.type === 'fixpoint' && result.ext?.fix) {
+          return { type: 'nested_fix', nested: result.ext.fix };
+        }
+        return result;
+      },
+
+      fixNodeRelProduction(_new: any, _sp: any, kind: any, _lparen: any, _ws1: any, args: any, _ws2: any, _rparen: any, _ws3: any, _arrow1: any, _ws4: any, edge: any, _ws5: any, _arrow2: any, _ws6: any, target: any, annotations: any) {
+        const argData = args.children.length > 0 ? args.children[0].toIR() : [];
+        const annots = self._parseAnnotations(annotations);
+        return {
+          type: 'node_relationship',
+          node_kind: kind.sourceString.trim(),
+          args: argData,
+          edge_label: edge.sourceString.trim(),
+          target_var: target.sourceString.trim(),
+          annotations: annots
+        };
+      },
+
+      fixNodeProduction(_new: any, _sp: any, kind: any, _lparen: any, _ws1: any, args: any, _ws2: any, _rparen: any, annotations: any) {
+        const argData = args.children.length > 0 ? args.children[0].toIR() : [];
+        const annots = self._parseAnnotations(annotations);
+        return {
+          type: 'node',
+          node_kind: kind.sourceString.trim(),
+          args: argData,
+          annotations: annots
+        };
+      },
+
+      fixRelProduction(source: any, _ws1: any, _arrow1: any, _ws2: any, edge: any, _ws3: any, _arrow2: any, _ws4: any, target: any, annotations: any) {
+        const annots = self._parseAnnotations(annotations);
+        return {
+          type: 'relationship',
+          source_var: source.sourceString.trim(),
+          edge_label: edge.sourceString.trim(),
+          target_var: target.sourceString.trim(),
+          annotations: annots
+        };
+      },
+
+      fixStateProduction(action: any, _lparen: any, _ws1: any, variable: any, _ws2: any, _rparen: any, annotations: any) {
+        const annots = self._parseAnnotations(annotations);
+        return {
+          type: 'state',
+          action: action.sourceString.trim(),
+          variable: variable.sourceString.trim(),
+          annotations: annots
+        };
+      },
+
+      fixBuiltinAction(_resolve: any, _lparen: any, _ws1: any, _matched: any, _ws2: any, _rparen: any, annotations: any) {
+        const annots = self._parseAnnotations(annotations);
+        return {
+          type: 'builtin',
+          action: 'resolve',
+          variable: 'matched',
+          annotations: annots
+        };
+      },
+
+      fixStateAction(_: any) {
+        return this.sourceString.trim();
+      },
+
+      fixAnnotation(_ws: any, _pipe: any, _ws2: any, key: any, _ws3: any, _colon: any, _ws4: any, value: any) {
+        return { key: key.sourceString.trim(), value: value.toIR() };
+      },
+
+      fixAnnotationKey(_first: any, _rest: any) {
+        return this.sourceString.trim();
+      },
+
+      fixAnnotationValue(val: any) {
+        const text = val.sourceString.trim();
+        if (text.startsWith('"') && text.endsWith('"')) {
+          return text.slice(1, -1);
+        }
+        return text;
+      },
+
+      fixAnnotationIdent(_first: any, _rest: any) {
+        return this.sourceString.trim();
+      },
+
+      fixNodeKind(_first: any, _rest: any) {
+        return this.sourceString.trim();
+      },
+
+      // Termination conditions
+      fixTerminationCondition(first: any, _ws: any, _ors: any, _ws2: any, rest: any) {
+        const firstCond = first.toIR();
+        if (rest.children.length === 0) {
+          return firstCond;
+        }
+        const conditions = [firstCond];
+        for (const child of rest.children) {
+          conditions.push(child.toIR());
+        }
+        return { type: 'compound', conditions };
+      },
+
+      fixSimpleTermCondition(cond: any) {
+        return cond.toIR();
+      },
+
+      fixStableCondition(_: any) {
+        return { type: 'stable' };
+      },
+
+      fixIterationBound(_maxIter: any, _ws1: any, _colon: any, _ws2: any, value: any) {
+        return { type: 'max_iterations', value: parseInt(value.sourceString.trim(), 10) };
+      },
+
+      fixTimeoutBound(_timeout: any, _ws1: any, _colon: any, _ws2: any, value: any, unit: any) {
+        return { type: 'timeout', value: parseInt(value.sourceString.trim(), 10), unit: unit.sourceString.trim() };
+      },
+
+      fixMeasureBound(_measure: any, _ws1: any, _colon: any, _ws2: any, name: any) {
+        return { type: 'measure', measure_name: name.sourceString.trim() };
+      },
+
+      fixTimeUnit(_: any) {
+        return this.sourceString.trim();
+      },
+
+      fixMeasureName(_first: any, _rest: any) {
+        return this.sourceString.trim();
+      },
+
+      // Fixpoint lexical primitives
+      fixVariable(_first: any, _rest: any) {
+        return this.sourceString.trim();
+      },
+
+      fixInteger(_digits: any) {
+        return this.sourceString.trim();
+      },
+
+      fixNodeType(_: any) {
+        return this.sourceString.trim();
+      },
+
+      fixName(_first: any, _rest: any) {
+        return this.sourceString.trim();
       },
 
       // Default handlers

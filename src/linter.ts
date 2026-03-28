@@ -75,23 +75,35 @@ export class Linter {
       OrphanedNodesRule,
       CausalCyclesRule,
       AlternativesWithoutDecisionRule,
+      FixpointConstraintViolationRule,
+      FixpointL2MissingBoundRule,
+      FixpointMissingConstraintRule,
+      FixpointUnstratifiableNegationRule,
+      FixpointNestingDeEscalationRule,
       MissingRecommendedFieldsRule,
       DeepNestingRule,
-      LongCausalChainsRule
+      LongCausalChainsRule,
+      FixpointHighIterationCountRule
     } = require('./rules');
 
-    // ERROR rules (6 total)
+    // ERROR rules (10 total)
     this.rules.push(new UnlabeledTensionRule());
     this.rules.push(new MissingRequiredFieldsRule());
     this.rules.push(new InvalidSyntaxRule());
     this.rules.push(new OrphanedNodesRule());
     this.rules.push(new CausalCyclesRule());
     this.rules.push(new AlternativesWithoutDecisionRule());
+    this.rules.push(new FixpointConstraintViolationRule());
+    this.rules.push(new FixpointL2MissingBoundRule());
+    this.rules.push(new FixpointMissingConstraintRule());
+    this.rules.push(new FixpointNestingDeEscalationRule());
 
-    // WARNING rules (3 total)
+    // WARNING rules (5 total)
     this.rules.push(new MissingRecommendedFieldsRule());
     this.rules.push(new DeepNestingRule());
     this.rules.push(new LongCausalChainsRule());
+    this.rules.push(new FixpointUnstratifiableNegationRule());
+    this.rules.push(new FixpointHighIterationCountRule());
   }
 
   /**

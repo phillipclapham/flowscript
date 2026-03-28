@@ -113,7 +113,8 @@
             "alternative",
             "exploring",
             "parking",
-            "block"
+            "block",
+            "fixpoint"
           ],
           "description": "Semantic type of this node"
         },
@@ -171,7 +172,8 @@
         "different",
         "alternative",
         "alternative_worse",
-        "alternative_better"
+        "alternative_better",
+        "fixpoint_derived"
       ],
       "description": "Type of relationship between nodes"
     },
@@ -312,6 +314,31 @@
           "type": "boolean",
           "default": true,
           "description": "If true, state markers must have required fields. Enforces Decision 3."
+        },
+        "fixpoint_constraint_valid": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, L1 fixpoint nodes have status 'converged' only. L2 fixpoint nodes have status 'converged' or 'bounded'."
+        },
+        "fixpoint_convergence_valid": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, every fixpoint node with status 'converged' has delta_sequence ending in 0."
+        },
+        "fixpoint_bound_present": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, every fixpoint node with constraint 'L2' has an explicit termination bound."
+        },
+        "fixpoint_nesting_monotone": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, nested fixpoint constraint levels are >= outer fixpoint constraint levels."
+        },
+        "fixpoint_derivation_complete": {
+          "type": "boolean",
+          "default": true,
+          "description": "If true, every element produced by @fix has a corresponding fixpoint_derived relationship."
         }
       },
       "additionalProperties": false

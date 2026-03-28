@@ -4,18 +4,18 @@ FlowScript {
   Line = BlankLine | RelationshipExpression | Element
 
   Element = Modifier* Content
-  Content = State | Insight | Question | Completion | Alternative | Block | Statement
+  Content = State | Insight | Question | Completion | Alternative | fixpointExpression | Block | Statement
 
   BlankLine = space* "\n"
-  Statement = ~Modifier (~("\n" | "{" | "}") any)+ "\n"?
+  Statement = ~Modifier ~"@fix" (~("\n" | "{" | "}") any)+ "\n"?
 
   // Blocks (thought blocks / atomic processing units)
   Block = "{" ws BlockContent? ws "}"
   BlockContent = BlockLine (separator? BlockLine)* separator?
   BlockLine = ws (ContinuationRel | RelationshipExpression | BlockElement)
   BlockElement = Modifier* BlockContent_inner
-  BlockContent_inner = State | Insight | Question | Completion | Alternative | Block | BlockStatement
-  BlockStatement = ~Modifier (~("\n" | "{" | "}" | ";") any)+
+  BlockContent_inner = State | Insight | Question | Completion | Alternative | fixpointExpression | Block | BlockStatement
+  BlockStatement = ~Modifier ~"@fix" (~("\n" | "{" | "}" | ";") any)+
   separator = (space | "\n" | ";")+
   ws = (space | "\n")*
 
@@ -126,6 +126,107 @@ FlowScript {
            ("T" digit digit ":" digit digit ":" digit digit "Z")?
 
   identifier = letter (letter | digit | "_" | "-")*
+
+  // =========================================================================
+  // Fixpoint Expressions (@fix operator)
+  // All @fix rules are LEXICAL (lowercase) for explicit whitespace control.
+  // Syntactic rules auto-insert spaces which conflicts with @fix's
+  // multi-line block structure. Lexical rules give full control.
+  // =========================================================================
+
+  // @fix name? { clauses }
+  fixpointExpression = fixpointExpression_named | fixpointExpression_anon
+  fixpointExpression_named = "@fix" space+ fixName ws "{" ws fixpointClauses ws "}"
+  fixpointExpression_anon = "@fix" ws "{" ws fixpointClauses ws "}"
+
+  fixName = letter (letter | digit | "_")*
+
+  fixpointClauses = fixpointClause (ws fixpointClause)*
+  fixpointClause = fixMatchClause | fixYieldClause | fixUntilClause | fixConstraintClause
+
+  fixMatchClause = "match" ws ":" ws fixMatchBody
+  fixYieldClause = "yield" ws ":" ws fixYieldBody
+  fixUntilClause = "until" ws ":" ws fixTerminationCondition
+  fixConstraintClause = "constraint" ws ":" ws constraintLevel
+
+  constraintLevel = "L2" | "L1"
+
+  // --- Match patterns ---
+  fixMatchBody = fixMatchBody_braced | fixMatchBody_query
+  fixMatchBody_braced = "{" ws fixPatternList ws "}"
+  fixMatchBody_query = fixQueryRef
+  fixPatternList = fixPatternElement (ws "," ws fixPatternElement)*
+  fixPatternElement = fixNegationPattern | fixPathPattern | fixNodePattern
+
+  // Path pattern: A: node -> trusts -> B: node
+  fixPathPattern = fixNodePattern (ws "->" ws fixEdgeLabel ws "->" ws fixNodePattern)+
+  fixEdgeLabel = letter (letter | digit | "_")*
+
+  // Node pattern: A: node  or  A: thought(predicate1, predicate2)
+  fixNodePattern = fixVariable ws ":" ws fixNodeType fixMatchCondition?
+  fixMatchCondition = "(" ws fixPredicateList ws ")"
+  fixPredicateList = fixPredicate (ws "," ws fixPredicate)*
+  fixPredicate = fixPredicateName "(" ws fixArgList? ws ")"
+  fixPredicateName = letter (letter | digit | "_")*
+
+  // Negation: not node_pattern | not query_ref
+  fixNegationPattern = fixNegationPattern_node | fixNegationPattern_query
+  fixNegationPattern_node = "not" space+ fixNodePattern
+  fixNegationPattern_query = "not" space+ fixQueryRef
+
+  // Query references: tensions(), blocked(), etc.
+  fixQueryRef = fixQueryName "(" ws fixArgList? ws ")"
+  fixQueryName = "tensions" | "blocked" | "alternatives" | "why" | "what_if"
+  fixArgList = fixArg (ws "," ws fixArg)*
+  fixArg = fixVariable | string
+
+  // --- Yield productions ---
+  fixYieldBody = fixYieldBody_braced | fixYieldBody_nested | fixYieldBody_builtin
+  fixYieldBody_braced = "{" ws fixYieldList ws "}"
+  fixYieldBody_nested = fixpointExpression
+  fixYieldBody_builtin = fixBuiltinAction
+  fixYieldList = fixYieldElement (ws "," ws fixYieldElement)*
+  fixYieldElement = fixNodeRelProduction | fixNodeProduction | fixBuiltinAction | fixRelProduction | fixStateProduction | fixpointExpression
+
+  // new hypothesis(X) -> resolves -> X | source: abductive  (combined create + connect)
+  fixNodeRelProduction = "new" space+ fixNodeKind "(" ws fixArgList? ws ")" ws "->" ws fixEdgeLabel ws "->" ws fixVariable fixAnnotation*
+
+  // new hypothesis(X) | source: abductive  (create only)
+  fixNodeProduction = "new" space+ fixNodeKind "(" ws fixArgList? ws ")" fixAnnotation*
+  fixNodeKind = letter (letter | digit | "_")*
+
+  // A -> believes -> P | confidence: derived
+  fixRelProduction = fixVariable ws "->" ws fixEdgeLabel ws "->" ws fixVariable fixAnnotation*
+
+  // resolve(X) | annotate(X)
+  fixStateProduction = fixStateAction "(" ws fixVariable ws ")" fixAnnotation*
+  fixStateAction = "resolve" | "annotate"
+
+  // resolve(matched) — builtin action on query results
+  fixBuiltinAction = "resolve" "(" ws "matched" ws ")" fixAnnotation*
+
+  // Annotations: | key: value
+  fixAnnotation = ws "|" ws fixAnnotationKey ws ":" ws fixAnnotationValue
+  fixAnnotationKey = letter (letter | digit | "_")*
+  fixAnnotationValue = string | fixInteger | fixAnnotationIdent
+  fixAnnotationIdent = letter (letter | digit | "_")*
+
+  // --- Termination conditions ---
+  fixTerminationCondition = fixSimpleTermCondition (ws "or" ws fixSimpleTermCondition)*
+  fixSimpleTermCondition = fixIterationBound | fixTimeoutBound | fixMeasureBound | fixStableCondition
+  fixStableCondition = "stable"
+  fixIterationBound = "max_iterations" ws ":" ws fixInteger
+  fixTimeoutBound = "timeout" ws ":" ws fixInteger fixTimeUnit
+  fixTimeUnit = "ms" | "s" | "m"
+  fixMeasureBound = "measure" ws ":" ws fixMeasureName
+  fixMeasureName = letter (letter | digit | "_")*
+
+  // Fixpoint lexical primitives
+  fixVariable = upper (letter | digit | "_")*
+  fixInteger = digit+
+  fixNodeType = "fixpoint" | "thought" | "question" | "decision" | "blocker" | "action"
+              | "statement" | "insight" | "completion" | "alternative"
+              | "exploring" | "parking" | "block" | "node"
 
   // Lexical rules (whitespace handling)
   space := " " | "\t" | "\r"
