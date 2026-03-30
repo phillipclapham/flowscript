@@ -1,55 +1,50 @@
 # FlowScript — Project Reasoning Memory
+#
+# Paste the section below into your project's CLAUDE.md.
+# FlowScript MCP tools are available when the server is configured
+# in your editor's MCP settings.
+
+## Reasoning Memory (FlowScript)
 
 This project uses FlowScript for persistent decision intelligence.
-You have FlowScript MCP tools available. Use them naturally during work:
+You have FlowScript MCP tools available. Use them naturally during work.
 
-## When to Record (do this automatically, not when asked)
+### When to Record (do this automatically, not when asked)
 
-- **Decisions**: When you choose between approaches, record the question, alternatives, and rationale.
-  Use `add_node` (type: question), `add_alternative`, then `set_state` (decided/blocked/parked).
-- **Tensions**: When you notice a tradeoff, record both sides and the axis.
-  Use `relate_nodes` with type "tension" and an axis label like "performance vs cost".
-- **Blockers**: When something is stuck, record why and what's downstream.
-  Use `set_state` with type "blocked" and the reason.
-- **Insights**: When you learn something non-obvious, record it.
-  Use `add_node` (type: insight) and link it to what it derives from.
-- **Causal chains**: When A leads to B, record the relationship.
-  Use `relate_nodes` with type "causes".
+- **Decisions**: When you choose between approaches, record the question,
+  alternatives, and rationale using `add_node`, `add_alternative`, and
+  `set_state` (decided/blocked/parked).
+- **Tensions**: When you notice a tradeoff, record both sides with
+  `relate_nodes` (type: "tension", axis: "performance vs cost").
+- **Blockers**: When something is stuck, record why and what's downstream
+  using `set_state` (type: "blocked", reason: "...").
+- **Causal chains**: When A leads to B, use `relate_nodes` (type: "causes").
+- **Insights**: When you learn something non-obvious, record it with
+  `add_node` (type: "insight") linked to what it derives from.
 
-## When to Query
+### When to Query
 
-- Before making a decision: `query_alternatives` — what did we consider last time?
+- Before making a decision: `query_alternatives` — what did we consider?
 - When stuck: `query_blocked` — what's blocking what?
 - When evaluating changes: `query_what_if` — what's downstream of this?
 - During reviews: `query_tensions` — what tradeoffs exist?
 - When someone asks "why": `query_why` — trace the causal chain.
+- When exploring reversals: `query_counterfactual` — what would need to change?
 
-## Session Lifecycle
+### Session Lifecycle
 
-Call `session_start` at the beginning of every conversation. It returns:
-- Token-budgeted memory summary (what you already know)
-- Active blockers and tensions (what needs attention)
-- Garden stats (what's growing, resting, dormant)
+Call `session_wrap` when the user signals the session is ending. This is the
+reasoning graph's consolidation cycle — it prunes dormant nodes to the audit
+trail, graduates frequently-used knowledge through temporal tiers, and saves.
+Each wrap makes the graph smarter. An auto-wrap runs on process exit, but
+explicit wraps produce the best results.
 
-Call `session_wrap` when the user says "wrap up", "let's wrap", or signals
-the session is ending. This is the reasoning graph's consolidation cycle —
-like sleep for memory. It prunes dormant nodes to the audit trail, graduates
-frequently-used knowledge through temporal tiers (current → developing →
-proven → foundation), and saves. Without regular wraps, knowledge
-accumulates as noise instead of maturing. Each wrap makes the graph smarter.
-NOTE: A final consolidation also runs automatically on process exit (editor
-close, signal), but explicit wraps produce the best results because you can
-review and store final reasoning before consolidation happens.
+Queries keep knowledge alive — every query touches the returned nodes, driving
+graduation. Knowledge that keeps coming up earns permanence. One-off
+observations fade naturally.
 
-Queries keep knowledge alive — every `query_tensions`, `query_blocked`, etc.
-touches the returned nodes, driving graduation. Knowledge that keeps coming
-up earns permanence. One-off observations fade naturally.
+### Presenting Results
 
-Use `query_audit` to inspect how memory evolved over time, and `verify_audit`
-to confirm the hash chain hasn't been tampered with.
-
-## Persistence
-
-Memory persists across sessions automatically. Mutations auto-save.
-`session_wrap` adds the consolidation step (pruning + graduation).
-Use `get_memory` to see the current state. Format "flowscript" for human-readable, "json" for structured.
+Report findings naturally. "From prior sessions, there's a tension between
+X and Y" — not "FlowScript's query_tensions tool found..." Don't narrate
+tool calls. Just use them and share what's relevant.
