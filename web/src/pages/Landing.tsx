@@ -260,85 +260,58 @@ mem.query.tensions();{"\n"}
         </div>
       </section>
 
-      {/* Enterprise & Compliance */}
+      {/* Already compliance-ready */}
       <section className="section">
         <div className="section-inner">
-          <h2 className="section-title">Enterprise &amp; Compliance</h2>
+          <h2 className="section-title">Already compliance-ready</h2>
           <p className="section-lead">
-            FlowScript's typed reasoning chains are compliance-ready audit infrastructure. Not a separate product &mdash; a structural property of how it works.
+            You don't install FlowScript for compliance. You install it for reasoning memory. But because every decision traces through typed causal chains with a hash-chained audit trail, what you get is inherently compliant.
           </p>
           <div className="problem-grid">
             <div className="problem-card">
-              <h3>EU AI Act Art. 12</h3>
-              <p>Record-keeping. Hash-chained audit trail, append-only, tamper-evident, 7-year default retention.</p>
+              <h3>Hash-chained audit trail</h3>
+              <p>SHA-256 linked, append-only, crash-safe, 7-year default retention. Tampering breaks the chain. Framework attribution on every entry.</p>
             </div>
             <div className="problem-card">
-              <h3>EU AI Act Art. 13</h3>
-              <p>Transparency. <code>why()</code> queries return typed causal chains &mdash; not reconstructions, actual reasoning records.</p>
+              <h3>Typed provenance</h3>
+              <p><code>why()</code> returns the actual causal chain, not a reconstruction. <code>explain()</code> generates deterministic compliance documents &mdash; no LLM in the loop, same input always produces same output.</p>
             </div>
             <div className="problem-card">
-              <h3>EU AI Act Art. 86</h3>
-              <p>Right to explanation. <code>explain()</code> generates deterministic compliance documents from <code>why()</code> results &mdash; three audience modes, no LLM in the loop, reproducible.</p>
+              <h3>Structural prevention</h3>
+              <p>The type system makes untraceable decisions, silent contradictions, and unaudited state changes structurally unrepresentable. Prevention at the architecture level, not behavioral detection.</p>
             </div>
           </div>
           <p className="query-note" style={{ marginTop: '1.5rem' }}>
-            Enforcement begins August 2026. Audit trails can't be backdated. Organizations using FlowScript today have unbroken reasoning records from day one. You can turn on logging tomorrow &mdash; you can't manufacture the last 18 months of decision provenance.
+            Maps to EU AI Act Articles 12 (record-keeping), 13 (transparency), and 86 (right to explanation). Enforcement begins August 2026. You can turn on logging tomorrow &mdash; you can't manufacture the last year of decision provenance.
           </p>
         </div>
       </section>
 
-      {/* Security */}
+      {/* Under the hood */}
       <section className="section section--alt">
         <div className="section-inner">
-          <h2 className="section-title">Security: Can't Patch, Must Architect</h2>
+          <h2 className="section-title">Under the hood</h2>
           <p className="section-lead">
-            Three independent CVE clusters dropped in the same week &mdash; MCPwned, ClawHub, and ClawJacked (CVSS 8.8, 15,200 affected instances). Same structural root cause: unvalidated content flowing through agent invocation paths.
+            When the consolidation engine resolves contradictions, it produces a <strong>convergence certificate</strong> &mdash; a hash-chained attestation recording the initial graph state, every delta applied, and the final state. An auditor can verify not just what your agent decided, but how it got there.
           </p>
           <p className="section-lead">
-            FlowScript doesn't prevent every attack class. What it makes structurally impossible is <strong>reasoning corruption</strong> &mdash; untraceable decisions, silent contradictions, unaudited state changes. The type system makes them unrepresentable. Same architectural insight as <a href="https://www.cl.cam.ac.uk/research/security/ctsrd/cheri/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>CHERI</a>: structural prevention over behavioral detection.
-          </p>
-        </div>
-      </section>
-
-      {/* @fix — Convergence Certificates */}
-      <section className="section">
-        <div className="section-inner">
-          <h2 className="section-title">@fix &mdash; Convergence certificates</h2>
-          <p className="section-lead">
-            When FlowScript resolves contradictions, it doesn't just update the graph. It produces a <strong>convergence certificate</strong> &mdash; a hash-chained attestation proving how the reasoning changed and that the transformation hasn't been tampered with.
-          </p>
-          <div className="problem-grid">
-            <div className="problem-card">
-              <h3>L0 &mdash; Pure Description</h3>
-              <p>No computation. Static knowledge and observations. Always terminates.</p>
-            </div>
-            <div className="problem-card">
-              <h3>L1 &mdash; Bounded Fixpoint</h3>
-              <p>Consistency enforcement, belief propagation. Closed domain, inflationary. Always terminates (Knaster-Tarski).</p>
-            </div>
-            <div className="problem-card">
-              <h3>L2 &mdash; General Fixpoint</h3>
-              <p>Abductive reasoning, hypothesis generation. Turing-complete, bounded. For when you need full computational power.</p>
-            </div>
-          </div>
-          <p className="query-note" style={{ marginTop: '1.5rem' }}>
-            Each certificate records: <code>initial_graph_hash</code> &rarr; <code>delta_sequence</code> &rarr; <code>final_graph_hash</code> &rarr; <code>certificate_hash</code>. An auditor can verify not just what your agent decided, but how it got there.
+            The formal spec includes <code>@fix</code>, a stratified fixpoint operator with three computational levels and guaranteed termination properties. The consolidation engine is a degenerate case. Full spec: <a href="https://github.com/phillipclapham/flowscript/blob/main/spec/fixpoint_spec.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>fixpoint_spec.md</a>.
           </p>
         </div>
       </section>
 
       {/* FlowScript Cloud */}
-      <section className="section section--alt">
+      <section className="section">
         <div className="section-inner">
-          <h2 className="section-title">FlowScript Cloud &mdash; Independent witnessing</h2>
+          <h2 className="section-title">FlowScript Cloud <span style={{ fontSize: '0.6em', fontWeight: 400, opacity: 0.7 }}>(coming soon)</span></h2>
           <p className="section-lead">
-            Local audit trails are tamper-evident but self-attested. <a href="https://api.flowscript.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)' }}>FlowScript Cloud</a> adds independent third-party witnessing: your SDK streams hash-chained events to the Cloud service, which verifies chain continuity and stores witness attestations.
+            Local audit trails are tamper-evident but self-attested. FlowScript Cloud will add independent third-party witnessing: your SDK streams hash-chained events to the Cloud service, which verifies chain continuity and stores witness attestations.
           </p>
           <div className="install-grid">
             <div className="install-card">
               <h3>One environment variable</h3>
               <div className="code-block install-cmd">export FLOWSCRIPT_API_KEY=your-key</div>
-              <p>Every audit event &mdash; including convergence certificates &mdash; streams to api.flowscript.org automatically. Chain verification and witness attestation happen server-side.</p>
+              <p>Every audit event streams automatically. Chain verification and witness attestation happen server-side. Your local audit trail remains the source of truth.</p>
             </div>
             <div className="install-card">
               <h3>Three deployment tiers</h3>
@@ -355,34 +328,12 @@ mem.query.tensions();{"\n"}
         </div>
       </section>
 
-      {/* What FlowScript Actually Is — Layer 1 (condensed for web) */}
-      <section className="section">
-        <div className="section-inner">
-          <h2 className="section-title">What FlowScript actually is</h2>
-          <p className="section-lead">
-            The six queries and the audit trail are what FlowScript <em>does</em>. Here's what it <em>is</em>.
-          </p>
-          <p className="section-lead">
-            Musical notation didn't record what musicians were already playing. It made polyphony <em>possible</em>. Bach's fugues are literally unthinkable without it &mdash; not "hard to remember" but impossible to compose, because the interaction of independent voices requires a representational system precise enough to reason about counterpoint.
-          </p>
-          <p className="section-lead">
-            FlowScript does the same thing for AI cognition. It doesn't record what agents are already thinking. It makes a new category of reasoning possible &mdash; the kind where you can have multiple reasoning chains interacting, query across causal paths, and turn contradictions into structured tensions. This is impossible in the vector-search paradigm because vector search has no representation for <em>why</em>.
-          </p>
-          <p className="section-lead">
-            FlowScript is infrastructure. Not a tool. Not a framework. Infrastructure &mdash; like SQL gave us queryable data, TCP/IP gave us addressable communication, and Git gave us trackable changes. FlowScript gives AI agents queryable reasoning. Everything else &mdash; compliance, security, memory, observability &mdash; is an application of that infrastructure.
-          </p>
-          <p className="section-lead" style={{ fontWeight: 600, color: 'var(--color-text)' }}>
-            The applications are what you install FlowScript for. The infrastructure is why it matters.
-          </p>
-        </div>
-      </section>
-
       {/* Bottom CTA */}
-      <section className="section cta-section">
+      <section className="section section--alt cta-section">
         <div className="section-inner" style={{ textAlign: 'center' }}>
-          <h2 className="section-title">Open source. MIT licensed. ~1,400 tests.</h2>
+          <h2 className="section-title">Open source. MIT licensed. ~1,500 tests.</h2>
           <p className="section-lead">
-            779 TypeScript + 586 Python + 68 Cloud. Same audit trail format across all three.
+            779 TypeScript + 717 Python + 68 Cloud. Same audit trail format across all three.
           </p>
           <div className="hero-actions" style={{ justifyContent: 'center' }}>
             <Link to="/get-started" className="btn btn-primary">Get Started</Link>

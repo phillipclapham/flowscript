@@ -424,7 +424,7 @@ with UnifiedMemory("agent-memory.json", embedder=OpenAIEmbeddings(), llm=llm) as
           </a>
           <a href="https://github.com/phillipclapham/flowscript-agents" target="_blank" rel="noopener noreferrer" className="gs-link-card">
             <h3>flowscript-agents</h3>
-            <p>Python SDK &mdash; 9 adapters, CloudClient, 586 tests</p>
+            <p>Python SDK &mdash; 9 adapters, CloudClient, 717 tests</p>
           </a>
           <Link to="/playground" className="gs-link-card">
             <h3>Playground</h3>
