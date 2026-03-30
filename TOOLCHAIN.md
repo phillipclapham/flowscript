@@ -2,7 +2,7 @@
 
 **Production-quality parser, linter, validator, and query engine for FlowScript**
 
-Status: Complete ✅ (246 tests passing)
+Status: Complete ✅ (~1,564 tests across ecosystem: 779 TS + 717 Python + 68 Cloud)
 
 ---
 

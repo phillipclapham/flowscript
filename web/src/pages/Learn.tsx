@@ -1,7 +1,7 @@
 /**
  * FlowScript Learn / Concepts Page
  * Educational content: what is typed reasoning, how the graph works,
- * the five queries, temporal tiers, audit trail, advanced patterns,
+ * the six queries, temporal tiers, audit trail, advanced patterns,
  * metaprogramming, and the deeper structure.
  */
 
@@ -118,7 +118,7 @@ export function Learn() {
 
       {/* The Five Queries — Deep Dive */}
       <section className="learn-section">
-        <h2>The five queries, explained</h2>
+        <h2>The six queries, explained</h2>
         <p>
           These are graph traversal operations, not text search. They follow typed relationships through the
           reasoning graph and return structured results.

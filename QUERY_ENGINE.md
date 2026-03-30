@@ -11,7 +11,7 @@ The FlowScript Query Engine proves that FlowScript is a computable substrate for
 The query engine operates on FlowScript IR (Intermediate Representation) to perform computational operations on cognitive graphs:
 
 - **Input:** Parsed FlowScript IR (JSON)
-- **Operations:** 5 critical queries for cognitive graph analysis
+- **Operations:** 6 semantic queries for cognitive graph analysis
 - **Output:** Structured results (JSON)
 - **Performance:** <1ms per query on typical graphs (measured: 20-41 nodes, 6-25 relationships)
 

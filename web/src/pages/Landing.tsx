@@ -18,12 +18,9 @@ export function Landing() {
             <span className="hero-highlight">FlowScript makes those decisions queryable.</span>
           </h1>
           <p className="hero-subtitle">
-            Five typed queries no vector store can answer: <code>why()</code>, <code>tensions()</code>, <code>blocked()</code>, <code>alternatives()</code>, <code>whatIf()</code>.
-            Hash-chained audit trail. Convergence certificates. Cloud witnessing. MIT licensed.
-          </p>
-          <p className="hero-compliance">
-            EU AI Act enforcement begins August 2026. Audit trails can't be backdated.
-            FlowScript is the compliance engine that makes your agents audit-ready from day one.
+            Vector stores remember what. FlowScript remembers why.
+            Six reasoning queries no vector store can answer: <code>why()</code>, <code>tensions()</code>, <code>blocked()</code>, <code>alternatives()</code>, <code>whatIf()</code>, <code>counterfactual()</code>.
+            Hash-chained audit trail. Nine framework adapters. MIT licensed.
           </p>
           <div className="hero-actions">
             <Link to="/get-started" className="btn btn-primary">Get Started</Link>
@@ -72,7 +69,7 @@ export function Landing() {
       {/* The Queries — the product */}
       <section className="section section--alt">
         <div className="section-inner">
-          <h2 className="section-title">Five queries no vector store can answer</h2>
+          <h2 className="section-title">Six queries no vector store can answer</h2>
           <p className="section-lead">
             FlowScript builds a typed reasoning graph during normal agent work. You query it with structured operations that traverse relationships, not embeddings.
           </p>
@@ -172,7 +169,7 @@ mem.query.tensions();{"\n"}
             <div className="install-card">
               <h3>MCP Server (Claude Code / Cursor)</h3>
               <div className="code-block install-cmd">pip install flowscript-agents openai</div>
-              <p>14 reasoning tools with auto-extraction and contradiction handling. Add one JSON block to your editor config and restart.</p>
+              <p>20 reasoning tools with auto-extraction and contradiction handling. Add one JSON block to your editor config and restart.</p>
               <Link to="/get-started" className="install-link">
                 Setup guide &rarr;
               </Link>
@@ -353,7 +350,7 @@ mem.query.tensions();{"\n"}
         <div className="section-inner">
           <h2 className="section-title">What FlowScript actually is</h2>
           <p className="section-lead">
-            The five queries and the audit trail are what FlowScript <em>does</em>. Here's what it <em>is</em>.
+            The six queries and the audit trail are what FlowScript <em>does</em>. Here's what it <em>is</em>.
           </p>
           <p className="section-lead">
             Musical notation didn't record what musicians were already playing. It made polyphony <em>possible</em>. Bach's fugues are literally unthinkable without it &mdash; not "hard to remember" but impossible to compose, because the interaction of independent voices requires a representational system precise enough to reason about counterpoint.

@@ -27,7 +27,7 @@ export function GetStarted() {
               You use Claude Code, Cursor, or another MCP-compatible editor and want reasoning memory with zero code changes.
             </p>
             <div className="code-block decision-install">pip install flowscript-agents openai</div>
-            <p className="decision-result">14 reasoning tools. Auto-extraction from plain text. Contradiction handling. Your agent builds the graph through natural conversation.</p>
+            <p className="decision-result">20 reasoning tools. Auto-extraction from plain text. Contradiction handling. Your agent builds the graph through natural conversation.</p>
           </div>
 
           <div className="decision-card">
@@ -60,7 +60,7 @@ export function GetStarted() {
       <section className="gs-section" id="mcp">
         <h2>MCP Server Setup</h2>
         <p>
-          The fastest path. Install, add to your editor config, restart. Your agent gets 14 reasoning tools with auto-extraction and contradiction handling.
+          The fastest path. Install, add to your editor config, restart. Your agent gets 20 reasoning tools with auto-extraction and contradiction handling.
         </p>
 
         <h3>1. Install</h3>
@@ -122,7 +122,7 @@ export function GetStarted() {
 
         <h3>3. Restart your editor</h3>
         <p>
-          Your agent now has 14 reasoning tools: <code>search_memory</code>,{" "}
+          Your agent now has 20 reasoning tools: <code>search_memory</code>,{" "}
           <code>add_memory</code>, <code>get_context</code>,{" "}
           <code>query_tensions</code>, <code>query_blocked</code>, <code>query_why</code>,{" "}
           <code>query_what_if</code>, <code>query_alternatives</code>,{" "}
