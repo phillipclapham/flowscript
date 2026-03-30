@@ -94,6 +94,10 @@ export function Landing() {
               <code className="query-name">alternatives(questionId)</code>
               <p>What options were considered? What was decided, what was blocked, and the rationale for each. Decision archaeology.</p>
             </div>
+            <div className="query-card">
+              <code className="query-name">counterfactual(nodeId)</code>
+              <p>What would need to change for a different outcome? Backward traversal with tension detection — satisfies CJEU C-203/22 counterfactual explanation requirements.</p>
+            </div>
           </div>
           <p className="query-note">
             Sub-millisecond local traversal. No embeddings required, no LLM calls, no network. The Python SDK adds vector search and auto-extraction on top. Use both.
@@ -220,6 +224,12 @@ mem.query.tensions();{"\n"}
                 <tr>
                   <td>"What if we change this?"</td>
                   <td className="has-feature">whatIf() &mdash; impact analysis</td>
+                  <td className="no-feature">&mdash;</td>
+                  <td className="no-feature">&mdash;</td>
+                </tr>
+                <tr>
+                  <td>"What would it take to reverse this?"</td>
+                  <td className="has-feature">counterfactual() &mdash; reversal analysis</td>
                   <td className="no-feature">&mdash;</td>
                   <td className="no-feature">&mdash;</td>
                 </tr>
