@@ -22,6 +22,49 @@
   margin-bottom: var(--space-2xl);
 }
 
+/* ========================================
+   Table of Contents
+   ======================================== */
+.learn-toc {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-xl);
+  margin-bottom: var(--space-3xl);
+}
+
+.learn-toc h2 {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-md);
+}
+
+.learn-toc ol {
+  list-style: decimal;
+  padding-left: var(--space-xl);
+  margin: 0;
+}
+
+.learn-toc li {
+  padding: 4px 0;
+  font-size: 15px;
+}
+
+.learn-toc a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.learn-toc a:hover {
+  text-decoration: underline;
+}
+
+/* ========================================
+   Learn Sections
+   ======================================== */
 .learn-section {
   margin-bottom: var(--space-3xl);
   padding-bottom: var(--space-3xl);
@@ -36,58 +79,157 @@
   margin-top: 0;
 }
 
+.learn-section h3 {
+  margin-top: var(--space-xl);
+}
+
 /* ========================================
-   Concept Diagram
+   Marker Section Headers
    ======================================== */
-.concept-diagram {
+.marker-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-top: var(--space-2xl) !important;
+  margin-bottom: var(--space-sm);
+  padding-top: var(--space-lg);
+  border-top: 2px solid var(--color-primary-light);
+}
+
+.marker-section-desc {
+  font-size: 15px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: var(--space-lg);
+}
+
+/* ========================================
+   Marker Detail Blocks
+   ======================================== */
+.marker-detail {
+  margin-bottom: var(--space-xl);
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.marker-header {
   display: flex;
-  align-items: stretch;
+  align-items: baseline;
+  gap: var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+.marker-code {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 4px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.marker-meaning {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.marker-detail > p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+.marker-detail > p:last-child {
+  margin-bottom: 0;
+}
+
+.marker-tip {
+  font-size: 13px !important;
+  color: var(--text-muted) !important;
+  font-style: italic;
+  margin-bottom: 0 !important;
+}
+
+.marker-tip code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--color-surface-alt);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.code-block--compact {
+  font-size: 13px !important;
+  padding: var(--space-md) !important;
+  margin-bottom: var(--space-md) !important;
+}
+
+/* ========================================
+   Reference Table
+   ======================================== */
+.ref-table-wrapper {
+  overflow-x: auto;
+  margin-top: var(--space-lg);
+}
+
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.ref-table th,
+.ref-table td {
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ref-table th {
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.ref-table td {
+  color: var(--text-secondary);
+}
+
+.ref-table td:first-child {
+  white-space: nowrap;
+}
+
+.ref-table code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ========================================
+   Subset Grid (In Practice section)
+   ======================================== */
+.subset-grid {
+  display: flex;
+  flex-direction: column;
   gap: var(--space-lg);
   margin: var(--space-xl) 0;
 }
 
-.concept-arrow {
-  display: flex;
-  align-items: center;
-  font-size: 28px;
-  color: var(--text-muted);
-  flex-shrink: 0;
-}
-
-.concept-box {
-  flex: 1;
-  padding: var(--space-xl);
-  border-radius: 12px;
-  border: 1px solid var(--color-border);
-}
-
-.concept-box h4 {
-  font-size: 16px;
+.subset-group h4 {
+  font-size: 15px;
   font-weight: 600;
+  color: var(--color-text);
   margin-bottom: var(--space-sm);
-}
-
-.concept-box p {
-  font-size: 14px;
-  margin-bottom: var(--space-xs);
-}
-
-.concept-box--muted {
-  background: var(--color-surface);
-}
-
-.concept-box--primary {
-  background: var(--color-primary-light);
-  border-color: var(--color-primary);
-}
-
-.concept-question {
-  font-family: var(--font-mono);
-  font-size: 13px !important;
-}
-
-.concept-question--no {
-  color: var(--color-blocked) !important;
 }
 
 /* ========================================
@@ -167,37 +309,33 @@
    Query Deep Dive
    ======================================== */
 .query-deep-dive {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xl);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-md);
+  margin: var(--space-xl) 0;
 }
 
 .query-explain {
-  padding: var(--space-xl);
+  padding: var(--space-lg);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
 }
 
-.query-explain h3 {
-  font-size: 18px;
-  margin: 0 0 var(--space-md);
+.query-explain h4 {
+  font-size: 16px;
+  margin: 0 0 var(--space-sm);
 }
 
-.query-explain h3 code {
+.query-explain h4 code {
   color: var(--color-primary);
 }
 
 .query-explain p {
-  margin-bottom: var(--space-md);
-}
-
-.query-explain .code-block {
-  margin-bottom: 0;
-}
-
-.cm {
-  color: var(--color-comment);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
 }
 
 /* ========================================
@@ -264,91 +402,6 @@
 .tier--foundation .tier-label { color: var(--color-primary); }
 
 /* ========================================
-   Audit Features
-   ======================================== */
-.audit-features {
-  list-style: none;
-  padding: 0;
-  margin: var(--space-lg) 0;
-}
-
-.audit-features li {
-  padding: var(--space-sm) 0;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.audit-features li:last-child {
-  border-bottom: none;
-}
-
-.audit-features code {
-  background: var(--color-surface-alt);
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 0.9em;
-}
-
-/* ========================================
-   Consolidation Actions
-   ======================================== */
-.consolidation-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-  margin: var(--space-lg) 0;
-}
-
-.action-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-md);
-  background: var(--color-surface);
-  border-radius: 8px;
-  font-size: 15px;
-  color: var(--text-secondary);
-}
-
-.action-code {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 4px;
-  min-width: 80px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-.action-code--add {
-  color: var(--color-primary);
-  background: var(--color-primary-light);
-}
-
-.action-code--update {
-  color: var(--color-decided);
-  background: var(--color-decided-bg);
-}
-
-.action-code--relate {
-  color: var(--color-tension);
-  background: rgba(245, 158, 11, 0.1);
-}
-
-.action-code--resolve {
-  color: var(--color-completed);
-  background: rgba(5, 150, 105, 0.1);
-}
-
-.action-code--none {
-  color: var(--text-muted);
-  background: var(--color-surface-alt);
-}
-
-/* ========================================
    CTA
    ======================================== */
 .learn-cta {
@@ -369,16 +422,11 @@
     font-size: 28px;
   }
 
-  .concept-diagram {
-    flex-direction: column;
-  }
-
-  .concept-arrow {
-    transform: rotate(90deg);
-    justify-content: center;
-  }
-
   .node-types-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .query-deep-dive {
     grid-template-columns: 1fr;
   }
 
@@ -388,8 +436,8 @@
     gap: var(--space-xs);
   }
 
-  .action-item {
+  .marker-header {
     flex-direction: column;
-    align-items: flex-start;
+    gap: var(--space-xs);
   }
 }

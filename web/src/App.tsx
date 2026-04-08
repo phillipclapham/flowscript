@@ -8,7 +8,6 @@ import { BrowserRouter, Routes, Route, NavLink, useLocation } from "react-router
 import { ThemeToggle } from "./components/ThemeToggle";
 import { Landing } from "./pages/Landing";
 import { Learn } from "./pages/Learn";
-import { GetStarted } from "./pages/GetStarted";
 import { Playground } from "./pages/Playground";
 import "./App.css";
 
@@ -49,9 +48,6 @@ function Layout() {
             <NavLink to="/learn" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
               Learn
             </NavLink>
-            <NavLink to="/get-started" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-              Get Started
-            </NavLink>
             <NavLink to="/playground" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
               Playground
             </NavLink>
@@ -87,7 +83,6 @@ function Layout() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/learn" element={<Learn />} />
-          <Route path="/get-started" element={<GetStarted />} />
           <Route path="/playground" element={<Playground />} />
         </Routes>
       </main>
@@ -97,7 +92,7 @@ function Layout() {
         <div className="footer-content">
           {!isPlayground && (
             <p>
-              FlowScript &mdash; The Typed Reasoning Layer for AI Agents
+              FlowScript &mdash; Semantic Notation for Structured Reasoning
             </p>
           )}
           <p className="footer-links">
@@ -105,12 +100,8 @@ function Layout() {
               GitHub
             </a>
             <span className="footer-sep">&middot;</span>
-            <a href="https://www.npmjs.com/package/flowscript-core" target="_blank" rel="noopener noreferrer">
-              npm
-            </a>
-            <span className="footer-sep">&middot;</span>
-            <a href="https://pypi.org/project/flowscript-agents/" target="_blank" rel="noopener noreferrer">
-              PyPI
+            <a href="https://github.com/phillipclapham/anneal-memory" target="_blank" rel="noopener noreferrer">
+              anneal-memory
             </a>
             <span className="footer-sep">&middot;</span>
             <a href="https://github.com/phillipclapham/flowscript/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">

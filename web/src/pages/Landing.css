@@ -42,19 +42,8 @@
   font-size: 19px;
   line-height: 1.6;
   color: var(--text-secondary);
-  margin-bottom: var(--space-md);
-  max-width: 640px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.hero-compliance {
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--color-primary);
-  font-style: italic;
   margin-bottom: var(--space-xl);
-  max-width: 560px;
+  max-width: 640px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -110,6 +99,34 @@
 }
 
 /* ========================================
+   Evolution Banner
+   ======================================== */
+.evolution-banner {
+  background: var(--color-primary-light);
+  padding: var(--space-lg) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.evolution-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--color-text);
+  max-width: var(--max-width);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.evolution-text a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.evolution-text a:hover {
+  text-decoration: underline;
+}
+
+/* ========================================
    Sections
    ======================================== */
 .section {
@@ -118,43 +135,6 @@
 
 .section--alt {
   background: var(--color-surface);
-}
-
-.section--accent {
-  background: var(--color-primary);
-  color: var(--color-background);
-  padding: var(--space-xl) var(--space-lg);
-}
-
-.section--accent .section-title {
-  color: var(--color-background);
-}
-
-.section--accent .section-lead {
-  color: var(--color-background);
-  opacity: 0.95;
-}
-
-.section--accent em {
-  font-style: normal;
-  font-weight: 700;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
-}
-
-.accent-inner {
-  text-align: center;
-}
-
-.accent-lead {
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.accent-subtext {
-  opacity: 0.8;
-  margin-top: 0.5rem;
 }
 
 .section-inner {
@@ -179,89 +159,7 @@
 }
 
 /* ========================================
-   Problem Grid
-   ======================================== */
-.problem-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-lg);
-  margin-top: var(--space-xl);
-}
-
-.problem-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: var(--space-xl);
-}
-
-.problem-icon {
-  font-size: 32px;
-  margin-bottom: var(--space-md);
-}
-
-.problem-card h3 {
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--color-text);
-  margin-bottom: var(--space-sm);
-}
-
-.problem-card p {
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-/* ========================================
-   Query Grid
-   ======================================== */
-.query-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-lg);
-  margin-top: var(--space-xl);
-}
-
-.query-card {
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: var(--space-xl);
-  overflow: hidden;
-}
-
-.query-name {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-primary);
-  background: var(--color-primary-light);
-  padding: 4px 12px;
-  border-radius: 6px;
-  margin-bottom: var(--space-md);
-  word-break: break-all;
-  max-width: 100%;
-}
-
-.query-card p {
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  margin: 0;
-}
-
-.query-note {
-  margin-top: var(--space-xl);
-  font-size: 14px;
-  color: var(--text-muted);
-  font-style: italic;
-}
-
-/* ========================================
-   RELATE > DELETE Comparison
+   Before / After Comparison
    ======================================== */
 .relate-comparison {
   display: grid;
@@ -277,11 +175,11 @@
 }
 
 .relate-side--delete h3 {
-  color: var(--color-blocked);
+  color: var(--text-muted);
 }
 
 .relate-side--tension h3 {
-  color: var(--color-decided);
+  color: var(--color-primary);
 }
 
 .relate-side .code-block {
@@ -289,155 +187,217 @@
   line-height: 1.7;
 }
 
-.code-comment { color: var(--color-comment); }
-.code-kw { color: var(--color-causal); }
-.code-str { color: var(--color-decided); }
+.compare-note {
+  margin-top: var(--space-lg);
+  font-size: 15px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
 
 /* ========================================
-   Framework Logos
+   Marker Grid
    ======================================== */
-.framework-logos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-md);
+.marker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-lg);
   margin-top: var(--space-xl);
 }
 
-.framework-logo-badge {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  padding: 10px 18px;
-  background: var(--color-background);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
+.marker-category h3 {
   font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text);
-  transition: all var(--transition-fast);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 2px solid var(--color-primary-light);
 }
 
-.framework-logo-badge:hover {
-  border-color: var(--fw-color);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
-}
-
-.framework-logo-icon {
+.marker-list {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--fw-color);
-  flex-shrink: 0;
+  flex-direction: column;
+  gap: var(--space-sm);
 }
 
-[data-theme="dark"] .framework-logo-icon {
-  color: var(--fw-dark-color);
+.marker-item {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-[data-theme="dark"] .framework-logo-badge:hover {
-  border-color: var(--fw-dark-color);
-}
-
-.framework-logo-name {
+.marker-item code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 2px 8px;
+  border-radius: 4px;
   white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 70px;
+  text-align: center;
+}
+
+.marker-item span {
+  color: var(--text-secondary);
+}
+
+.marker-note {
+  margin-top: var(--space-xl);
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.marker-note code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 /* ========================================
-   Install Grid
+   Thinking Grid
    ======================================== */
-.install-grid {
+.thinking-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-lg);
   margin-top: var(--space-xl);
 }
 
-.install-card {
+.thinking-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: var(--space-xl);
 }
 
-.install-card h3 {
+.thinking-card h3 {
   font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+}
+
+.thinking-card p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ========================================
+   Built Grid
+   ======================================== */
+.built-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+.built-card {
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-xl);
+}
+
+.built-card h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-sm);
+}
+
+.built-card p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.built-card code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ========================================
+   Evolution Flow
+   ======================================== */
+.evolution-flow {
+  max-width: 640px;
+  margin-top: var(--space-xl);
+}
+
+.evolution-step {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-xl);
+}
+
+.evolution-step h3 {
+  font-size: 18px;
   font-weight: 600;
   color: var(--color-text);
   margin-bottom: var(--space-md);
 }
 
-.install-cmd {
-  font-size: 14px;
-  padding: var(--space-md) !important;
-  margin: 0 0 var(--space-md) !important;
-  user-select: all;
-  cursor: text;
-}
-
-.install-card p {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-md);
-}
-
-.install-link {
-  font-size: 14px;
-  font-weight: 500;
+.evolution-step h3 a {
   color: var(--color-primary);
   text-decoration: none;
 }
 
-.install-link:hover {
+.evolution-step h3 a:hover {
   text-decoration: underline;
 }
 
-/* ========================================
-   Comparison Table
-   ======================================== */
-.comparison-table-wrapper {
-  overflow-x: auto;
-  margin-top: var(--space-xl);
+.evolution-step ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.comparison-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-.comparison-table th,
-.comparison-table td {
-  padding: var(--space-md) var(--space-lg);
-  text-align: left;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.comparison-table th {
-  font-weight: 600;
-  color: var(--color-text);
-  background: var(--color-background);
-  position: sticky;
-  top: 0;
-}
-
-.comparison-table td {
+.evolution-step ul li {
+  font-size: 15px;
+  line-height: 1.6;
   color: var(--text-secondary);
+  padding: 4px 0;
+  padding-left: 20px;
+  position: relative;
 }
 
-.comparison-table td:first-child {
-  font-weight: 500;
-  color: var(--color-text);
+.evolution-step ul li::before {
+  content: "\2192";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
 }
 
-.has-feature {
-  color: var(--color-decided) !important;
-  font-weight: 500;
+.evolution-step--highlight {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
 }
 
-.no-feature {
-  color: var(--text-muted) !important;
+.evolution-arrow {
+  text-align: center;
+  font-size: 24px;
+  color: var(--color-primary);
+  padding: var(--space-md) 0;
+  font-weight: 700;
 }
 
 /* ========================================
@@ -458,17 +418,40 @@
   text-align: center;
 }
 
+.repo-links {
+  margin-top: var(--space-lg);
+  font-size: 14px;
+}
+
+.repo-links a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.repo-links a:hover {
+  text-decoration: underline;
+}
+
+.repo-sep {
+  margin: 0 var(--space-sm);
+  color: var(--text-muted);
+}
+
 /* ========================================
    Responsive
    ======================================== */
 @media (max-width: 1024px) {
-  .problem-grid,
-  .install-grid {
+  .thinking-grid,
+  .built-grid {
     grid-template-columns: 1fr;
   }
 
   .relate-comparison {
     grid-template-columns: 1fr;
+  }
+
+  .marker-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -493,7 +476,7 @@
     font-size: 24px;
   }
 
-  .query-grid {
+  .marker-grid {
     grid-template-columns: 1fr;
   }
 }
